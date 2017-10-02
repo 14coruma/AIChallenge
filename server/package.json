@@ -1,0 +1,31 @@
+{
+  "name": "AIContestServer",
+  "version": "1.0.0",
+  "description": "RESTful server for AI Contest",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/14coruma/RESTfulAPI_Tutorial.git"
+  },
+  "keywords": [
+    "RESTful",
+    "API",
+    "AIContest"
+  ],
+  "author": "Andrew Corum",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/14coruma/RESTfulAPI_Tutorial/issues"
+  },
+  "homepage": "https://github.com/14coruma/RESTfulAPI_Tutorial#readme",
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.4"
+  }
+}
