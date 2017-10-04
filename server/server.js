@@ -3,8 +3,6 @@ var app = express();
 var routes = require( './api/routes/routes' );
 routes( app );
 
-//var signup = require( './api/controllers/signupController' );
-
 app.listen( 2306 );
 
 //connection.end();

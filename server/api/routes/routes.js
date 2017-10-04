@@ -17,11 +17,16 @@ module.exports = function( app ) {
 //		.get( signup.list_instructions )
 //		.post( signup.add_user );
 
-	app.route( '/' ).get( function( req, res )
-	{
+	app.route( '/' ).get( function( req, res ) {
 		var fs = require( "fs" );
-		var mainPage = fs.readFileSync( "./html/index.html", "utf-8" );
+		var mainPage = fs.readFileSync( "./files/html/index.html", "utf-8" );
 		res.send( mainPage );
+	} );
+
+	app.route( '/files/:folder/:name' ).get( function( req, res ) {
+		var fs = require( "fs" );
+		var content = fs.readFileSync( "./files/" + req.params.folder + "/" + req.params.name, "utf-8" );
+		res.send( content );
 	} );
 
 	// client interaction routes
