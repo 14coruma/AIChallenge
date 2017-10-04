@@ -19,7 +19,9 @@ module.exports = function( app ) {
 
 	app.route( '/' ).get( function( req, res )
 	{
-		res.send( "<!DOCTYPE html><html><body><h1>WELCOME!</h1><p>Click <a href='/signup/'>here</a> to start.</p></body></html>" )
+		var fs = require( "fs" );
+		var mainPage = fs.readFileSync( "./html/index.html", "utf-8" );
+		res.send( mainPage );
 	} );
 
 	// client interaction routes
