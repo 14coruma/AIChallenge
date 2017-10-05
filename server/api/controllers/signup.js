@@ -1,6 +1,7 @@
 'use strict';
 
-var mysql = require( 'mysql' );
+var passHash = require( 'password-hash' );
+var mysql = require( 'mysql-model' );
 var con = mysql.createConnection( {
 	host     : 'localhost',
 	user     : 'signup',
@@ -8,7 +9,7 @@ var con = mysql.createConnection( {
 	database : 'AIChallenge',
 } );
 
-//var User = connection.extend( { tableName: "user" } );
+var User = con.extend( { tableName: "user" } );
 
 exports.list_instructions = function( req, res )
 {
@@ -19,19 +20,13 @@ exports.list_instructions = function( req, res )
 
 exports.add_user = function( req, res )
 {
-//	var user = new User(
-//	{
-//		username: req.body.username,
-//	} );
-//	user.save();
-
-con.connect(function(err) {
-	if (err) throw err;
-		var sql = "INSERT INTO user (username) VALUES ('test')";
-		con.query(sql, function (err, result) {
-		if (err) throw err;
-			console.log(result.affectedRows + " record(s) updated");
-		});
+	var hashedPassword = passHash.generate( req.body.password );
+	var user = new User(
+	{
+		username: req.body.username,
+		password: hashedPassword,
+		email: req.body.email,
 	} );
+	user.save();
 	res.send("User Added");
 }
