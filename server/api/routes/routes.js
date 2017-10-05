@@ -1,16 +1,15 @@
 /* routes.js Maintains the routing information for the server.
  *
  * Created by: Andrew Corum, 2 Oct 2017
- * Updated: 2 Oct 2017
  */
 
 'use strict';
+
 module.exports = function( app ) {
 	var bodyParser = require( "body-parser" );
 	app.use( bodyParser.json() ); // support json encoded bodies
 	app.use( bodyParser.urlencoded( { extended: true } ) ); // encoded bodies
 	var signup = require( '../controllers/signup' );
-//	var api = require( '../controllers/apiController' );
 
 	// signup
 	app.route( '/signup' )
@@ -31,8 +30,9 @@ module.exports = function( app ) {
 		res.send( content );
 	} );
 
+	// URL not found
 	app.use( function( req, res ) {
-      res.status(404).send( { url: req.originalUrl + ' not found' } )
+      res.status(404).send( { url: '404' + req.originalUrl + ' not found' } )
     } );
 };
 
