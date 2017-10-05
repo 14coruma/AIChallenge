@@ -1,11 +1,13 @@
 'use strict';
 
 var passHash = require( 'password-hash' );
+var usersPass = require( './usersPass' );
+var signupPass = usersPass.signupPass;
 var mysql = require( 'mysql-model' );
 var con = mysql.createConnection( {
 	host     : 'localhost',
 	user     : 'signup',
-	password : 'HNy68yjyDp4YbyDr',
+	password : signupPass,
 	database : 'AIChallenge',
 } );
 
