@@ -5,7 +5,8 @@
 
 'use strict';
 
-var passHash   = require( 'password-hash' );
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
 var usersPass  = require( './usersPass' );
 var signupPass = usersPass.signupPass;
 var mysql      = require( 'mysql-model' );
@@ -37,13 +38,15 @@ exports.list_instructions = function( req, res )
  */
 exports.add_user = function( req, res )
 {
-	var hashedPassword = passHash.generate( req.body.password );
-	var user = new User(
-	{
-		username: req.body.username,
-		password: hashedPassword,
-		email: req.body.email,
+	// Hash using bcrypt
+	bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+		var user = new User(
+		{
+			username: req.body.username,
+			password: hash,
+			email: req.body.email,
+		} );
+		user.save();
 	} );
-	user.save();
 	res.send("User Added");
 }
