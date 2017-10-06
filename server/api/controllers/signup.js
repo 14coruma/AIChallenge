@@ -25,7 +25,7 @@ var User = con.extend( { tableName: "user" } );
 exports.list_instructions = function( req, res )
 {
 	var fs = require( "fs" );
-	var addUserPage= fs.readFileSync( "./files/html/addUser.html", "utf-8" );
+	var addUserPage= fs.readFileSync( "./public/html/addUser.html", "utf-8" );
 	res.send( addUserPage );
 }
 

@@ -7,6 +7,7 @@ var express = require( 'express' );
 var app = express(); 
 var routes = require( './api/routes/routes' );
 
+app.use(express.static('public'));
 routes( app );
 
 app.listen( 2306 );

@@ -19,16 +19,16 @@ module.exports = function( app ) {
 	// home
 	app.route( '/' ).get( function( req, res ) {
 		var fs = require( "fs" );
-		var mainPage = fs.readFileSync( "./files/html/index.html", "utf-8" );
+		var mainPage = fs.readFileSync( "./public/html/index.html", "utf-8" );
 		res.send( mainPage );
 	} );
 
 	// File structure
-	app.route( '/files/:folder/:name' ).get( function( req, res ) {
-		var fs = require( "fs" );
-		var content = fs.readFileSync( "./files/" + req.params.folder + "/" + req.params.name, "utf-8" );
-		res.send( content );
-	} );
+//	app.route( '/files/:folder/:name' ).get( function( req, res ) {
+//		var fs = require( "fs" );
+//		var content = fs.readFileSync( "./public/" + req.params.folder + "/" + req.params.name, "utf-8" );
+//		res.sendfile( content, {root: './public'} );
+//	} );
 
 	// URL not found
 	app.use( function( req, res ) {
