@@ -1,15 +1,25 @@
+<!-- contact section from w3schools.com -->
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Signup</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="css/index.css">
 </head>
 <body>
-	<h1>Signup: </h1>
-	<form action="/signup" method="post">
-		Username: <input type="text" name="username"/><br>
-		Password: <input type="text" name="password"/><br>
-		email:    <input type="text" name="email"/><br>
-		<input type="submit" value="Submit"/>
-	</form>
+  <!-- Contact Section -->
+  <div class="w3-container w3-padding-32" id="contact">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Signup</h3>
+    <p>Lets get in touch and talk about your and our next project.</p>
+    <form action="/signup" method="post" target="_blank">
+      <input class="w3-input" type="text" placeholder="Username" required name="username">
+      <input class="w3-input w3-section" type="text" placeholder="Email" required name="email">
+      <input class="w3-input w3-section" type="text" placeholder="Password" required name="password">
+      <button class="w3-button w3-black w3-section" type="submit">
+        <i class="fa fa-paper-plane"></i> Signup
+      </button>
+    </form>
+  </div>
 </body>
 </html>
