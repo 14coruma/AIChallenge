@@ -1,0 +1,32 @@
+{
+  "name": "AIChallengeServer",
+  "version": "1.0.0",
+  "description": "RESTful server for AI Challenge",
+  "main": "main.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/14coruma/AIChallenge"
+  },
+  "keywords": [
+    "RESTful",
+    "API",
+    "AIContest"
+  ],
+  "author": "Andrew Corum",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/14coruma/AIChallenge/issues"
+  },
+  "homepage": "https://github.com/14coruma/AIChallenge#readme",
+  "devDependencies": {
+    "electron": "^1.7.8",
+    "nodemon": "^1.11.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.4"
+  }
+}

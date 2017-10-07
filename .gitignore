@@ -1,5 +1,8 @@
-# Ignore password-storing files
+# password-storing files
 *Pass.js
 
-# Ignore node_modules
+# node_modules
 node_modules
+
+# Demos/tests
+*-demo
