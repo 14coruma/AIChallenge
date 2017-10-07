@@ -25,8 +25,8 @@ var User = con.extend( { tableName: "user" } );
 exports.list_instructions = function( req, res )
 {
 	var fs = require( "fs" );
-	var addUserPage= fs.readFileSync( "./public/html/addUser.html", "utf-8" );
-	res.send( addUserPage );
+	var signupPage = fs.readFileSync( "./public/html/signup.html", "utf-8" );
+	res.send( signupPage );
 }
 
 /*
@@ -48,5 +48,7 @@ exports.add_user = function( req, res )
 		} );
 		user.save();
 	} );
-	res.send("User Added");
+	var fs = require( "fs" );
+	var startersPage = fs.readFileSync( "./public/html/starters.html", "utf-8" ); 
+	res.send( startersPage );
 }

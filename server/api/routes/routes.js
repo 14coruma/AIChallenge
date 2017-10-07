@@ -23,13 +23,6 @@ module.exports = function( app ) {
 		res.send( mainPage );
 	} );
 
-	// File structure
-//	app.route( '/files/:folder/:name' ).get( function( req, res ) {
-//		var fs = require( "fs" );
-//		var content = fs.readFileSync( "./public/" + req.params.folder + "/" + req.params.name, "utf-8" );
-//		res.sendfile( content, {root: './public'} );
-//	} );
-
 	// URL not found
 	app.use( function( req, res ) {
       res.status(404).send( { url: '404' + req.originalUrl + ' not found' } )
