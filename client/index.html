@@ -1,13 +1,64 @@
+<!-- template from w3schools.com -->
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Hello World!</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chrome <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
-  </body>
+<title>AI Challenge</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="resources/css/index.css">
+<body>
+
+<!-- Header -->
+<header class="w3-display-container w3-content w3-wide" style="max-width:1500px;" id="home">
+  <img class="w3-image" src="resources/images/wallpaper.jpg" alt="AI Wallpaper" width="1500" height="800">
+  <div class="w3-display-middle w3-margin-top w3-center">
+    <h1 class="w3-xxlarge w3-text-white"><span class="w3-padding w3-black w3-opacity-min"><b>AI</b></span> <span class="w3-hide-small w3-text-light-grey">Challenge</span></h1>
+  </div>
+</header>
+
+<!-- Page content -->
+<div class="w3-content w3-padding" style="max-width:1564px">
+  
+<!-- Sign-in Section -->
+  <div class="w3-container w3-padding-small" id="contact">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-small">Credentials </h3>
+    <form>
+      <input class="w3-input" type="text" placeholder="Username" required name="username">
+      <input class="w3-input w3-section" type="password" placeholder="Password" required name="password">
+      </form>
+  </div>
+
+  <div class="w3-container w3-padding-small" id="game">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-small">Game</h3>
+    <select class="w3-input">
+      <option value="">--select game--</option>
+      <option value="numGuess">Number Guesser</option>
+      <option value="mancala">Mancala</option>
+      <option value="chess">Chess</option>
+    </select>
+  </div>
+
+  <!-- About Section -->
+  <div class="w3-container w3-padding-small" id="bot">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-small">AI Bot</h3>
+    <form>
+      <input class="w3-input" type="file" required name="file">
+    </form>
+  </div>
+ 
+ <div class="w3-container w3-padding-small" id="start">
+   <form action="resources/js/client.js" type="get">
+     <button class="w3-button w3-black w3-section" type="submit">
+       <i class="fa fa-paper-plane"></i> Start
+     </button>
+   </form>
+ </div>
+<!-- End page content -->
+</div>
+
+<!-- Footer -->
+<footer class="w3-center w3-black w3-padding-small">
+  <p>Thanks for playing!</p>
+</footer>
+</body>
 </html>
+
