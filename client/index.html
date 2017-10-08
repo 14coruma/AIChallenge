@@ -19,17 +19,19 @@
 <div class="w3-content w3-padding" style="max-width:1564px">
   
 <!-- Sign-in Section -->
+ <form id="startForm">
+ 
+  <!-- Credentials -->
   <div class="w3-container w3-padding-small" id="contact">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-small">Credentials </h3>
-    <form>
-      <input class="w3-input" type="text" placeholder="Username" required name="username">
-      <input class="w3-input w3-section" type="password" placeholder="Password" required name="password">
-      </form>
+      <input id="formUsername" class="w3-input" type="text" placeholder="Username" required name="username">
+      <input id="formPassword" class="w3-input w3-section" type="password" placeholder="Password" required name="password">
   </div>
 
+  <!-- Game -->
   <div class="w3-container w3-padding-small" id="game">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-small">Game</h3>
-    <select class="w3-input">
+    <select id="selectGame" class="w3-input">
       <option value="">--select game--</option>
       <option value="numGuess">Number Guesser</option>
       <option value="mancala">Mancala</option>
@@ -37,22 +39,16 @@
     </select>
   </div>
 
-  <!-- About Section -->
+  <!-- Bot File -->
   <div class="w3-container w3-padding-small" id="bot">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-small">AI Bot</h3>
-    <form>
-      <input class="w3-input" type="file" required name="file">
-    </form>
+    <input class="w3-input" type="file" required name="file">
   </div>
- 
- <div class="w3-container w3-padding-small" id="start">
-   <form id="startForm">
-     <button id="startButton" class="w3-button w3-black w3-section" type="submit">
-       <i class="fa fa-paper-plane"></i> Start
-     </button>
-   </form>
- </div>
-<!-- End page content -->
+  <div class="w3-container w3-padding-small" id="start">
+    <button id="startButton" class="w3-button w3-black w3-section">
+      <i class="fa fa-paper-plane"></i> Start
+  </div>
+ </form>
 </div>
 
 <!-- Footer -->
