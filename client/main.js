@@ -1,3 +1,8 @@
+/* main.js is the main electron javascript window manager
+ * (Run with 'electron main.js')
+ *
+ * Created by: Andrew Corum, 8 Oct 2017
+ */
 const {app, BrowserWindow} = require('electron')
 const path = require('path')
 const url = require('url')

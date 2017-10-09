@@ -1,3 +1,7 @@
+/* client.js handles the AIChallenge client
+ *
+ * Created by: Andrew Corum, 6 Oct 2017
+ */
 'use strict';
 
 var startButton = document.getElementById( 'startButton' );
