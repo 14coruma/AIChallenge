@@ -5,3 +5,6 @@
   */
 var signupPass = "[Password Here]";
 exports.signupPass = signupPass;
+
+var verifyPass = "[Password Here]";
+exports.verifyPass = verifyPass;
