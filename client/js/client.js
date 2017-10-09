@@ -7,6 +7,8 @@ startButton.addEventListener( 'click', function() {
 	var password = document.getElementById( 'formPassword' ).value;
 	var game     = document.getElementById( 'selectGame' ).value;
 
+	document.getElementById( 'waitingMessage' ).style.display="block";
+
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {
 		if ( xhr.readyState ==4 && xhr.status == 200) {
@@ -18,5 +20,6 @@ startButton.addEventListener( 'click', function() {
 	xhr.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded" );
 	xhr.send( "username="+username+"&password="+password+"&email="+game );
 
-	location.replace( "html/waiting.html" );
-});
+	//location.replace( "html/waiting.html" );
+	return false;
+} );

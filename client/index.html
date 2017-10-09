@@ -1,4 +1,4 @@
-<!-- template from w3schools.com -->
+<!-- template from w32chools.com -->
 <!DOCTYPE html>
 <html>
 <title>AI Challenge</title>
@@ -15,11 +15,13 @@
   </div>
 </header>
 
+<div id="waitingMessage" class="w3-overlay" style="display:none"><h2 class="w3-padding-32">Waiting...</h2></div>
+
 <!-- Page content -->
 <div class="w3-content w3-padding" style="max-width:1564px">
   
 <!-- Sign-in Section -->
- <form id="startForm">
+ <form id="startForm" onsubmit="return false;">
  
   <!-- Credentials -->
   <div class="w3-container w3-padding-small" id="contact">
