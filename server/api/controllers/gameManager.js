@@ -20,6 +20,8 @@ var con        = mysql.createConnection( {
 
 var User = con.extend( { tableName: "user" } );
 
+/*TODO: startGame() which calls verifyUser() */
+
 /*
  * list_instructions returns the signup html page
  */
