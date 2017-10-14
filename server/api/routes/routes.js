@@ -10,11 +10,16 @@ module.exports = function( app ) {
 	app.use( bodyParser.json() ); // support json encoded bodies
 	app.use( bodyParser.urlencoded( { extended: true } ) ); // encoded bodies
 	var signup = require( '../controllers/signup' );
+	var gameManager = require( '../controllers/gameManager' );
 
 	// signup
 	app.route( '/signup' )
 		.get( signup.list_instructions )
 		.post( signup.add_user );
+
+	// api/startGame
+	app.route( '/api/startGame' )
+		.post( gameManager.startGame );
 
 	// home
 	app.route( '/' ).get( function( req, res ) {
