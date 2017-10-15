@@ -44,7 +44,7 @@ wss.on( 'connection', function connection( ws ) {
 					// Broadcast gameID to the players
 					for ( var i = 0; i < gameState.players.length; i++ ) {
 						getClientConn( clients, gameState.players[i] ).send(
-							{ msgType: "gameID", gameID = gameState.gameID }
+							{ msgType : "gameID", gameID : gameState.gameID }
 						);
 					}
 
@@ -73,6 +73,7 @@ wss.on( 'connection', function connection( ws ) {
 						break;
 					default:
 						// TODO: Err: Something went wrong with the game state
+				}
 				break;
 			default:
 				// TODO: Err: invalid msgType

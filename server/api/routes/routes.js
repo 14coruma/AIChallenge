@@ -18,8 +18,8 @@ module.exports = function( app ) {
 		.post( signup.add_user );
 
 	// api/startGame
-	app.route( '/api/startGame' )
-		.post( gameManager.startGame );
+	//app.route( '/api/startGame' )
+	//	.post( gameManager.startGame );
 
 	// home
 	app.route( '/' ).get( function( req, res ) {
