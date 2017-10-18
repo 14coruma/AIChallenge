@@ -1,5 +1,4 @@
-/* verifyUserCreds.js contains the functions that verify users credentials
- * by matching them to the database
+/* user.js contains the functions that pertain to user handling
  *
  * Created by: Andrew Corum, 9 Oct 2017
  */

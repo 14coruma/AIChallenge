@@ -6,52 +6,31 @@
 
 'use strict';
 
-var bcrypt = require('bcrypt');
-const saltRounds = 10;
 var usersPass  = require( './usersPass' );
 var signupPass = usersPass.signupPass;
 var mysql      = require( 'mysql-model' );
 var con        = mysql.createConnection( {
 	host     : 'localhost',
-	user     : 'signup',
-	password : signupPass,
+	user     : 'game',
+	password : gamePass,
 	database : 'AIChallenge',
 } );
 
-var User = con.extend( { tableName: "user" } );
-
-/*TODO: startGame() which calls verifyUser() */
+var GameQueue = con.extend( { tableName: "gameQueue" } );
 
 /*
- * list_instructions returns the signup html page
- */
-exports.list_instructions = function( req, res )
-{
-	var fs = require( "fs" );
-	var signupPage = fs.readFileSync( "./public/html/signup.html", "utf-8" );
-	res.send( signupPage );
-}
-
-/*
- * add_user adds a new user to the database. Params stored in req.body
+ * addToQueue adds a user to the gameQueue table.
  *
- * @param: username
- * @param: password, the provided password (hash is stored)
- * @param: email
+ * @param: (string) gameName
+ * @param: (string) username
+ *
+ * @return: (string) gameID
  */
-exports.add_user = function( req, res )
+exports.addToQueue = function( gameName, username )
 {
-	// Hash using bcrypt
-	bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
-		var user = new User(
-		{
-			username: req.body.username,
-			password: hash,
-			email: req.body.email,
-		} );
-		user.save();
+	var gq = GameQueue( {
+		gameName: gameName,
+		username: username,
 	} );
-	var fs = require( "fs" );
-	var startersPage = fs.readFileSync( "./public/html/starters.html", "utf-8" ); 
-	res.send( startersPage );
+	return gq.save();
 }
