@@ -20,13 +20,15 @@ var con        = mysql.createConnection( {
 var User = con.extend( { tableName: "user" } );
 
 /*
- * verify_user verifies that a user is in the DB and has entered the
+ * verifyUser verifies that a user is in the DB and has entered the
  * correct password.
  *
  * @param: username
  * @param: testPassHash, the provided password hash to test
+ *
+ * @return: (bool) verified
  */
-exports.verify_user = function( username, testPassHash )
+exports.verifyUser = function( username, testPassHash )
 {
 	var passHash = "Unlikely Hash";
 	con.query(
@@ -44,4 +46,5 @@ exports.verify_user = function( username, testPassHash )
 		if ( err ) throw err;
 		verified = res;
 	} );
+	return verified;
 }

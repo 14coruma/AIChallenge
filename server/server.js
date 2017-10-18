@@ -23,35 +23,29 @@ app.listen( 8000 );
 var WebSocket = require( 'ws' );
 var wss = new WebSocket.Server( { port: 8080 } );
 var clients = [];
+var userModule = require( './api/controllers/verifyUserCreds.js' );
  
 wss.on( 'connection', function connection( ws ) {
 	ws.on( 'message', function incoming( message ) {
 		var clientObj = JSON.parse( message );
 		switch( clientObj.msgType ) {
 			case "start":
-				var validUser = verifyUser( clientObj.username, clientObj.passHash );
+				var validUser = userModule.verifyUser( clientObj.username, clientObj.passHash );
 				if ( !validUser ) { /* TODO: Err: invalid login*/ break; }
 
-				var validGame = addToQueue( clientObj.gameName, clientObj.username );
-				if ( !validGame ) { /* TODO: Err: invalid game*/ break; }
+				var gameID = addToQueue( clientObj.gameName, clientObj.username );
+				if ( gameID == -1 ) { /* TODO: Err: invalid game*/ break; }
+				var gameIDMsg = { msgType : "gameID", gameID : gameID, }; 
+				ws.send( JSON.stringify( gameIDMsg ) );
 
 				// Add current connection to the clients[] array
 				clients.push( { connection : ws, username : clientObj.username } );
 
-				if ( gameReady( clientObj.gameName, clientObj.username ) ) { // TODO: fn
-					var gameState = startGame( clientObj.gameName, clientObj.username ); // TODO: fn retval JSON
-
-					// Broadcast gameID to the players
-					for ( var i = 0; i < gameState.players.length; i++ ) {
-						getClientConn( clients, gameState.players[i] ).send(
-							{ msgType : "gameID", gameID : gameState.gameID }
-						);
-					}
+				if ( gameReady( gameID ) ) { // TODO: fn
+					var gameState = startGame( gameID ); // TODO: fn retval JSON
 
 					// Send state to player 1
 					ws.send( JSON.stringify( gameState ) );
-				} else {
-					addToQueue( clientObj.gameName, clientObj.username );// TODO: fn
 				}
 				break;
 			case "move":
@@ -59,7 +53,7 @@ wss.on( 'connection', function connection( ws ) {
 				var validGameID = verifyGameID( clientObj.gameID );
 				if ( !validGameID ) { /* TODO: Err: invalid gameID*/ break; }
 
-				var gameState = makeMove( clientObj.move, clientObj.username );
+				var gameState = makeMove( clientObj.gameID, clientObj.move, clientObj.username );
 				switch( gameState.gameOver ) {
 					case 0:
 						// Send the current state to the next player
@@ -98,3 +92,16 @@ function getClientConn( clientArray, username ) {
 		}
 	}
 }
+
+/**
+ * Verifies a user's login info
+ * 
+ * @param: (string) username
+ * @param: (string) passHash
+ *
+ * @return: (bool) pass or fail
+ *
+function verifyUser( username, passHash ) {
+	
+	return false;
+} */
