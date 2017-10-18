@@ -6,12 +6,13 @@
 'use strict';
 
 // Globals
-var bcrypt = require( 'bcrypt' );
+var bcrypt = require( 'bcryptjs' );
 const saltRounds = 10;
 var myGameID = "";
 var username = "";
 var passHash = "";
-var game = ""
+var game = "";
+var websocket;
 
 var startButton = document.getElementById( 'startButton' );
 startButton.addEventListener( 'click', function() {
@@ -31,7 +32,6 @@ startButton.addEventListener( 'click', function() {
 	websocket.onerror = function( evt ) { onError( evt ) };
 
 	return false;
-	}
 } );
 
 function onOpen( evt )
