@@ -5,85 +5,79 @@
  */
 'use strict';
 
+// Globals
+var bcrypt = require( 'bcrypt' );
+const saltRounds = 10;
+var myGameID = "";
+var username = "";
+var passHash = "";
+var game = ""
+
 var startButton = document.getElementById( 'startButton' );
-
 startButton.addEventListener( 'click', function() {
-	var username = document.getElementById( 'formUsername' ).value;
+	username = document.getElementById( 'formUsername' ).value;
+	game     = document.getElementById( 'selectGame' ).value;
+
+	// Get password and hash it
 	var password = document.getElementById( 'formPassword' ).value;
-	var game     = document.getElementById( 'selectGame' ).value;
+	bcrypt.hash( password, saltRounds, function( err, hash ) {
+		passHash = hash;
+	} );
 
-	if ( username && password && game ) {
-		var waitMsg = document.getElementById( 'waitingMessage' );
-		waitMsg.style.display="block";
+	var wsUri = "ws://localhost:8080/";
+	websocket = new WebSocket( wsUri );
+	websocket.onopen = function( evt ) { onOpen( evt ) };
+	websocket.onmessage = function( evt ) { onMessage( evt ) };
+	websocket.onerror = function( evt ) { onError( evt ) };
 
-		var xhr = new XMLHttpRequest();
-		xhr.onreadystatechange = function() {
-			if ( xhr.readyState ==4 && xhr.status == 200) {
-				waitMsg.style.display="none";
-				return xhr.responseText;
-			}
-		}
-
-		xhr.open( "POST", 'http://localhost:2306/signup', true );
-		xhr.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded" );
-		xhr.send( "username="+username+"&password="+password+"&email="+game );
-
-		//location.replace( "html/waiting.html" );
-		return false;
+	return false;
 	}
 } );
-var wsUri = "ws://localhost:8080/";
-var output;
 
-function init()
+function onOpen( evt )
 {
-	output = document.getElementById("output");
-	testWebSocket();
+	// Open 'waiting' div
+	var message = {
+		msgType  : "start",
+		username : username,
+		passHash : passHash,
+		gameName : game,
+		gameID   : "",
+		move     : "",
+	};
+	websocket.send( JSON.stringify( message ) );
 }
 
-function testWebSocket()
+function onMessage( evt )
 {
-	websocket = new WebSocket(wsUri);
-	websocket.onopen = function(evt) { onOpen(evt) };
-	websocket.onclose = function(evt) { onClose(evt) };
-	websocket.onmessage = function(evt) { onMessage(evt) };
-	websocket.onerror = function(evt) { onError(evt) };
+	var serverObj = JSON.parse( evt.data );
+	switch( serverObj.msgType ) {
+		case "gameID":
+			myGameID = serverObj.gameID;
+			// TODO Show div (Playing... watch <here>, etc.)
+			break;
+		case "playersTurn":
+			// TODO Run bot program. Save result. Send result.
+			var message = {
+				msgType  : "move",
+				username : username,
+				passHash : passHash,
+				gameName : game,
+				gameID   : gameID,
+				move     : "5",
+			}
+			websocket.send( JSON.stringify( message ) );
+			break;
+		case "gameOver":
+			// TODO Show div with gameover info
+			websocket.close();
+			break;
+		default:
+			// TODO: Err: Something went wrong
+	}
 }
 
-function onOpen(evt)
+function onError( evt )
 {
-	writeToScreen("CONNECTED");
-	doSend("WebSocket rocks");
+	//TODO '<span style="color: red;">ERROR:</span> ' + evt.data; // Send error msg
 }
-
-function onClose(evt)
-{
-	writeToScreen("DISCONNECTED");
-}
-
-function onMessage(evt)
-{
-	writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
-	websocket.close();
-}
-
-function onError(evt)
-{
-	writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
-}
-
-function doSend(message)
-{
-	writeToScreen("SENT: " + message);
-	websocket.send(message);
-}
-
-function writeToScreen(message)
-{
-	var pre = document.createElement("p");
-	pre.style.wordWrap = "break-word";
-	pre.innerHTML = message;
-	output.appendChild(pre);
-}
-
-//window.addEventListener("load", init, false);
