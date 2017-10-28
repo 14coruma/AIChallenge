@@ -35,13 +35,16 @@ exports.list_instructions = function( req, res )
  */
 exports.add_user = function( req, res )
 {
-	conn.connect();
 	// Hash using bcrypt
 	bcrypt.hash( req.body.password, null, null, function( err, hash ) {
 		var sql = 'INSERT INTO user (username, password, email) values (?, ?, ?)';
 		var inserts = [ req.body.username, hash, req.body.email ];
 		sql = mysql.format( sql, inserts );
-		conn.query( sql );
+		conn.connect();
+		conn.query( sql, function( error, results, fields ) {
+			if ( error ) throw error;
+		});
+		conn.end();
 	} );
 	var fs = require( "fs" );
 	var startersPage = fs.readFileSync( "./public/html/starters.html", "utf-8" ); 

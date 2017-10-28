@@ -8,15 +8,13 @@
 
 var userPass  = require( './userPass' );
 var gamePass = userPass.gamePass;
-var mysql      = require( 'mysql-model' );
-var con        = mysql.createConnection( {
+var mysql      = require( 'mysql' );
+var conn        = mysql.createConnection( {
 	host     : 'localhost',
 	user     : 'game',
 	password : gamePass,
 	database : 'AIChallenge',
 } );
-
-var GameQueue = con.extend( { tableName: "gameQueue" } );
 
 /*
  * addToQueue adds a user to the gameQueue table.
@@ -28,9 +26,14 @@ var GameQueue = con.extend( { tableName: "gameQueue" } );
  */
 exports.addToQueue = function( gameName, username )
 {
-	var gq = GameQueue( {
-		gameName: gameName,
-		username: username,
+	conn.connect();
+	var sql = 'INSERT INTO gameQueue (gameName, username) values (?, ?)';
+	var inserts = [ gameName, username ];
+	sql = mysql.format( sql, inserts );
+	var rows;
+	conn.query( sql, function( error, results, fields ) {
+		rows = results;
 	} );
-	return gq.save();
+	conn.end();
+	return rows;
 }
