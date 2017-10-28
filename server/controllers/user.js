@@ -5,18 +5,16 @@
 
 'use strict';
 
-var bcrypt = require('bcrypt');
-var usersPass  = require( './usersPass' );
-var signupPass = usersPass.signupPass;
-var mysql      = require( 'mysql-model' );
+var bcrypt = require('bcrypt-nodejs');
+var userPass  = require( './userPass' );
+var verifyPass = userPass.verifyPass;
+var mysql      = require( 'mysql' );
 var con        = mysql.createConnection( {
 	host     : 'localhost',
-	user     : 'signup',
+	user     : 'user',
 	password : verifyPass,
 	database : 'AIChallenge',
 } );
-
-var User = con.extend( { tableName: "user" } );
 
 /*
  * verifyUser verifies that a user is in the DB and has entered the
@@ -29,10 +27,10 @@ var User = con.extend( { tableName: "user" } );
  */
 exports.verifyUser = function( username, testPassHash )
 {
-	var passHash = "Unlikely Hash";
+	var passHash;
 	con.query(
 		'SELECT * FROM user WHERE username = ? AND password = ?',
-		[username, passHash],
+		[username, testPassHash],
 		function( err, res ) {
 			if ( err ) throw err;
 			passHash = res[0].password;

@@ -6,8 +6,8 @@
 
 'use strict';
 
-var usersPass  = require( './usersPass' );
-var signupPass = usersPass.signupPass;
+var userPass  = require( './userPass' );
+var gamePass = userPass.gamePass;
 var mysql      = require( 'mysql-model' );
 var con        = mysql.createConnection( {
 	host     : 'localhost',

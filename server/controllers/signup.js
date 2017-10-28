@@ -5,19 +5,16 @@
 
 'use strict';
 
-var bcrypt = require('bcrypt');
-const saltRounds = 10;
-var usersPass  = require( './usersPass' );
-var signupPass = usersPass.signupPass;
-var mysql      = require( 'mysql-model' );
-var con        = mysql.createConnection( {
+var bcrypt = require('bcrypt-nodejs');
+var userPass  = require( './userPass' );
+var signupPass = userPass.signupPass;
+var mysql      = require( 'mysql' );
+var conn        = mysql.createConnection( {
 	host     : 'localhost',
 	user     : 'signup',
 	password : signupPass,
 	database : 'AIChallenge',
 } );
-
-var User = con.extend( { tableName: "user" } );
 
 /*
  * list_instructions returns the signup html page
@@ -38,15 +35,13 @@ exports.list_instructions = function( req, res )
  */
 exports.add_user = function( req, res )
 {
+	conn.connect();
 	// Hash using bcrypt
-	bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
-		var user = new User(
-		{
-			username: req.body.username,
-			password: hash,
-			email: req.body.email,
-		} );
-		user.save();
+	bcrypt.hash( req.body.password, null, null, function( err, hash ) {
+		var sql = 'INSERT INTO user (username, password, email) values (?, ?, ?)';
+		var inserts = [ req.body.username, hash, req.body.email ];
+		sql = mysql.format( sql, inserts );
+		conn.query( sql );
 	} );
 	var fs = require( "fs" );
 	var startersPage = fs.readFileSync( "./public/html/starters.html", "utf-8" ); 

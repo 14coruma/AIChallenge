@@ -1,5 +1,5 @@
 var expect = require( "chai" ).expect;
-var gm = require( "../api/controllers/gameManager.js" );
+var gm = require( "../controllers/gameManager.js" );
 
 describe( "Game Manager Module", function() {
 	describe( "addToQueue( gameName, username )", function() {

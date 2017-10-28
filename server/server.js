@@ -10,7 +10,7 @@
  */
 var express = require( 'express' );
 var app = express(); 
-var routes = require( './api/routes/routes' );
+var routes = require( './routes/routes' );
 
 app.use( express.static( 'public' ));
 routes( app );
@@ -23,7 +23,7 @@ app.listen( 8000 );
 var WebSocket = require( 'ws' );
 var wss = new WebSocket.Server( { port: 8080 } );
 var clients = [];
-var userModule = require( './api/controllers/verifyUserCreds.js' );
+var userModule = require( './controllers/user.js' );
  
 wss.on( 'connection', function connection( ws ) {
 	ws.on( 'message', function incoming( message ) {
