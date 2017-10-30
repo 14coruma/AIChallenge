@@ -40,7 +40,7 @@ describe( "Game Manager Module", function() {
 		} );
 		it( "testGame not ready (1<min)", function( done ) {
 			gm.addToQueue( "testGame", "test123", function( res ) {
-				gm.gameReady( res, function( res ) {
+				gm.gameReady( "testGame", function( res ) {
 					expect( res ).to.be.false;
 					done();
 				});
@@ -48,7 +48,7 @@ describe( "Game Manager Module", function() {
 		} );
 		it( "testGame ready (2==min)", function( done ) {
 			gm.addToQueue( "testGame", "test123", function( res ) {
-				gm.gameReady( res, function( res ) {
+				gm.gameReady( "testGame", function( res ) {
 					expect( res ).to.be.true;
 					done();
 				});
@@ -56,7 +56,7 @@ describe( "Game Manager Module", function() {
 		} );
 		it( "testGame ready (3==max)", function( done ) {
 			gm.addToQueue( "testGame", "test123", function( res ) {
-				gm.gameReady( res, function( res ) {
+				gm.gameReady( "testGame", function( res ) {
 					expect( res ).to.be.true;
 					done();
 				});
@@ -64,9 +64,13 @@ describe( "Game Manager Module", function() {
 		} );
 		it( "testGame ready (4>max)", function( done ) {
 			gm.addToQueue( "testGame", "test123", function( res ) {
-				gm.gameReady( res, function( res ) {
+				gm.gameReady( "testGame", function( res ) {
 					expect( res ).to.be.true;
 					done();
+					gm.deleteFromQueue( "testGame", "test123", function( res ) {} );
+					gm.deleteFromQueue( "testGame", "test123", function( res ) {} );
+					gm.deleteFromQueue( "testGame", "test123", function( res ) {} );
+					gm.deleteFromQueue( "testGame", "test123", function( res ) {} );
 				});
 			} );
 		} );

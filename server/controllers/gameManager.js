@@ -19,6 +19,33 @@ var conn        = mysql.createConnection( {
 } );
 
 /**
+ * gameReady checks to see if there are enough people in the queue to start a game
+ *
+ * @param: gameName
+ *
+ * @return: ready? (Bool)
+ */
+exports.gameReady = function( gameName, callback ) {
+	var sql = "SELECT count(*) FROM gameQueue WHERE gameID = (SELECT id FROM game WHERE gameName = ?);";
+	var inserts = [ gameName ];
+	sql = mysql.format( sql, inserts );
+	db.queryDB( conn, sql, function( res ) {
+		var sql = "SELECT minPlayers FROM game WHERE gameName = ?;";
+		var inserts = [ gameName ];
+		sql = mysql.format( sql, inserts );
+		var count = res[0]["count(*)"];
+		db.queryDB( conn, sql, function( res ) {
+			if ( res[0] ) {
+				callback( count >= res[0]["minPlayers"] );
+			} else {
+				callback( false );
+			}
+		} );
+	} );
+	return;
+}
+
+/**
  * addToQueue adds a user to the gameQueue table.
  *
  * @param: (string) gameName
