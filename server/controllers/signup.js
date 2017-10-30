@@ -7,6 +7,7 @@
 
 var bcrypt = require('bcrypt-nodejs');
 var userPass  = require( './userPass' );
+var db = require( './dbModule' );
 var signupPass = userPass.signupPass;
 var mysql      = require( 'mysql' );
 var conn        = mysql.createConnection( {
@@ -40,11 +41,7 @@ exports.add_user = function( req, res )
 		var sql = 'INSERT INTO user (username, password, email) values (?, ?, ?)';
 		var inserts = [ req.body.username, hash, req.body.email ];
 		sql = mysql.format( sql, inserts );
-		conn.connect();
-		conn.query( sql, function( error, results, fields ) {
-			if ( error ) throw error;
-		});
-		conn.end();
+		db.queryDB( conn, sql, function( res ) { return; } );
 	} );
 	var fs = require( "fs" );
 	var startersPage = fs.readFileSync( "./public/html/starters.html", "utf-8" ); 

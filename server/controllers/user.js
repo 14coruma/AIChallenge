@@ -8,8 +8,9 @@
 var bcrypt = require('bcrypt-nodejs');
 var userPass  = require( './userPass' );
 var verifyPass = userPass.verifyPass;
+var db = require( './dbModule' );
 var mysql      = require( 'mysql' );
-var con        = mysql.createConnection( {
+var conn        = mysql.createConnection( {
 	host     : 'localhost',
 	user     : 'user',
 	password : verifyPass,
@@ -25,23 +26,22 @@ var con        = mysql.createConnection( {
  *
  * @return: (bool) verified
  */
-exports.verifyUser = function( username, testPassHash )
+exports.verifyUser = function( username, testPass, callback )
 {
-	var passHash;
-	con.query(
-		'SELECT * FROM user WHERE username = ? AND password = ?',
-		[username, testPassHash],
-		function( err, res ) {
-			if ( err ) throw err;
-			passHash = res[0].password;
+	var sql = 'SELECT password FROM user WHERE username = ?';
+	var inserts = [username];
+	sql = mysql.format( sql, inserts );
+	db.queryDB( conn, sql, function( res ) {
+		if ( res[0] != undefined ) {
+			var passHash = res[0].password;
+			// Verify hash using bcrypt
+			bcrypt.compare( testPass, passHash, function( err, res ) {
+				if ( err ) throw err;
+				callback( res )
+			} );
+		} else {
+			callback( false )
 		}
-	);
-
-	// Verify hash using bcrypt
-	var verified = false;
-	bcrypt.compare( passHash, testPassHash, function( err, res ) {
-		if ( err ) throw err;
-		verified = res;
+		return;
 	} );
-	return verified;
 }

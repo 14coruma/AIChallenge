@@ -1,24 +1,33 @@
 var expect = require( "chai" ).expect;
+var assert = require( "chai" ).assert;
 var userMod = require( "../controllers/user.js" );
 var bcrypt = require( 'bcrypt-nodejs' );
-const saltRounds = 10;
 
 describe( "User Module", function() {
-	describe( "verifyUser( username, passHash )", function() {
-		it( "Verify test user (test123, hash(pass123))", function() {
-			var passHash;
-			bcrypt.hash( "pass123", saltRounds, null, function( err, hash ) {
-				passHash = hash;
+	describe( "verifyUser( username, pass123 )", function() {
+		it( "Verify test user (test123, pass123))", function( done ) {
+			userMod.verifyUser( "test123", "pass123", function( res ) {
+				expect( res ).to.equal( true );
+				done();
 			} );
-			var verified0 = userMod.verifyUser( "test123", passHash );
-			var verified1 = userMod.verifyUser( "badUser", passHash );
-			var verified2 = userMod.verifyUser( "test123", "badPass" );
-			var verified3 = userMod.verifyUser( "badUser", "badPass" );
-
-			expect( verified0 ).to.equal( true );
-			expect( verified1 ).to.equal( false );
-			expect( verified2 ).to.equal( false );
-			expect( verified3 ).to.equal( false );
+		} );
+		it( "Verify badUser (badUser, pass123))", function( done ) {
+			userMod.verifyUser( "badUser", "pass123", function( res ) {
+				expect( res ).to.equal( false );
+				done();
+			} );
+		} );
+		it( "Verify bad pass (test123, baddPass))", function( done ) {
+			userMod.verifyUser( "test123", "badPass", function( res ) {
+				expect( res ).to.equal( false );
+				done();
+			} );
+		} );
+		it( "Verify bad user bad pass (badUser, badPass))", function( done ) {
+			userMod.verifyUser( "badUser", "badPass", function( res ) {
+				expect( res ).to.equal( false );
+				done();
+			} );
 		} );
 	} );
 } );

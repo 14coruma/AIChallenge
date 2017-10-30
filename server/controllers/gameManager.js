@@ -8,6 +8,7 @@
 
 var userPass  = require( './userPass' );
 var gamePass = userPass.gamePass;
+var db = require( './dbModule' );
 var mysql      = require( 'mysql' );
 var conn        = mysql.createConnection( {
 	host     : 'localhost',
@@ -21,19 +22,22 @@ var conn        = mysql.createConnection( {
  *
  * @param: (string) gameName
  * @param: (string) username
+ * @param: (fn) callback, a function to catch the results of the db query
  *
  * @return: (string) gameID
  */
-exports.addToQueue = function( gameName, username )
+exports.addToQueue = function( gameName, username, callback )
 {
-	conn.connect();
-	var sql = 'INSERT INTO gameQueue (gameName, username) values (?, ?)';
+	var sql = "INSERT INTO gameQueue (gameID, userID) VALUES ((SELECT id FROM game WHERE gameName = ?), (SELECT id FROM user WHERE username = ?));";
+
 	var inserts = [ gameName, username ];
 	sql = mysql.format( sql, inserts );
-	var rows;
-	conn.query( sql, function( error, results, fields ) {
-		rows = results;
+	db.queryDB( conn, sql, function(res) {
+		if ( res ) {
+			callback( res.affectedRows == 1 );
+		} else {
+			callback( false );
+		}
 	} );
-	conn.end();
-	return rows;
+	return;
 }
