@@ -3,6 +3,71 @@ var assert = require( "chai" ).assert;
 var gm = require( "../controllers/gameManager.js" );
 
 describe( "Game Manager Module", function() {
+	// makeMove()
+	describe( "makeMove( gameID )", function() {
+		it( "makeMove( simpleState, 2 ) testGame (valid move)", function( done ) {
+			gm.makeMove( { id: 1, game: "testGame", currentPlayer: 0, gameOver: 0, error: "", players: [
+				{ username: 'test123', score: 0, good: true }, { username: 'test123', score: 0, good: true }] },
+				2,
+				function( state ) {
+					expect( state.id ).to.equal( 1 );
+					expect( state.game ).to.equal( "testGame" );
+					expect( state.players ).to.have.lengthOf( 2 );
+					expect( state.players[0].score ).to.equal( 2 );
+					expect( state.players[1].score ).to.equal( 0 );
+					expect( state.currentPlayer ).to.equal( 1 );
+					expect( state.gameOver ).to.equal( 0 );
+					done();
+			} );
+		} );
+		it( "makeMove( simpleState, 1 ) testGame (valid move)", function( done ) {
+			gm.makeMove( { id: 1, game: "testGame", currentPlayer: 1, gameOver: 0, error: "", players: [
+				{ username: 'test123', score: 2, good: true }, { username: 'test123', score: 0, good: true }] },
+				1,
+				function( state ) {
+					expect( state.id ).to.equal( 1 );
+					expect( state.game ).to.equal( "testGame" );
+					expect( state.players ).to.have.lengthOf( 2 );
+					expect( state.players[0].score ).to.equal( 2 );
+					expect( state.players[1].score ).to.equal( 1 );
+					expect( state.currentPlayer ).to.equal( 0 );
+					expect( state.gameOver ).to.equal( 0 );
+					done();
+			} );
+		} );
+		it( "makeMove( simpleState, 100 ) testGame (winning move)", function( done ) {
+			gm.makeMove( { id: 1, game: "testGame", currentPlayer: 0, gameOver: 0, error: "", players: [
+				{ username: 'test123', score: 2, good: true }, { username: 'test123', score: 1, good: true }] },
+				100,
+				function( state ) {
+					expect( state.id ).to.equal( 1 );
+					expect( state.game ).to.equal( "testGame" );
+					expect( state.players ).to.have.lengthOf( 2 );
+					expect( state.players[0].score ).to.equal( 102 );
+					expect( state.players[1].score ).to.equal( 1 );
+					expect( state.currentPlayer ).to.equal( 1 );
+					expect( state.gameOver ).to.equal( 1 );
+					done();
+			} );
+		} );
+		it( "makeMove( simpleState, 'abc' ) testGame (invalid move)", function( done ) {
+			gm.makeMove( { id: 1, game: "testGame", currentPlayer: 1, gameOver: 0, error: "", players: [
+				{ username: 'test123', score: 2, good: true }, { username: 'test123', score: 1, good: true }] },
+				"abc",
+				function( state ) {
+					expect( state.id ).to.equal( 1 );
+					expect( state.game ).to.equal( "testGame" );
+					expect( state.players ).to.have.lengthOf( 2 );
+					expect( state.players[0].score ).to.equal( 2 );
+					expect( state.players[1].score ).to.equal( 1 );
+					expect( state.players[1].good ).to.be.false;
+					expect( state.currentPlayer ).to.equal( 0 );
+					expect( state.gameOver ).to.equal( 0 );
+					done();
+			} );
+		} );
+	} );
+
 	// startGame()
 	describe( "startGame( gameID )", function() {
 		it( "startGame( 1, ['test123', 'test123'] ) testGame", function( done ) {
@@ -13,6 +78,7 @@ describe( "Game Manager Module", function() {
 				expect( state.players[0].score ).to.equal( 0 );
 				expect( state.players[1].score ).to.equal( 0 );
 				expect( state.currentPlayer ).to.equal( 0 );
+				expect( state.gameOver ).to.equal( 0 );
 				done();
 			} );
 		} );

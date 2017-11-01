@@ -20,6 +20,27 @@ var conn        = mysql.createConnection( {
 var testGame = require( '../../games/testGame' );
 
 /**
+ * makeMove will validate, perform a given move, and then return the new state
+ *
+ * @param: (JSON) state
+ * @param: (var) move
+ *
+ * @return: (JSON) game state
+ */
+exports.makeMove = function( state, move, callback ) {
+	switch( state.game ) {
+		case "testGame":
+			testGame.move( state, move, function( res ) {
+				callback( res );
+			} );
+			break;
+		default:
+			state.error = "INVALID GAME";
+			callback( state );
+	}
+}
+
+/**
  * startGame starts a new game given by gameID and returns initial game state
  *
  * @param: (int) lgid
