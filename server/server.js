@@ -87,8 +87,8 @@ wss.on( 'connection', function connection( ws ) {
 						default:
 							// TODO: Err: Something went wrong with the game state
 					}
-					break;
 				} );
+				break;
 			default:
 				// TODO: Err: invalid msgType
 		}
