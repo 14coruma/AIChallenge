@@ -34,13 +34,16 @@ startButton.addEventListener( 'click', function() {
 	return false;
 } );
 
+websocket.onmessage = function( evt ) { onMessage( evt ) };
+
 function onOpen( evt )
 {
 	// Open 'waiting' div
+	var password = document.getElementById( 'formPassword' ).value;
 	var message = {
 		msgType  : "start",
 		username : username,
-		passHash : passHash,
+		passHash : password,
 		gameName : game,
 		gameID   : "",
 		move     : "",
@@ -51,19 +54,16 @@ function onOpen( evt )
 function onMessage( evt )
 {
 	var serverObj = JSON.parse( evt.data );
+	console.log( JSON.stringify( serverObj ) );
 	switch( serverObj.msgType ) {
-		case "gameID":
-			myGameID = serverObj.gameID;
-			// TODO Show div (Playing... watch <here>, etc.)
-			break;
 		case "playersTurn":
 			// TODO Run bot program. Save result. Send result.
 			var message = {
 				msgType  : "move",
 				username : username,
-				passHash : passHash,
-				gameName : game,
-				gameID   : gameID,
+//				passHash : passHash,
+//				gameName : game,
+//				gameID   : gameID,
 				move     : "5",
 			}
 			websocket.send( JSON.stringify( message ) );

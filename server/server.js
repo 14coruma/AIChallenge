@@ -32,7 +32,7 @@ wss.on( 'connection', function connection( ws ) {
 		var clientObj = JSON.parse( message );
 		// Add current connection to the clients[] array (if it's not there already)
 		// Ths will keep track of whether or not the user has been verified
-		if ( getClientIndex( clients, clientObj.username ) === -1 ) {
+		if ( getClientIndex( clients, clientObj.username ) == -1 ) {
 			clients.push( { connection : ws, username : clientObj.username, validUser: false, validGame: false, gid: -1 } );
 		}
 		var clientIndex = getClientIndex( clients, clientObj.username );
@@ -40,31 +40,33 @@ wss.on( 'connection', function connection( ws ) {
 			case "start":
 				um.verifyUser( clientObj.username, clientObj.passHash, function( validUser ) {
 					clients[clientIndex].validUser = validUser;
-				} );
-				gm.addToQueue( clientObj.gameName, clientObj.username, function( validGame ) {
-					clients[clientIndex].validGame = validGame;
+					gm.addToQueue( clientObj.gameName, clientObj.username, function( validGame ) {
+						clients[clientIndex].validGame = validGame;
+						if ( !(validUser && validGame) ) {
+							// Remove user from queue if timeout was triggered
+							gm.deleteFromQueue( clientObj.gameName, clientObj.username, function() { } );
+							clients.splice( clientIndex, 1 );
+						} else {
+							// Otherwise check to see if game is ready to play
+							gm.gameReady( clientObj.gameName, function( ready, gameID, userNames ) { 
+								if ( ready ) {
+									for ( var i = 0; i < userNames.length; i++ ) {
+										clients[getClientIndex( clients, userNames[i] )].gid = gameID;
+									}
+									gm.startGame( gameID, userNames, function( state ) {
+										// Send state to player 1
+										var message = { msgType: "playersTurn", state: state };
+										console.log( JSON.stringify( message ) );
+										getClientConn( clients, userNames[0] ).send( JSON.stringify( message ) );
+										console.log( "\n to User: " + userNames[0] + " with conn " + getClientConn( clients, userNames[0] ) );
+										states.push( state );
+									} );
+								}
+							} );
+						}
+					} );
 				} );
 
-				waitForReady( clientIndex, function( ready ) {
-					if ( !ready ) {
-						// Remove user from queue if timeout was triggered
-						gm.deleteFromQueue( gameName, username );
-						clients.splice( clientIndex, 1 );
-					} else {
-						// Otherwise check to see if game is ready to play
-						gm.gameReady( gameName, function( ready, gameID, userNames ) { 
-							for ( var i = 0; i < userNames.length; i++ ) {
-								clients[getClientIndex( clients, userNames[i] )].gid = gameID;
-							}
-							startGame( gameID, userNames, function( state ) {
-								var gameState = state; 
-								// Send state to player 1
-								getClientConn( clients, userNames[0] ).send( JSON.stringify( gameState ) );
-								states.push( state );
-							} );
-						} );
-					}
-				} );
 
 				break;
 			case "move":
@@ -74,11 +76,13 @@ wss.on( 'connection', function connection( ws ) {
 					switch( state.gameOver ) {
 						case 0:
 							// Send the current state to the next player
+							var message = { msgType: "playersTurn", state: state };
 							var nextPlayer = state.players[state.currentPlayer].username;
 							getClientConn( clients, nextPlayer ).send(
-								JSON.stringify( state )
+								JSON.stringify( message )
 							);
 							states[stateIndex] = state;
+							console.log( "\nplayer1: " + state.players[0].score + "  player2: " + state.players[1].score );
 							break;
 						case 1:
 							// TODO: Send game over msg to game clients
@@ -96,24 +100,6 @@ wss.on( 'connection', function connection( ws ) {
 } );
 
 /**
- * Checks to see if a user has been validated. Returns true if ready,
- * otherwise hits a timeout and returns false
- * 
- * @param: (int) clientIndex
- * @param: (fn) callback
- *
- * @return: (bool) Whether or not the user is ready
- */
-function waitForReady( clientIndex, callback ) {
-	setTimeout( callback(false), 1000 );
-	var ready = false;
-	while ( !ready ) {
-		ready = clients[clientIndex].validUser && clients[clientIndex].validGame;
-	}
-	callback(true);
-}
-
-/**
  * Searches the states[] array for a game state by its id
  * 
  * @param: (array) states srray
@@ -125,10 +111,9 @@ function getStateIndex( stateArray, id ) {
 	for ( var i = 0; i < stateArray.length; i++ ) {
 		if ( stateArray[i].id === id ) {
 			return i;
-		} else {
-			return -1;
 		}
 	}
+	return -1;
 }
 
 /**
@@ -143,10 +128,9 @@ function getClientIndex( clientArray, username ) {
 	for ( var i = 0; i < clientArray.length; i++ ) {
 		if ( clientArray[i].username === username ) {
 			return i;
-		} else {
-			return -1;
 		}
 	}
+	return -1
 }
 
 /**
@@ -161,8 +145,7 @@ function getClientConn( clientArray, username ) {
 	for ( var i = 0; i < clientArray.length; i++ ) {
 		if ( clientArray[i].username === username ) {
 			return clientArray[i].connection;
-		} else {
-			return -1;
 		}
+	return -1;
 	}
 }

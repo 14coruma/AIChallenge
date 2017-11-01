@@ -118,7 +118,7 @@ exports.gameReady = function( gameName, callback ) {
  * @return: (string) gameID
  */
 exports.addToQueue = function( gameName, username, callback ) {
-	var sql = "INSERT INTO gameQueue (gameID, userID) VALUES ((SELECT id FROM game WHERE gameName = ?), (SELECT id FROM user WHERE username = ?));";
+	var sql = "INSERT INTO gameQueue (gameID, userID) VALUES ((SELECT id FROM game WHERE gameName = ?), (SELECT id FROM user WHERE username = ?))";
 	var inserts = [ gameName, username ];
 	sql = mysql.format( sql, inserts );
 	db.queryDB( conn, sql, function(res) {

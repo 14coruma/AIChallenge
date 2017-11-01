@@ -4,7 +4,7 @@
   "description": "RESTful server for AI Challenge",
   "main": "main.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "electron main.js"
   },
   "repository": {
     "type": "git",

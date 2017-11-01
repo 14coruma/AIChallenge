@@ -15,7 +15,7 @@ exports.queryDB = function( connection, query, callback ) {
 	//connectDB( connection );
 	connection.query( query, function( err, results, fields ) {
 		if ( err ) {
-//			console.error( 'error fetching results: ' + err );
+			console.error( 'error fetching results: ' + err );
 			callback( err );
 		} else {
 			callback( results );
