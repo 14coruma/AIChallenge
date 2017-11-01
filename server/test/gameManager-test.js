@@ -3,8 +3,22 @@ var assert = require( "chai" ).assert;
 var gm = require( "../controllers/gameManager.js" );
 
 describe( "Game Manager Module", function() {
-//	describe( "startGame( gameID )", function() 
+	// startGame()
+	describe( "startGame( gameID )", function() {
+		it( "startGame( 1, ['test123', 'test123'] ) testGame", function( done ) {
+			gm.startGame( 1, ['test123', 'test123'], function( state ) {
+				expect( state.id ).to.equal( 1 );
+				expect( state.game ).to.equal( "testGame" );
+				expect( state.players ).to.have.lengthOf( 2 );
+				expect( state.players[0].score ).to.equal( 0 );
+				expect( state.players[1].score ).to.equal( 0 );
+				expect( state.currentPlayer ).to.equal( 0 );
+				done();
+			} );
+		} );
+	} );
 
+	// addToQueue()
 	describe( "addToQueue( gameName, username )", function() {
 		it( "Verify test game/user (testGame, test123))", function( done ) {
 			gm.addToQueue( "testGame", "test123", function( res ) {
@@ -33,6 +47,7 @@ describe( "Game Manager Module", function() {
 		} );
 	} );
 
+	// gameReady()
 	describe( "gameReady( gameID )", function() {
 		it( "testGame not ready (0<min)", function( done ) {
 			gm.gameReady( 1, function( ready, gameID, userNames ) {

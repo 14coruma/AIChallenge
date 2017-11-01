@@ -56,7 +56,7 @@ wss.on( 'connection', function connection( ws ) {
 							for ( var i = 0; i < userNames.length; i++ ) {
 								getClientConn( clients, userNames[i] ).send( JSON.stringify( gameIDMsg ) );
 							}
-							var gameState = startGame( gameID ); // TODO: fn retval JSON
+							var gameState = startGame( gameID, userNames ); // TODO: fn retval JSON
 
 							// Send state to player 1
 							getClientConn( clients, userNames[0] ).send( JSON.stringify( gameState ) );

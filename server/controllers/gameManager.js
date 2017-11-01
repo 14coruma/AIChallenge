@@ -7,7 +7,7 @@
 
 'use strict';
 
-var userPass  = require( './userPass' );
+var userPass = require( './userPass' );
 var gamePass = userPass.gamePass;
 var db = require( './dbModule' );
 var mysql      = require( 'mysql' );
@@ -17,6 +17,32 @@ var conn        = mysql.createConnection( {
 	password : gamePass,
 	database : 'AIChallenge',
 } );
+var testGame = require( '../../games/testGame' );
+
+/**
+ * startGame starts a new game given by gameID and returns initial game state
+ *
+ * @param: (int) lgid
+ * @param: (array) userNames
+ *
+ * @return: (JSON) game state
+ */
+exports.startGame = function( lgid, userNames, callback ) {
+	var sql = "SELECT game.gameName FROM liveGame INNER JOIN game ON liveGame.gameID = game.id WHERE liveGame.id = ?";
+	var inserts = [lgid];
+	sql = mysql.format( sql, inserts );
+	db.queryDB( conn, sql, function( res ) {
+		switch ( res[0].gameName ) {
+			case "testGame":
+				testGame.start( lgid, userNames, function( state ) {
+					callback( state );
+				} );
+				break;
+			default:
+				callback( { lgid: lgid, error: "INVALID GAME" } );
+		}
+	} );
+}
 
 /**
  * gameReady checks to see if there are enough people in the queue to start a game
