@@ -85,13 +85,13 @@ exports.addToQueue = function( gameName, username, callback ) {
 }
 
 /**
- * deleteFromQueue removes a user from the gameQueue table
+ * deleteLiveGame removes a live game from the database
  *
  * @return: Success? (bool)
  */
-exports.deleteFromQueue = function( gameName, username, callback ) {
-	var sql = "DELETE FROM gameQueue WHERE gameID = (SELECT id FROM game WHERE gameName = ?) AND userID = (SELECT id FROM user WHERE username = ?);";
-	var inserts = [ gameName, username ];
+exports.deleteLiveGame = function( lgid, callback ) {
+	var sql = "DELETE FROM liveGame WHERE id = ?";
+	var inserts = [ lgid ];
 	sql = mysql.format( sql, inserts );
 	db.queryDB( conn, sql, function(res) {
 		if ( res ) {

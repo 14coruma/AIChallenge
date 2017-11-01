@@ -3,6 +3,8 @@ var assert = require( "chai" ).assert;
 var gm = require( "../controllers/gameManager.js" );
 
 describe( "Game Manager Module", function() {
+//	describe( "startGame( gameID )", function() 
+
 	describe( "addToQueue( gameName, username )", function() {
 		it( "Verify test game/user (testGame, test123))", function( done ) {
 			gm.addToQueue( "testGame", "test123", function( res ) {
@@ -58,6 +60,7 @@ describe( "Game Manager Module", function() {
 					expect( userNames ).to.have.lengthOf( 2 );
 					expect( userNames[0] ).to.be.a( 'string' );
 					done();
+					gm.deleteLiveGame( gameID, function() {} );
 				});
 			} );
 		} );
@@ -96,6 +99,7 @@ describe( "Game Manager Module", function() {
 					expect( gameID ).to.be.above( 0 );
 					expect( userNames ).to.have.lengthOf( 2 ); // Change this to 3 for max testing
 					done();
+					gm.deleteLiveGame( gameID, function() {} );
 					gm.deleteFromQueue( "testGame", "test123", function( ready, gameID, userNames ) {} );
 					gm.deleteFromQueue( "testGame", "test123", function( ready, gameID, userNames ) {} );
 				} );
