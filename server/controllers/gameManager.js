@@ -23,7 +23,7 @@ var conn        = mysql.createConnection( {
  *
  * @param: gameName
  *
- * @return: ready? (Bool)
+ * @return: (bool, int, array) ready?, liveGameID, userNames
  */
 exports.gameReady = function( gameName, callback ) {
 	var sql = "SELECT count(*) FROM gameQueue WHERE gameID = (SELECT id FROM game WHERE gameName = ?);";
@@ -35,10 +35,26 @@ exports.gameReady = function( gameName, callback ) {
 		sql = mysql.format( sql, inserts );
 		var count = res[0]["count(*)"];
 		db.queryDB( conn, sql, function( res ) {
-			if ( res[0] ) {
-				callback( count >= res[0]["minPlayers"] );
+			if ( res[0] && count >= res[0]["minPlayers"] ) {
+				var minPlayers = res[0]["minPlayers"];
+				var sql = "SELECT user.username FROM gameQueue INNER JOIN user ON gameQueue.userID = user.id WHERE gameID = (SELECT id FROM game WHERE gameName = ?) LIMIT ?";
+				var inserts = [ gameName, minPlayers ];
+				sql = mysql.format( sql, inserts );
+				db.queryDB( conn, sql, function( res ) {
+					var userNames = res.map( function (obj) { return obj.username; } );
+					var sql = "DELETE FROM gameQueue WHERE gameID = (SELECT id FROM game WHERE gameName = ?) LIMIT ?";
+					var inserts = [ gameName, minPlayers ];
+					sql = mysql.format( sql, inserts );
+					db.queryDB( conn, sql, function( res ) { } );
+					var sql = "INSERT INTO liveGame (gameID) values ((SELECT id FROM game WHERE gameName = ?))";
+					var inserts = [ gameName ];
+					sql = mysql.format( sql, inserts );
+					db.queryDB( conn, sql, function( res ) {
+						callback( true, res["insertId"], userNames );
+					} );
+				} );
 			} else {
-				callback( false );
+				callback( false, -1, [] );
 			}
 		} );
 	} );
@@ -61,6 +77,25 @@ exports.addToQueue = function( gameName, username, callback ) {
 	db.queryDB( conn, sql, function(res) {
 		if ( res && res.insertId > 0) {
 			callback( res.insertId );
+		} else {
+			callback( false );
+		}
+	} );
+	return;
+}
+
+/**
+ * deleteFromQueue removes a user from the gameQueue table
+ *
+ * @return: Success? (bool)
+ */
+exports.deleteFromQueue = function( gameName, username, callback ) {
+	var sql = "DELETE FROM gameQueue WHERE gameID = (SELECT id FROM game WHERE gameName = ?) AND userID = (SELECT id FROM user WHERE username = ?);";
+	var inserts = [ gameName, username ];
+	sql = mysql.format( sql, inserts );
+	db.queryDB( conn, sql, function(res) {
+		if ( res ) {
+			callback( res.affetedRows == 1 );
 		} else {
 			callback( false );
 		}
