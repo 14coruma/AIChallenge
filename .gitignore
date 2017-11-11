@@ -6,3 +6,6 @@ node_modules
 
 # Demos/tests
 *-demo
+
+# huge package file
+package-lock.json
