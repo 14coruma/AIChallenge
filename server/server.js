@@ -20,46 +20,63 @@ app.listen( 8000 );
 /**
  * WebSocket Server
  */
+class Clients {
+	constructor() {
+		this.clientList = {};
+		this.saveClient = this.saveClient.bind(this);
+	}
+	saveClient(username, conn) {
+		this.clientList[username] = {
+			conn: conn,
+			validUser: false,
+			validGame: false,
+			gid: -1
+		};
+	}
+}
+
 var WebSocket = require( 'ws' );
 var wss = new WebSocket.Server( { port: 8080 } );
-var clients = [];
+var clients = new Clients();
 var states = [];
 var um = require( './controllers/user.js' );
 var gm = require( './controllers/gameManager.js' );
 
 wss.on( 'connection', function connection( ws ) {
 	ws.on( 'message', function incoming( message ) {
-		var clientObj = JSON.parse( message );
+		var msgObj = JSON.parse( message );
+		if (!(msgObj.username in clients.clientList)) {
+			clients.saveClient(msgObj.username, ws);
+		}
 		// Add current connection to the clients[] array (if it's not there already)
 		// Ths will keep track of whether or not the user has been verified
-		if ( getClientIndex( clients, clientObj.username ) == -1 ) {
-			clients.push( { connection : ws, username : clientObj.username, validUser: false, validGame: false, gid: -1 } );
-		}
-		var clientIndex = getClientIndex( clients, clientObj.username );
-		switch( clientObj.msgType ) {
+		//if ( getClientIndex( clients, msgObj.username ) == -1 ) {
+		//	clients.push( { connection : ws, username : msgObj.username, validUser: false, validGame: false, gid: -1 } );
+		//}
+		//var clientIndex = getClientIndex( clients, msgObj.username );
+		switch( msgObj.msgType ) {
 			case "start":
-				um.verifyUser( clientObj.username, clientObj.passHash, function( validUser ) {
-					clients[clientIndex].validUser = validUser;
-					gm.addToQueue( clientObj.gameName, clientObj.username, function( validGame ) {
-						clients[clientIndex].validGame = validGame;
+				um.verifyUser( msgObj.username, msgObj.passHash, function( validUser ) {
+					clients.clientList[msgObj.username].validUser = validUser;
+					gm.addToQueue( msgObj.gameName, msgObj.username, function( validGame ) {
+						clients.clientList[msgObj.username].validGame = validGame;
 						if ( !(validUser && validGame) ) {
 							// Remove user from queue if timeout was triggered
-							gm.deleteFromQueue( clientObj.gameName, clientObj.username, function() { } );
-							clients.splice( clientIndex, 1 );
+							gm.deleteFromQueue( msgObj.gameName, msgObj.username, function() { } );
+							//clients.splice( clientIndex, 1 );
+							delete clients.clientList[msgObj.username];
 						} else {
 							// Otherwise check to see if game is ready to play
-							gm.gameReady( clientObj.gameName, function( ready, gameID, userNames ) { 
+							gm.gameReady( msgObj.gameName, function( ready, gameID, userNames ) { 
 								if ( ready ) {
 									for ( var i = 0; i < userNames.length; i++ ) {
-										clients[getClientIndex( clients, userNames[i] )].gid = gameID;
+										clients.clientList[userNames[i]].gid = gameID;
 									}
 									gm.startGame( gameID, userNames, function( state ) {
 										// Send state to player 1
-										var message = { msgType: "playersTurn", state: state, gameID: gameID };
+										var message = { msgType: "playersTurn", state: state, gid: gameID };
 										console.log( JSON.stringify( message ) );
-										var playerConn = getClientConn( clients, userNames[0] );
-										playerConn.send( JSON.stringify( message ) );
-										console.log( "\n to User: " + userNames[0] + " with conn " + getClientConn( clients, userNames[0] ) );
+										clients.clientList[userNames[0]].conn.send( JSON.stringify( message ) );
 										states.push( state );
 									} );
 								}
@@ -71,25 +88,26 @@ wss.on( 'connection', function connection( ws ) {
 
 				break;
 			case "move":
-				console.log(clientObj);
-				console.log("client gameID " + clientObj.gameID + ", saved gameID " + clients[clientIndex].gid);
-				if ( clientObj.gameID != clients[clientIndex].gid ) { console.log("invalid gameID\n"); break; }
-				var stateIndex = getStateIndex( states, clientObj.gameID );
-				gm.makeMove( states[stateIndex], clientObj.move, function( state ) {
+				console.log(msgObj);
+				if ( msgObj.gid != clients.clientList[msgObj.username].gid ) { console.log("invalid gameID\n"); break; }
+				var stateIndex = getStateIndex( states, msgObj.gid );
+				gm.makeMove( states[stateIndex], msgObj.move, function( state ) {
 					switch( state.gameOver ) {
 						case 0:
 							// Send the current state to the next player
-							var message = { msgType: "playersTurn", state: state };
+							var message = { msgType: "playersTurn", state: state, gid: msgObj.gid };
 							var nextPlayer = state.players[state.currentPlayer].username;
-							var playerConn = getClientConn( clients, nextPlayer );
-							console.log("playerConn " + playerConn + " nextPlayer " + nextPlayer );
-							playerConn.send( JSON.stringify( message ) );
+							clients.clientList[nextPlayer].conn.send(JSON.stringify( message ));
 							states[stateIndex] = state;
 							console.log( "\nplayer1: " + state.players[0].score + "  player2: " + state.players[1].score );
 							break;
 						case 1:
-							// TODO: Send game over msg to game clients
-							// TODO: End connection with clients, remove from clients[] array
+							var message = { msgType: "gameOver", state: state, gid: msgObj.gid };
+							for (var i = 0; i < state.players.length; i++) {
+								console.log(state.players[i].username);
+								clients.clientList[state.players[i].username].conn.send(JSON.stringify(message));
+							}
+							delete clients.clientList[msgObj.username];
 							break;
 						default:
 							// TODO: Err: Something went wrong with the game state
@@ -117,38 +135,4 @@ function getStateIndex( stateArray, id ) {
 		}
 	}
 	return -1;
-}
-
-/**
- * Searches the client[] array for a user's index in the array
- * 
- * @param: (array) clientArray
- * @param: (string) username
- *
- * @return: (int) index
- */
-function getClientIndex( clientArray, username ) {
-	for ( var i = 0; i < clientArray.length; i++ ) {
-		if ( clientArray[i].username === username ) {
-			return i;
-		}
-	}
-	return -1
-}
-
-/**
- * Searches the client[] array for a user's connection
- * 
- * @param: (array) clientArray
- * @param: (string) username
- *
- * @return: WebSocket Connection
- */
-function getClientConn( clientArray, username ) {
-	for ( var i = 0; i < clientArray.length; i++ ) {
-		if ( clientArray[i].username === username ) {
-			return clientArray[i].connection;
-		}
-	return -1;
-	}
 }

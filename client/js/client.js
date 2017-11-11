@@ -6,7 +6,7 @@
 'use strict';
 
 // Globals
-var gameID = "";
+var gid = "";
 var username = "";
 var password = "";
 var game = "";
@@ -36,7 +36,7 @@ function onOpen( evt )
 		username : username,
 		passHash : password,
 		gameName : game,
-		gameID   : "",
+		gid      : "",
 		move     : "",
 	};
 	websocket.send( JSON.stringify( message ) );
@@ -47,7 +47,7 @@ function onMessage( evt )
 {
 	var serverObj = JSON.parse( evt.data );
 	console.log( "Got a message: " + JSON.stringify( serverObj ) );
-	if ( !gameID ) gameID = serverObj.gameID;
+	if ( !gid ) gid = serverObj.gid;
 	switch( serverObj.msgType ) {
 		case "playersTurn":
 			// TODO Run bot program. Save result. Send result.
@@ -56,13 +56,14 @@ function onMessage( evt )
 				username : username,
 				password : password,
 				gameName : game,
-				gameID   : gameID,
-				move     : "5",
+				gid      : gid,
+				move     : 5,
 			}
 			websocket.send( JSON.stringify( message ) );
 			break;
 		case "gameOver":
 			// TODO Show div with gameover info
+			console.log("GameOver");
 			websocket.close();
 			break;
 		default:
