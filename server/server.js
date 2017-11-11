@@ -55,15 +55,10 @@ var gm = require( './controllers/gameManager.js' );
 wss.on( 'connection', function connection( ws ) {
 	ws.on( 'message', function incoming( message ) {
 		var msgObj = JSON.parse( message );
+		// Add current connection to the clients[] array (if it's not there already)
 		if (!(msgObj.username in clients.clientList)) {
 			clients.saveClient(msgObj.username, ws);
 		}
-		// Add current connection to the clients[] array (if it's not there already)
-		// Ths will keep track of whether or not the user has been verified
-		//if ( getClientIndex( clients, msgObj.username ) == -1 ) {
-		//	clients.push( { connection : ws, username : msgObj.username, validUser: false, validGame: false, gid: -1 } );
-		//}
-		//var clientIndex = getClientIndex( clients, msgObj.username );
 		switch( msgObj.msgType ) {
 			case "start":
 				um.verifyUser( msgObj.username, msgObj.passHash, function( validUser ) {
@@ -98,7 +93,6 @@ wss.on( 'connection', function connection( ws ) {
 
 				break;
 			case "move":
-				console.log(msgObj);
 				if ( msgObj.gid != clients.clientList[msgObj.username].gid ) { console.log("invalid gameID\n"); break; }
 				gm.makeMove( states.stateList[msgObj.gid], msgObj.move, function( state ) {
 					switch( state.gameOver ) {
@@ -113,7 +107,6 @@ wss.on( 'connection', function connection( ws ) {
 						case 1:
 							var message = { msgType: "gameOver", state: state, gid: msgObj.gid };
 							for (var i = 0; i < state.players.length; i++) {
-								console.log(state.players[i].username);
 								clients.clientList[state.players[i].username].conn.send(JSON.stringify(message));
 							}
 							delete clients.clientList[msgObj.username];

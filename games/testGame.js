@@ -37,7 +37,7 @@ exports.start = function( lgid, usernames, callback ) {
 exports.move = function( state, move, callback ) {
 	var validMove = verifyMove( state, move );
 	if ( validMove ) {
-		callback( updateState( state, move ) );
+		callback( updateState( state, parseInt(move) ) );
 	} else {
 		callback( failPlayer( state ) );
 	}
