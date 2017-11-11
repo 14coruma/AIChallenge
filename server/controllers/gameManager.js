@@ -132,6 +132,18 @@ exports.addToQueue = function( gameName, username, callback ) {
 }
 
 /**
+ * list all live games
+ *
+ * @return: List of live games
+ */
+exports.getLiveGames = function( res, callback ) {
+	var sql = "SELECT id FROM liveGame";
+	db.queryDB( conn, sql, function(dbRes) {
+		res.send( dbRes );
+	} );
+}
+
+/**
  * deleteLiveGame removes a live game from the database
  *
  * @return: Success? (bool)
