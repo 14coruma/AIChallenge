@@ -35,10 +35,20 @@ class Clients {
 	}
 }
 
+class States {
+	constructor() {
+		this.stateList = {};
+		this.saveState = this.saveState.bind(this);
+	}
+	saveState(gid, state) {
+		this.stateList[gid] = state;
+	}
+}
+
 var WebSocket = require( 'ws' );
 var wss = new WebSocket.Server( { port: 8080 } );
 var clients = new Clients();
-var states = [];
+var states = new States();
 var um = require( './controllers/user.js' );
 var gm = require( './controllers/gameManager.js' );
 
@@ -77,7 +87,7 @@ wss.on( 'connection', function connection( ws ) {
 										var message = { msgType: "playersTurn", state: state, gid: gameID };
 										console.log( JSON.stringify( message ) );
 										clients.clientList[userNames[0]].conn.send( JSON.stringify( message ) );
-										states.push( state );
+										states.saveState(gameID, state);
 									} );
 								}
 							} );
@@ -90,15 +100,14 @@ wss.on( 'connection', function connection( ws ) {
 			case "move":
 				console.log(msgObj);
 				if ( msgObj.gid != clients.clientList[msgObj.username].gid ) { console.log("invalid gameID\n"); break; }
-				var stateIndex = getStateIndex( states, msgObj.gid );
-				gm.makeMove( states[stateIndex], msgObj.move, function( state ) {
+				gm.makeMove( states.stateList[msgObj.gid], msgObj.move, function( state ) {
 					switch( state.gameOver ) {
 						case 0:
 							// Send the current state to the next player
 							var message = { msgType: "playersTurn", state: state, gid: msgObj.gid };
 							var nextPlayer = state.players[state.currentPlayer].username;
 							clients.clientList[nextPlayer].conn.send(JSON.stringify( message ));
-							states[stateIndex] = state;
+							states.stateList[msgObj.gid] = state;
 							console.log( "\nplayer1: " + state.players[0].score + "  player2: " + state.players[1].score );
 							break;
 						case 1:
@@ -119,20 +128,3 @@ wss.on( 'connection', function connection( ws ) {
 		}
 	} );
 } );
-
-/**
- * Searches the states[] array for a game state by its id
- * 
- * @param: (array) states srray
- * @param: (string) lgid
- *
- * @return: (int) index
- */
-function getStateIndex( stateArray, id ) {
-	for ( var i = 0; i < stateArray.length; i++ ) {
-		if ( stateArray[i].id === id ) {
-			return i;
-		}
-	}
-	return -1;
-}

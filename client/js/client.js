@@ -47,24 +47,25 @@ function onMessage( evt )
 {
 	var serverObj = JSON.parse( evt.data );
 	console.log( "Got a message: " + JSON.stringify( serverObj ) );
-	if ( !gid ) gid = serverObj.gid;
+	gid = serverObj.gid;
 	switch( serverObj.msgType ) {
 		case "playersTurn":
 			// TODO Run bot program. Save result. Send result.
+			let move = Math.floor(Math.random() * 10) + 1;
 			var message = {
 				msgType  : "move",
 				username : username,
 				password : password,
 				gameName : game,
 				gid      : gid,
-				move     : 5,
+				move     : move
 			}
 			websocket.send( JSON.stringify( message ) );
 			break;
 		case "gameOver":
 			// TODO Show div with gameover info
 			console.log("GameOver");
-			websocket.close();
+//			websocket.close();
 			break;
 		default:
 			// TODO: Err: Something went wrong
