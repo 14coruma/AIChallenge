@@ -6,40 +6,31 @@
 'use strict';
 
 // Globals
-var bcrypt = require( 'bcryptjs' );
-const saltRounds = 10;
-var myGameID = "";
+var gameID = "";
 var username = "";
-var passHash = "";
+var password = "";
 var game = "";
-var websocket;
+var wsUri = "ws://localhost:8080/";
+var websocket = new WebSocket( wsUri );
+websocket.onmessage = function( evt ) { onMessage( evt ) };
+websocket.onerror = function( evt ) { onError( evt ) };
 
 var startButton = document.getElementById( 'startButton' );
 startButton.addEventListener( 'click', function() {
 	username = document.getElementById( 'formUsername' ).value;
 	game     = document.getElementById( 'selectGame' ).value;
 
-	// Get password and hash it
-	var password = document.getElementById( 'formPassword' ).value;
-	bcrypt.hash( password, saltRounds, function( err, hash ) {
-		passHash = hash;
-	} );
-
-	var wsUri = "ws://localhost:8080/";
-	websocket = new WebSocket( wsUri );
-	websocket.onopen = function( evt ) { onOpen( evt ) };
-	websocket.onmessage = function( evt ) { onMessage( evt ) };
-	websocket.onerror = function( evt ) { onError( evt ) };
+	onOpen(null);
 
 	return false;
 } );
 
-websocket.onmessage = function( evt ) { onMessage( evt ) };
+//websocket.onmessage = function( evt ) { onMessage( evt ) };
 
 function onOpen( evt )
 {
 	// Open 'waiting' div
-	var password = document.getElementById( 'formPassword' ).value;
+	password = document.getElementById( 'formPassword' ).value;
 	var message = {
 		msgType  : "start",
 		username : username,
@@ -49,21 +40,23 @@ function onOpen( evt )
 		move     : "",
 	};
 	websocket.send( JSON.stringify( message ) );
+	console.log("SENT A MESSAGE\n");
 }
 
 function onMessage( evt )
 {
 	var serverObj = JSON.parse( evt.data );
-	console.log( JSON.stringify( serverObj ) );
+	console.log( "Got a message: " + JSON.stringify( serverObj ) );
+	if ( !gameID ) gameID = serverObj.gameID;
 	switch( serverObj.msgType ) {
 		case "playersTurn":
 			// TODO Run bot program. Save result. Send result.
 			var message = {
 				msgType  : "move",
 				username : username,
-//				passHash : passHash,
-//				gameName : game,
-//				gameID   : gameID,
+				password : password,
+				gameName : game,
+				gameID   : gameID,
 				move     : "5",
 			}
 			websocket.send( JSON.stringify( message ) );
@@ -79,5 +72,6 @@ function onMessage( evt )
 
 function onError( evt )
 {
+	console.log( "ERROR\n");
 	//TODO '<span style="color: red;">ERROR:</span> ' + evt.data; // Send error msg
 }

@@ -55,9 +55,10 @@ wss.on( 'connection', function connection( ws ) {
 									}
 									gm.startGame( gameID, userNames, function( state ) {
 										// Send state to player 1
-										var message = { msgType: "playersTurn", state: state };
+										var message = { msgType: "playersTurn", state: state, gameID: gameID };
 										console.log( JSON.stringify( message ) );
-										getClientConn( clients, userNames[0] ).send( JSON.stringify( message ) );
+										var playerConn = getClientConn( clients, userNames[0] );
+										playerConn.send( JSON.stringify( message ) );
 										console.log( "\n to User: " + userNames[0] + " with conn " + getClientConn( clients, userNames[0] ) );
 										states.push( state );
 									} );
@@ -70,7 +71,9 @@ wss.on( 'connection', function connection( ws ) {
 
 				break;
 			case "move":
-				if ( clientObj.gameID != clients[clientIndex].gid ) { /* TODO: Err: invalid gameID*/ break; }
+				console.log(clientObj);
+				console.log("client gameID " + clientObj.gameID + ", saved gameID " + clients[clientIndex].gid);
+				if ( clientObj.gameID != clients[clientIndex].gid ) { console.log("invalid gameID\n"); break; }
 				var stateIndex = getStateIndex( states, clientObj.gameID );
 				gm.makeMove( states[stateIndex], clientObj.move, function( state ) {
 					switch( state.gameOver ) {
@@ -78,9 +81,9 @@ wss.on( 'connection', function connection( ws ) {
 							// Send the current state to the next player
 							var message = { msgType: "playersTurn", state: state };
 							var nextPlayer = state.players[state.currentPlayer].username;
-							getClientConn( clients, nextPlayer ).send(
-								JSON.stringify( message )
-							);
+							var playerConn = getClientConn( clients, nextPlayer );
+							console.log("playerConn " + playerConn + " nextPlayer " + nextPlayer );
+							playerConn.send( JSON.stringify( message ) );
 							states[stateIndex] = state;
 							console.log( "\nplayer1: " + state.players[0].score + "  player2: " + state.players[1].score );
 							break;
