@@ -7,6 +7,7 @@
 
 'use strict';
 
+var server = require( '../server' );
 var userPass = require( './userPass' );
 var gamePass = userPass.gamePass;
 var db = require( './dbModule' );
@@ -132,15 +133,38 @@ exports.addToQueue = function( gameName, username, callback ) {
 }
 
 /**
- * list all live games
+ * handle requests regarding live games
  *
  * @return: List of live games
  */
-exports.getLiveGames = function( res, callback ) {
-	var sql = "SELECT id FROM liveGame";
-	db.queryDB( conn, sql, function(dbRes) {
-		res.send( dbRes );
-	} );
+exports.liveGames = function( req, res ) {
+	switch( req.params.action ) {
+		case "list":
+			var sql = "SELECT id FROM liveGame";
+			db.queryDB( conn, sql, function(dbRes) {
+				res.send( dbRes );
+			} );
+			break;
+		case "type":
+			var sql = "SELECT game.gameName FROM liveGame INNER JOIN game ON liveGame.gameID = game.id WHERE liveGame.id = ?";
+			var inserts = [ req.query.gameID ];
+			sql = mysql.format( sql, inserts );
+			db.queryDB( conn, sql, function(dbRes) {
+				if ( dbRes[0] ) {
+					res.send( dbRes[0].gameName );
+				} else {
+					res.send( false );
+				}
+			} );
+			break;
+		case "state":
+			server.getState( req.query.gameID, function( state ) {
+				res.send( JSON.stringify( state ) );
+			} );
+			break;
+		default:
+			res.send( "BAD ACTION" );
+	}
 }
 
 /**

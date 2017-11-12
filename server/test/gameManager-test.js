@@ -35,15 +35,15 @@ describe( "Game Manager Module", function() {
 					done();
 			} );
 		} );
-		it( "makeMove( simpleState, 100 ) testGame (winning move)", function( done ) {
+		it( "makeMove( simpleState, 10000 ) testGame (winning move)", function( done ) {
 			gm.makeMove( { id: 1, game: "testGame", currentPlayer: 0, gameOver: 0, error: "", players: [
 				{ username: 'test123', score: 2, good: true }, { username: 'test123', score: 1, good: true }] },
-				100,
+				10000,
 				function( state ) {
 					expect( state.id ).to.equal( 1 );
 					expect( state.game ).to.equal( "testGame" );
 					expect( state.players ).to.have.lengthOf( 2 );
-					expect( state.players[0].score ).to.equal( 102 );
+					expect( state.players[0].score ).to.equal( 10002 );
 					expect( state.players[1].score ).to.equal( 1 );
 					expect( state.currentPlayer ).to.equal( 1 );
 					expect( state.gameOver ).to.equal( 1 );

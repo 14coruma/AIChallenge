@@ -80,7 +80,6 @@ wss.on( 'connection', function connection( ws ) {
 									gm.startGame( gameID, userNames, function( state ) {
 										// Send state to player 1
 										var message = { msgType: "playersTurn", state: state, gid: gameID };
-										console.log( JSON.stringify( message ) );
 										clients.clientList[userNames[0]].conn.send( JSON.stringify( message ) );
 										states.saveState(gameID, state);
 									} );
@@ -102,13 +101,13 @@ wss.on( 'connection', function connection( ws ) {
 							var nextPlayer = state.players[state.currentPlayer].username;
 							clients.clientList[nextPlayer].conn.send(JSON.stringify( message ));
 							states.stateList[msgObj.gid] = state;
-							console.log( "\nplayer1: " + state.players[0].score + "  player2: " + state.players[1].score );
 							break;
 						case 1:
 							var message = { msgType: "gameOver", state: state, gid: msgObj.gid };
 							for (var i = 0; i < state.players.length; i++) {
 								clients.clientList[state.players[i].username].conn.send(JSON.stringify(message));
 							}
+							gm.deleteLiveGame( msgObj.gid, function(res) { /*TODO ERR?*/ } );
 							delete clients.clientList[msgObj.username];
 							break;
 						default:
@@ -121,3 +120,10 @@ wss.on( 'connection', function connection( ws ) {
 		}
 	} );
 } );
+
+/**
+ * Returns the state for a given gameID
+ */
+exports.getState = function( gid, callback ) {
+	callback( states.stateList[gid] );
+}

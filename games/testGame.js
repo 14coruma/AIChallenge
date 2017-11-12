@@ -7,7 +7,7 @@
  */
 
 // Global constants
-const WINNINGSCORE = 100;
+const WINNINGSCORE = 200;
 
 /**
  * start creates then returns initial game state

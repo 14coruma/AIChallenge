@@ -25,8 +25,8 @@ module.exports = function( app ) {
 	} );
 
 	// get a list of live games
-	app.route( '/liveGames' ).get( function( req, res ) {
-		gameManager.getLiveGames( res );
+	app.route( '/liveGames/:action' ).get( function( req, res ) {
+		gameManager.liveGames( req, res );
 	} );
 
 	// home
