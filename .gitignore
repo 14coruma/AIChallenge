@@ -1,0 +1,11 @@
+# password-storing files
+*Pass.js
+
+# node_modules
+node_modules
+
+# Demos/tests
+*-demo
+
+# huge package file
+package-lock.json
