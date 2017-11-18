@@ -61,7 +61,7 @@ wss.on( 'connection', function connection( ws ) {
 		}
 		switch( msgObj.msgType ) {
 			case "start":
-				um.verifyUser( msgObj.username, msgObj.passHash, function( validUser ) {
+				um.verifyUser( msgObj.username, msgObj.password, function( validUser ) {
 					clients.clientList[msgObj.username].validUser = validUser;
 					gm.addToQueue( msgObj.gameName, msgObj.username, function( validGame ) {
 						clients.clientList[msgObj.username].validGame = validGame;

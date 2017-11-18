@@ -27,16 +27,14 @@ startButton.addEventListener( 'click', function() {
 	return false;
 } );
 
-//websocket.onmessage = function( evt ) { onMessage( evt ) };
-
 function onOpen( evt )
 {
-	// Open 'waiting' div
+	// TODO: Open 'waiting' div
 	password = document.getElementById( 'formPassword' ).value;
 	var message = {
 		msgType  : "start",
 		username : username,
-		passHash : password,
+		password : password,
 		gameName : game,
 		gid      : "",
 		move     : "",
@@ -52,8 +50,6 @@ function onMessage( evt )
 	gid = serverObj.gid;
 	switch( serverObj.msgType ) {
 		case "playersTurn":
-			// TODO Run bot program. Save result. Send result.
-			//let move = Math.floor(Math.random() * 10) + 1;
 			const { execFile } = require('child_process');
 			const child = execFile(bot, (error, stdout, stderr) => {
 				if ( error ) console.log(error + " stdout: " + stderr);

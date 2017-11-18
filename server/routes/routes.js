@@ -24,6 +24,12 @@ module.exports = function( app ) {
 		res.send( watchPage );
 	} );
 
+	// play
+	app.route( '/play' ).get( function( req, res ) {
+		let playPage = fs.readFileSync( "./public/html/play.html", "utf-8" );
+		res.send( playPage );
+	} );
+ 
 	// get a list of live games
 	app.route( '/liveGames/:action' ).get( function( req, res ) {
 		gameManager.liveGames( req, res );
