@@ -5,9 +5,9 @@ var mancala = require( "../mancala.js" );
 describe( "Game Manager Module", function() {
 	// start()
 	describe( "start( lgid, usernames, callback )", function() {
-		it( "start( 1, ['test123', 'test456'], callback )", function( done ) {
-			mancala.start( 1, ['test123', 'test456'], function( state ) {
-				expect( state.id ).to.equal( 1 );
+		it( "start( 2, ['test123', 'test456'], callback )", function( done ) {
+			mancala.start( 2, ['test123', 'test456'], function( state ) {
+				expect( state.id ).to.equal( 2 );
 				expect( state.game ).to.equal( "mancala" );
 				expect( state.board ).to.have.lengthOf( 14 );
 				expect( state.players ).to.have.lengthOf( 2 );
@@ -27,7 +27,7 @@ describe( "Game Manager Module", function() {
 	describe( "move( state, move, callback )", function() {
 		// Simple first move
 		it( "move( startState, 0, callback )", function( done ) {
-			mancala.start( 1, ['test123', 'test456'], function( state ) {
+			mancala.start( 2, ['test123', 'test456'], function( state ) {
 				mancala.move( state, 0, function(state) {
 					expect( state.board ).to.have.lengthOf( 14 );
 					expect( state.currentPlayer ).to.equal( 1 );
@@ -46,7 +46,7 @@ describe( "Game Manager Module", function() {
 
 		// Go-again first move
 		it( "move( startState, 2, callback )", function( done ) {
-			mancala.start( 1, ['test123', 'test456'], function( state ) {
+			mancala.start( 2, ['test123', 'test456'], function( state ) {
 				mancala.move( state, 2, function(state) {
 					expect( state.board ).to.have.lengthOf( 14 );
 					expect( state.currentPlayer ).to.equal( 0 );

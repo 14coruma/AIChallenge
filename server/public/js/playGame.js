@@ -105,6 +105,7 @@ function makeMove() {
 		move     : move,
 	}
 	websocket.send( JSON.stringify( message ) );
+	console.log( JSON.stringify( message ) );
 	document.getElementById( 'makeMoveBtn' ).disabled = true;
 }
 
@@ -116,18 +117,31 @@ async function drawGameState() {
 	xmlHttp.open( "GET", "/liveGames/type?gameID=" + gid, false );
 	xmlHttp.send( null );
 	let gameName = xmlHttp.responseText;
+	var res;
 	while( true ) {
 		switch( gameName ) {
 			case "testGame":
 				xmlHttp.open( "GET", "/liveGames/state?gameID=" + gid, false );
 				xmlHttp.send( null );
-				let res = xmlHttp.responseText;
+				res = xmlHttp.responseText;
 				if ( res ) {
 					let state = JSON.parse( res );
 					drawTestGame( state );
 				} else {
 					console.log( "GAME ENDED" );
 					drawGameEnded();
+				}
+				break;
+			case "mancala":
+				xmlHttp.open( "GET", "/liveGames/state?gameID=" + gid, false );
+				xmlHttp.send( null );
+				res = xmlHttp.responseText;
+				if ( res ) {
+					let state = JSON.parse( res );
+					//drawTestGame( state );
+				} else {
+					console.log( "GAME ENDED" );
+					//drawGameEnded();
 				}
 				break;
 			default:

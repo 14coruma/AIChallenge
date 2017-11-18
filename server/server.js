@@ -116,7 +116,7 @@ wss.on( 'connection', function connection( ws ) {
 				} );
 				break;
 			default:
-				// TODO: Err: invalid msgType
+				console.log( "ERROR: invalid message type: " + msgObj.msgType );
 		}
 	} );
 } );

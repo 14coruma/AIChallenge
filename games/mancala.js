@@ -37,6 +37,7 @@ exports.start = function( lgid, usernames, callback ) {
  * @return: (JSON) state
  */
 exports.move = function( state, move, callback ) {
+		console.log( "move: " + move + ", state: " + JSON.stringify( state ) );
 	var validMove = verifyMove( state, move );
 	if ( validMove ) {
 		callback( updateState( state, parseInt(move) ) );
@@ -59,7 +60,6 @@ function updateState( state, move ) {
 	state.board[move] = 0;
 	var capture = 0;
 	let playerPos = state.players[state.currentPlayer].pos;
-
 	// distribute the stones
 	var pos;
 	for ( pos = move + 1; stones > 0; pos++ ) {
