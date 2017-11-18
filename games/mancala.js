@@ -92,7 +92,13 @@ function updateState( state, move ) {
 	}
 
 	// Update currentPlayer
-	state = nextPlayer( state );
+	if ( playerPos == 1 ) {
+		if ( pos != 13 )
+			state.currentPlayer = 0;
+	} else {
+		if ( pos != 6 )
+			state.currentPlayer = 1;
+	}
 
 	// Check for game over
 	state = gameOver( state );
@@ -131,27 +137,6 @@ function verifyMove( state, move ) {
 function failPlayer( state, callback ) {
 	state.winner = ( state.currentPlayer + 1 ) % 2;
 	state.error = "Illegal move";
-	return state;
-}
-
-/**
- * nextPlayer returns a state with the 'currentPlayer' updated to be the next player
- *
- * @param: (JSON) state
- *
- * @return: (JSON) state
- */
-function nextPlayer( state ) {
-	var playerPos = state.players[state.currentPlayer].pos;
-
-	if ( playerPos == 1 ) {
-		if ( pos != 13 )
-			state.currentPlayer = 0;
-	} else {
-		if ( pos != 6 )
-			state.currentPlayer = 1;
-	}
-
 	return state;
 }
 
