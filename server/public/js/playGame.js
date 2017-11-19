@@ -40,20 +40,10 @@ window.onload = async function() {
 	}
 }*/
 
-/**
- * sign in using form info
- */
-function signIn() {
-	username = document.getElementById( 'formUsername' ).value;
-	password = document.getElementById( 'formPassword' ).value;
-
-	//TODO: verify user sign in info automatically
-
-	return false;
-};
-
 function startGame() {
 	// TODO:  Open 'waiting' div
+	username = document.getElementById( 'formUsername' ).value;
+	password = document.getElementById( 'formPassword' ).value;
 	game = document.getElementById( 'selectGame' ).value;
 	var message = {
 		msgType  : "start",
@@ -138,10 +128,10 @@ async function drawGameState() {
 				res = xmlHttp.responseText;
 				if ( res ) {
 					let state = JSON.parse( res );
-					//drawTestGame( state );
+					drawMancala( state );
 				} else {
 					console.log( "GAME ENDED" );
-					//drawGameEnded();
+					drawGameEnded();
 				}
 				break;
 			default:

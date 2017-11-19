@@ -35,15 +35,28 @@ async function drawGameState() {
 	xmlHttp.open( "GET", "/liveGames/type?gameID=" + gameID, false );
 	xmlHttp.send( null );
 	let gameName = xmlHttp.responseText;
+	let res = "";
 	while( true ) {
 		switch( gameName ) {
 			case "testGame":
 				xmlHttp.open( "GET", "/liveGames/state?gameID=" + gameID, false );
 				xmlHttp.send( null );
-				let res = xmlHttp.responseText;
+				res = xmlHttp.responseText;
 				if ( res ) {
 					let state = JSON.parse( res );
 					drawTestGame( state );
+				} else {
+					console.log( "GAME ENDED" );
+					drawGameEnded();
+				}
+				break;
+			case "mancala":
+				xmlHttp.open( "GET", "/liveGames/state?gameID=" + gameID, false );
+				xmlHttp.send( null );
+				res = xmlHttp.responseText;
+				if ( res ) {
+					let state = JSON.parse( res );
+					drawMancala( state );
 				} else {
 					console.log( "GAME ENDED" );
 					drawGameEnded();

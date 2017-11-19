@@ -4,9 +4,6 @@
  * Created by: Andrew Corum, 11/2017
  */
 
-// Global constants
-const WINNINGSCORE = 200;
-
 /**
  * start creates then returns initial game state
  *
@@ -66,6 +63,7 @@ function updateState( state, move ) {
 		// don't add stone to opponent's score
 		if ( playerPos == 1 && pos == 6 ) pos++;
 		if ( playerPos == 0 && pos == 13 ) pos++;
+		if ( pos == 14 ) pos = 0;
 		state.board[pos]++;
 		stones--;
 	}
@@ -74,21 +72,21 @@ function updateState( state, move ) {
 	// Capture by top
 	if ( playerPos == 1 && pos > 6 && pos < 13 && state.board[pos] == 1
 		&& state.board[12 - pos] > 0 ) {
-		capture = board[12 - pos] + 1;
-		board[13] += board[12 - pos];
-		board[12 - pos] = 0;
-		board[13]++;
-		board[pos] = 0;
+		capture = state.board[12 - pos] + 1;
+		state.board[13] += state.board[12 - pos];
+		state.board[12 - pos] = 0;
+		state.board[13]++;
+		state.board[pos] = 0;
 	}
 
 	// Capture by bottom
 	if ( playerPos == 0 && pos >= 0 && pos < 6 && state.board[pos] == 1
-		&& board[12 - pos] > 0 ) {
-		capture = board[12 - pos] + 1;
-		board[6] += board[12 - pos];
-		board[12 - pos] = 0;
-		board[6]++;
-		board[pos] = 0;
+		&& state.board[12 - pos] > 0 ) {
+		capture = state.board[12 - pos] + 1;
+		state.board[6] += state.board[12 - pos];
+		state.board[12 - pos] = 0;
+		state.board[6]++;
+		state.board[pos] = 0;
 	}
 
 	// Update currentPlayer
@@ -135,6 +133,7 @@ function verifyMove( state, move ) {
  * @return: (JSON) state
  */
 function failPlayer( state, callback ) {
+	state.gameOver = 1;
 	state.winner = ( state.currentPlayer + 1 ) % 2;
 	state.error = "Illegal move";
 	return state;
