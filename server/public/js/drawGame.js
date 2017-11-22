@@ -14,7 +14,7 @@ window.onload = async function() {
 
 function updateSelectGame() {
 	var xmlHttp = new XMLHttpRequest();
-	xmlHttp.open( "GET", "/liveGames/list", false );
+	xmlHttp.open( "GET", "/api/liveGames/list", false );
 	xmlHttp.send( null );
 	let res = JSON.parse( xmlHttp.responseText );
 	var selector = document.getElementById( 'selectGame' );
@@ -32,14 +32,14 @@ function updateSelectGame() {
 async function drawGameState() {
 	var gameID = document.getElementById( 'selectGame' ).value;
 	var xmlHttp = new XMLHttpRequest();
-	xmlHttp.open( "GET", "/liveGames/type?gameID=" + gameID, false );
+	xmlHttp.open( "GET", "/api/liveGames/type?gameID=" + gameID, false );
 	xmlHttp.send( null );
 	let gameName = xmlHttp.responseText;
 	let res = "";
 	while( true ) {
 		switch( gameName ) {
 			case "testGame":
-				xmlHttp.open( "GET", "/liveGames/state?gameID=" + gameID, false );
+				xmlHttp.open( "GET", "/api/liveGames/state?gameID=" + gameID, false );
 				xmlHttp.send( null );
 				res = xmlHttp.responseText;
 				if ( res ) {
@@ -51,7 +51,7 @@ async function drawGameState() {
 				}
 				break;
 			case "mancala":
-				xmlHttp.open( "GET", "/liveGames/state?gameID=" + gameID, false );
+				xmlHttp.open( "GET", "/api/liveGames/state?gameID=" + gameID, false );
 				xmlHttp.send( null );
 				res = xmlHttp.responseText;
 				if ( res ) {

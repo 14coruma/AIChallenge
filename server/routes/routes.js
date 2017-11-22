@@ -31,8 +31,13 @@ module.exports = function( app ) {
 	} );
  
 	// get a list of live games
-	app.route( '/liveGames/:action' ).get( function( req, res ) {
+	app.route( '/api/liveGames/:action' ).get( function( req, res ) {
 		gameManager.liveGames( req, res );
+	} );
+
+	// get a list of game types
+	app.route( '/api/games' ).get( function( req, res ) {
+		gameManager.listGames( req, res );
 	} );
 
 	// home

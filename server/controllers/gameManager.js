@@ -179,6 +179,16 @@ exports.liveGames = function( req, res ) {
 }
 
 /**
+ * listGames returns a list of all games in the database
+ */
+exports.listGames = function( req, res ) {
+	var sql = "SELECT gameName FROM game";
+	db.queryDB( conn, sql, function( dbRes ) {
+		res.send( dbRes );
+	} );
+}
+
+/**
  * deleteLiveGame removes a live game from the database
  *
  * @return: Success? (bool)

@@ -23,9 +23,9 @@ window.onload = async function() {
 }
 
 // TODO: Change to update based on game options (rather than live games)
-/*function updateSelectGame() {
+function updateSelectGame() {
 	var xmlHttp = new XMLHttpRequest();
-	xmlHttp.open( "GET", "/liveGames/list", false );
+	xmlHttp.open( "GET", "/api/liveGames/list", false );
 	xmlHttp.send( null );
 	let res = JSON.parse( xmlHttp.responseText );
 	var selector = document.getElementById( 'selectGame' );
@@ -38,7 +38,7 @@ window.onload = async function() {
 		option.value = res[i].id;
 		selector.appendChild( option );
 	}
-}*/
+}
 
 function startGame() {
 	// TODO:  Open 'waiting' div
@@ -104,14 +104,14 @@ function makeMove() {
  */
 async function drawGameState() {
 	var xmlHttp = new XMLHttpRequest();
-	xmlHttp.open( "GET", "/liveGames/type?gameID=" + gid, false );
+	xmlHttp.open( "GET", "/api/liveGames/type?gameID=" + gid, false );
 	xmlHttp.send( null );
 	let gameName = xmlHttp.responseText;
 	var res;
 	while( true ) {
 		switch( gameName ) {
 			case "testGame":
-				xmlHttp.open( "GET", "/liveGames/state?gameID=" + gid, false );
+				xmlHttp.open( "GET", "/api/liveGames/state?gameID=" + gid, false );
 				xmlHttp.send( null );
 				res = xmlHttp.responseText;
 				if ( res ) {
@@ -123,7 +123,7 @@ async function drawGameState() {
 				}
 				break;
 			case "mancala":
-				xmlHttp.open( "GET", "/liveGames/state?gameID=" + gid, false );
+				xmlHttp.open( "GET", "/api/liveGames/state?gameID=" + gid, false );
 				xmlHttp.send( null );
 				res = xmlHttp.responseText;
 				if ( res ) {
