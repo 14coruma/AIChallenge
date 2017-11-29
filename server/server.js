@@ -106,9 +106,11 @@ wss.on( 'connection', function connection( ws ) {
 							var message = { msgType: "gameOver", state: state, gid: msgObj.gid };
 							for (var i = 0; i < state.players.length; i++) {
 								clients.clientList[state.players[i].username].conn.send(JSON.stringify(message));
+								console.log( JSON.stringify(message) + "sent" );
+								delete clients.clientList[state.players[i].username];
 							}
 							gm.deleteLiveGame( msgObj.gid, function(res) { /*TODO ERR?*/ } );
-							delete clients.clientList[msgObj.username];
+							states.stateList[msgObj.gid] = state;
 							break;
 						default:
 							// TODO: Err: Something went wrong with the game state

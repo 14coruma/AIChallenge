@@ -34,7 +34,7 @@ exports.start = function( lgid, usernames, callback ) {
  * @return: (JSON) state
  */
 exports.move = function( state, move, callback ) {
-		console.log( "move: " + move + ", state: " + JSON.stringify( state ) );
+	//console.log( "move: " + move + ", state: " + JSON.stringify( state ) );
 	var validMove = verifyMove( state, move );
 	if ( validMove ) {
 		callback( updateState( state, parseInt(move) ) );

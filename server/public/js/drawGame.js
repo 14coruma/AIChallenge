@@ -29,8 +29,11 @@ function updateSelectGame() {
 	}
 }
 
-async function drawGameState() {
-	var gameID = document.getElementById( 'selectGame' ).value;
+/**
+ * draw the game state
+ */
+async function drawGameState(gameID) {
+	if ( gameID == -1 ) gameID = document.getElementById( 'selectGame' ).value;
 	var xmlHttp = new XMLHttpRequest();
 	xmlHttp.open( "GET", "/api/liveGames/type?gameID=" + gameID, false );
 	xmlHttp.send( null );
@@ -47,7 +50,7 @@ async function drawGameState() {
 					drawTestGame( state );
 				} else {
 					console.log( "GAME ENDED" );
-					drawGameEnded();
+					drawGameEnded( -1 );
 				}
 				break;
 			case "mancala":
@@ -59,11 +62,11 @@ async function drawGameState() {
 					drawMancala( state );
 				} else {
 					console.log( "GAME ENDED" );
-					drawGameEnded();
+					drawGameEnded( -1 );
 				}
 				break;
 			default:
-				console.log( "gameName not recognized" );
+				console.log( "gameName, " + gameName + " not recognized" );
 		}
 		await sleep(200);
 	}

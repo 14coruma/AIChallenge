@@ -66,13 +66,16 @@ function onMessage( evt )
 	var serverObj = JSON.parse( evt.data );
 	gid = serverObj.gid;
 	state = serverObj.state;
+	console.log( "Message: " + evt.data);
 	switch( serverObj.msgType ) {
 		case "playersTurn":
 			document.getElementById( 'makeMoveBtn' ).disabled = false;
-			drawGameState();
+			drawGameState( gid );
+			console.log( "HERE" );
 			break;
 		case "gameOver":
 			// TODO Show div with gameover info
+			drawGameEnded( state );
 			console.log("GameOver");
 //			websocket.close();
 			break;
@@ -97,53 +100,4 @@ function makeMove() {
 	websocket.send( JSON.stringify( message ) );
 	console.log( JSON.stringify( message ) );
 	document.getElementById( 'makeMoveBtn' ).disabled = true;
-}
-
-/**
- * draw the game state
- */
-async function drawGameState() {
-	var xmlHttp = new XMLHttpRequest();
-	xmlHttp.open( "GET", "/api/liveGames/type?gameID=" + gid, false );
-	xmlHttp.send( null );
-	let gameName = xmlHttp.responseText;
-	var res;
-	while( true ) {
-		switch( gameName ) {
-			case "testGame":
-				xmlHttp.open( "GET", "/api/liveGames/state?gameID=" + gid, false );
-				xmlHttp.send( null );
-				res = xmlHttp.responseText;
-				if ( res ) {
-					let state = JSON.parse( res );
-					drawTestGame( state );
-				} else {
-					console.log( "GAME ENDED" );
-					drawGameEnded();
-				}
-				break;
-			case "mancala":
-				xmlHttp.open( "GET", "/api/liveGames/state?gameID=" + gid, false );
-				xmlHttp.send( null );
-				res = xmlHttp.responseText;
-				if ( res ) {
-					let state = JSON.parse( res );
-					drawMancala( state );
-				} else {
-					console.log( "GAME ENDED" );
-					drawGameEnded();
-				}
-				break;
-			default:
-				console.log( "gameName: " + gameName + " not recognized" );
-		}
-		await sleep(200);
-	}
-}
-
-/**
- * simple sleep function for async functions
- */
-function sleep( ms ) {
-	return new Promise( resolve => setTimeout( resolve, ms ) );
 }
