@@ -15,7 +15,7 @@ var routes = require( './routes/routes' );
 app.use( express.static( 'public' ));
 routes( app );
 
-app.listen( 8000 );
+app.listen( 3001 );
 
 /**
  * WebSocket Server
