@@ -19,6 +19,7 @@ var conn        = mysql.createConnection( {
 	database : 'AIChallenge',
 } );
 var testGame = require( '../../games/testGame' );
+var mancala = require( '../../games/mancala' );
 
 /**
  * makeMove will validate, perform a given move, and then return the new state
@@ -32,6 +33,11 @@ exports.makeMove = function( state, move, callback ) {
 	switch( state.game ) {
 		case "testGame":
 			testGame.move( state, move, function( res ) {
+				callback( res );
+			} );
+			break;
+		case "mancala":
+			mancala.move( state, move, function( res ) {
 				callback( res );
 			} );
 			break;
@@ -57,6 +63,11 @@ exports.startGame = function( lgid, userNames, callback ) {
 		switch ( res[0].gameName ) {
 			case "testGame":
 				testGame.start( lgid, userNames, function( state ) {
+					callback( state );
+				} );
+				break;
+			case "mancala":
+				mancala.start( lgid, userNames, function( state ) {
 					callback( state );
 				} );
 				break;
@@ -165,6 +176,16 @@ exports.liveGames = function( req, res ) {
 		default:
 			res.send( "BAD ACTION" );
 	}
+}
+
+/**
+ * listGames returns a list of all games in the database
+ */
+exports.listGames = function( req, res ) {
+	var sql = "SELECT gameName FROM game";
+	db.queryDB( conn, sql, function( dbRes ) {
+		res.send( dbRes );
+	} );
 }
 
 /**

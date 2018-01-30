@@ -8,6 +8,7 @@
   <link rel="stylesheet" type="text/css" href="css/index.css">
   <script src="/files/js/drawGameEnded.js"></script>
   <script src="/files/js/drawTestGame.js"></script>
+  <script src="/files/js/drawMancala.js"></script>
   <script src="/files/js/drawGame.js"></script>
 </head>
 <body>
@@ -32,7 +33,7 @@
   <!-- Game Selector -->
   <div class="w3-container w3-padding-small" id="game">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-small">Game</h3>
-    <select id="selectGame" class="w3-input" onchange="drawGameState()" required>
+    <select id="selectGame" class="w3-input" onchange="drawGameState(-1)" required>
       <option value="">--select game--</option>
     </select>
     <button id="refreshBtn" class="w3-button w3-black w3-section" onclick="updateSelectGame()">

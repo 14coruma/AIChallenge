@@ -9,3 +9,6 @@ node_modules
 
 # huge package file
 package-lock.json
+
+# files/directories labeled "ignore"
+*-ignore*

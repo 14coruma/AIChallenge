@@ -46,13 +46,14 @@ function onOpen( evt )
 function onMessage( evt )
 {
 	var serverObj = JSON.parse( evt.data );
-	//console.log( "Got a message: " + JSON.stringify( serverObj ) );
+	var objString = JSON.stringify( serverObj );
+	var args = [objString.replace( /"/g, "'" )];
 	gid = serverObj.gid;
 	switch( serverObj.msgType ) {
 		case "playersTurn":
 			const { execFile } = require('child_process');
-			const child = execFile(bot, (error, stdout, stderr) => {
-				if ( error ) console.log(error + " stdout: " + stderr);
+			const child = execFile(bot, args, (error, stdout, stderr) => {
+				if ( error ) console.log(error + " stderr: " + stderr + " stdout: " + stdout);
 				var message = {
 					msgType  : "move",
 					username : username,
