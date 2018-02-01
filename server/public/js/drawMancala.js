@@ -13,6 +13,7 @@ function drawMancala( state ) {
 	ctx = canvas.getContext( "2d" );
 	ctx.clearRect( 0, 0, canvas.width, canvas.height );
 	ctx.font = "18px Arial";
+	ctx.textAlign = "left";
 	ctx.fillText( "P1: " + state.players[0].username, 10, canvas.height - 32 );
 	ctx.fillText( "P2: " + state.players[1].username, 10, 32 );
 
@@ -38,7 +39,9 @@ function drawMancala( state ) {
 
 	if (state.gameOver == 1) {
 		ctx.font = "30px Arial";
-		ctx.fillText( "Game Over", 10, 32 );
+		ctx.textAlign = "center";
+		ctx.fillText( "Game Over", canvas.width / 2, canvas.height / 4 );
+		ctx.fillText( state.players[state.winner].username + " Wins!", canvas.width / 2, canvas.height / 2);
 	}
 }
 
