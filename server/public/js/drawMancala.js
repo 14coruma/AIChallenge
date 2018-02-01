@@ -35,6 +35,11 @@ function drawMancala( state ) {
 	ctx.fillText( state.board[13], 24, canvas.height / 2 );
 	drawOval( canvas.width - 24, canvas.height / 2, 24 );
 	ctx.fillText( state.board[6], canvas.width - 24, canvas.height / 2 );
+
+	if (state.gameOver == 1) {
+		ctx.font = "30px Arial";
+		ctx.fillText( "Game Over", 10, 32 );
+	}
 }
 
 function drawCircle( x, y, r ) {
