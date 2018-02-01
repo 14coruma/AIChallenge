@@ -42,6 +42,7 @@ class States {
 	}
 	saveState(gid, state) {
 		this.stateList[gid] = state;
+		gm.saveState(gid, state);
 	}
 }
 
@@ -100,7 +101,8 @@ wss.on( 'connection', function connection( ws ) {
 							var message = { msgType: "playersTurn", state: state, gid: msgObj.gid };
 							var nextPlayer = state.players[state.currentPlayer].username;
 							clients.clientList[nextPlayer].conn.send(JSON.stringify( message ));
-							states.stateList[msgObj.gid] = state;
+//							states.stateList[msgObj.gid] = state;
+							states.saveState(msgObj.gid, state);
 							break;
 						case 1:
 							var message = { msgType: "gameOver", state: state, gid: msgObj.gid };
@@ -109,8 +111,9 @@ wss.on( 'connection', function connection( ws ) {
 								console.log( JSON.stringify(message) + "sent" );
 								delete clients.clientList[state.players[i].username];
 							}
-							gm.deleteLiveGame( msgObj.gid, function(res) { /*TODO ERR?*/ } );
-							states.stateList[msgObj.gid] = state;
+							gm.endLiveGame( msgObj.gid, state, function(res) { /*TODO ERR?*/ } );
+//							states.stateList[msgObj.gid] = state;
+							delete states.stateList[msgObj.gid];
 							break;
 						default:
 							// TODO: Err: Something went wrong with the game state
