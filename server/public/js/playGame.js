@@ -75,7 +75,8 @@ function onMessage( evt )
 			break;
 		case "gameOver":
 			// TODO Show div with gameover info
-			drawGameEnded( state );
+//			drawGameEnded( state );
+			drawGameState( gid );
 			console.log("GameOver");
 //			websocket.close();
 			break;
