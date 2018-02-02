@@ -54,7 +54,7 @@ function startGame() {
 		move     : "",
 	};
 	websocket.send( JSON.stringify( message ) );
-	console.log( "SENT A MESSAGE\n" );
+	drawWaitingImage();
 }
 
 /**
@@ -74,8 +74,6 @@ function onMessage( evt )
 			console.log( "HERE" );
 			break;
 		case "gameOver":
-			// TODO Show div with gameover info
-//			drawGameEnded( state );
 			drawGameState( gid );
 			console.log("GameOver");
 //			websocket.close();

@@ -169,15 +169,16 @@ exports.liveGames = function( req, res ) {
 			} );
 			break;
 		case "state":
-			//server.getState( req.query.gameID, function( state ) {
-			//	res.send( JSON.stringify( state ) );
-			//} );
-
-			var sql = "SELECT state FROM liveGame WHERE id = ?";
+			var sql = "SELECT state, live FROM liveGame WHERE id = ?";
 			var inserts = [ req.query.gameID ];
 			sql = mysql.format( sql, inserts );
 			db.queryDB( conn, sql, function(dbRes) {
 				if ( dbRes[0] ) {
+					if ( dbRes[0].live == "0" && dbRes[0].state != null ) {
+						var state = JSON.parse( dbRes[0].state );
+						state.gameOver = 1;
+						dbRes[0].state = JSON.stringify( state );
+					}
 					res.send( dbRes[0].state );
 				} else {
 					res.send( false );
