@@ -48,21 +48,24 @@ async function drawGameState(gameID) {
 				if ( res ) {
 					let state = JSON.parse( res );
 					drawTestGame( state );
+					if ( state.gameOver == 1 ) return;
 				} else {
 					console.log( "GAME ENDED" );
-					drawGameEnded( -1 );
+					return;
 				}
 				break;
 			case "mancala":
 				xmlHttp.open( "GET", "/api/liveGames/state?gameID=" + gameID, false );
 				xmlHttp.send( null );
 				res = xmlHttp.responseText;
+				console.log(res);
 				if ( res ) {
 					let state = JSON.parse( res );
 					drawMancala( state );
+					if ( state.gameOver == 1 ) return;
 				} else {
 					console.log( "GAME ENDED" );
-					drawGameEnded( -1 );
+					return;
 				}
 				break;
 			default:
@@ -70,6 +73,18 @@ async function drawGameState(gameID) {
 		}
 		await sleep(200);
 	}
+}
+
+/**
+ * draw waiting for players text
+ */
+function drawWaitingImage() {
+	var canvas = document.getElementById( "myCanvas" );
+	ctx = canvas.getContext( "2d" );
+	ctx.clearRect( 0, 0, canvas.width, canvas.height );
+	ctx.font = "18px Arial";
+	ctx.textAlign = "center";
+	ctx.fillText( "Waiting for players...", canvas.width/2, canvas.height/2 );
 }
 
 function sleep( ms ) {
