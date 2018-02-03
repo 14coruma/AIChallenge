@@ -169,8 +169,20 @@ exports.liveGames = function( req, res ) {
 			} );
 			break;
 		case "state":
-			server.getState( req.query.gameID, function( state ) {
-				res.send( JSON.stringify( state ) );
+			var sql = "SELECT state, live FROM liveGame WHERE id = ?";
+			var inserts = [ req.query.gameID ];
+			sql = mysql.format( sql, inserts );
+			db.queryDB( conn, sql, function(dbRes) {
+				if ( dbRes[0] ) {
+					if ( dbRes[0].live == "0" && dbRes[0].state != null ) {
+						var state = JSON.parse( dbRes[0].state );
+						state.gameOver = 1;
+						dbRes[0].state = JSON.stringify( state );
+					}
+					res.send( dbRes[0].state );
+				} else {
+					res.send( false );
+				}
 			} );
 			break;
 		default:
@@ -189,13 +201,16 @@ exports.listGames = function( req, res ) {
 }
 
 /**
- * deleteLiveGame removes a live game from the database
+ * endLiveGame resets a live game status to 0
+ *
+ * @param: lgid, the live game id
+ * @param: state, the JSON state of ended game 
  *
  * @return: Success? (bool)
  */
-exports.deleteLiveGame = function( lgid, callback ) {
-	var sql = "DELETE FROM liveGame WHERE id = ?";
-	var inserts = [ lgid ];
+exports.endLiveGame = function( lgid, state, callback ) {
+	var sql = "UPDATE liveGame SET live = 0, state = ? WHERE id = ?";
+	var inserts = [ JSON.stringify(state), lgid ];
 	sql = mysql.format( sql, inserts );
 	db.queryDB( conn, sql, function(res) {
 		if ( res ) {
@@ -224,4 +239,14 @@ exports.deleteFromQueue = function( gameName, username, callback ) {
 		}
 	} );
 	return;
+}
+
+/**
+ * saveState saves the state of a live game
+ */
+exports.saveState = function( lgid, state ) {
+	var sql = "UPDATE liveGame SET state = ? WHERE id = ?";
+	var inserts = [ JSON.stringify(state), lgid ];
+	sql = mysql.format( sql, inserts );
+	db.queryDB( conn, sql, function(res) { return; } );
 }

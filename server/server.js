@@ -42,6 +42,7 @@ class States {
 	}
 	saveState(gid, state) {
 		this.stateList[gid] = state;
+		gm.saveState(gid, state);
 	}
 }
 
@@ -80,7 +81,7 @@ wss.on( 'connection', function connection( ws ) {
 									gm.startGame( gameID, userNames, function( state ) {
 										// Send state to player 1
 										var message = { msgType: "playersTurn", state: state, gid: gameID };
-										clients.clientList[userNames[0]].conn.send( JSON.stringify( message ) );
+										sendMessage( userNames[0], message );
 										states.saveState(gameID, state);
 									} );
 								}
@@ -99,18 +100,17 @@ wss.on( 'connection', function connection( ws ) {
 							// Send the current state to the next player
 							var message = { msgType: "playersTurn", state: state, gid: msgObj.gid };
 							var nextPlayer = state.players[state.currentPlayer].username;
-							clients.clientList[nextPlayer].conn.send(JSON.stringify( message ));
-							states.stateList[msgObj.gid] = state;
+							sendMessage( nextPlayer, message );
+							states.saveState(msgObj.gid, state);
 							break;
 						case 1:
 							var message = { msgType: "gameOver", state: state, gid: msgObj.gid };
 							for (var i = 0; i < state.players.length; i++) {
-								clients.clientList[state.players[i].username].conn.send(JSON.stringify(message));
-								console.log( JSON.stringify(message) + "sent" );
+								sendMessage( state.players[i].username, message );
 								delete clients.clientList[state.players[i].username];
 							}
-							gm.deleteLiveGame( msgObj.gid, function(res) { /*TODO ERR?*/ } );
-							states.stateList[msgObj.gid] = state;
+							gm.endLiveGame( msgObj.gid, state, function(res) { /*TODO ERR?*/ } );
+							delete states.stateList[msgObj.gid];
 							break;
 						default:
 							// TODO: Err: Something went wrong with the game state
@@ -121,11 +121,37 @@ wss.on( 'connection', function connection( ws ) {
 				console.log( "ERROR: invalid message type: " + msgObj.msgType );
 		}
 	} );
+
+	ws.on( 'error', function handle( err ) {
+		console.log( err );
+	} );
 } );
 
 /**
  * Returns the state for a given gameID
+ * 
+ * @param: gid
+ * @param: callback, function
  */
 exports.getState = function( gid, callback ) {
 	callback( states.stateList[gid] );
+}
+
+/**
+ * Sends a message to a client in the connection list
+ * Handles errors by ending any liveGame and removing the connection
+ *
+ * @param: index, key for clientList hash
+ * @param: message, the JSON message to send client
+ */
+function sendMessage( index, message ) {
+	try {
+		// Send message
+		clients.clientList[index].conn.send(JSON.stringify( message ));
+	} catch ( err ) {
+		// Connection must have been closed, so end the liveGame
+		delete clients.clientList[index];
+		gm.endLiveGame( message.gid, message.state, function(res ) { /*ERR?*/ } );
+		delete states.stateList[message.gid];
+	}
 }
