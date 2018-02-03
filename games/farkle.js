@@ -37,7 +37,9 @@ exports.start = function( lgid, usernames, callback ) {
  * @return: (JSON) state
  */
 exports.move = function( state, move, callback ) {
+	console.log( "State: " + JSON.stringify(state) + " Move: " + JSON.stringify(move));
 	var validMove = verifyMove( state, move );
+	console.log( "valid? " + validMove );
 	if ( validMove ) {
 		callback( updateState( state, move ) );
 	} else {
@@ -54,9 +56,7 @@ exports.move = function( state, move, callback ) {
  * @return: (JSON) new state
  */
 function updateState( state, move ) {
-	if ( move.done = 1 ) { // Done
-		// Add up score
-		state.players[currentPlayer].score += calculateScore( state, move );
+	if ( calcScore( move.bank ) == -1 ) { // Farkle
 		// switch player
 		do {
 			state.currentPlayer++;
@@ -68,7 +68,11 @@ function updateState( state, move ) {
 		for ( var i = 0; i < 6; i++ ) {
 			state.dice[i] = Math.floor( Math.random() * 6 + 1);
 		}
-	} else if ( calcScore( move.bank ) == -1 ) { // Farkle
+	} else if ( move.done == 1 ) { // Done
+		// update bank
+		state.bank = state.bank.concat(move.bank);
+		// Add up score
+		state.players[state.currentPlayer].score += calcScore( state.bank );
 		// switch player
 		do {
 			state.currentPlayer++;
@@ -109,7 +113,8 @@ function verifyMove( state, move ) {
 	var bank = move.bank.slice();
 	var dice = state.dice.slice();
 	while ( bank.length > 0 ) {
-		if ( dice.indexOf( bank[0] == -1 ) ) return false;
+		if ( dice.indexOf( bank[0] ) == -1 ) return false;
+		dice.slice( dice.indexOf( bank[0] ), 1 );
 		bank.shift();
 	}
 
@@ -125,11 +130,14 @@ function verifyMove( state, move ) {
  */
 function calcScore( bank ) {
 	// Sort bank into nums
-	var bankCopy = bank.split();
+	var bankCopy = bank.slice();
 	var nums = [0, 0, 0, 0, 0, 0, 0];
 	while ( bankCopy.length != 0 ) {
 		nums[bankCopy.shift()]++;
 	}
+
+	console.log( "\nNums: " + JSON.stringify( nums ));
+	console.log( "\nbank: " + JSON.stringify( bank ));
 
 	// Start score tally
 	var score = 0;
@@ -171,7 +179,7 @@ function calcScore( bank ) {
 	// 1-6 straight
 	if ( bank.length == 6 ) {
 		var straight = true;
-		for (int i = 1; i < 7; i++) {
+		for ( var i = 1; i < 7; i++ ) {
 			if (nums[i] != 1) {
 				straight = false;
 				break;
@@ -221,12 +229,12 @@ function calcScore( bank ) {
  * @return: (JSON) state
  */
 function failPlayer( state, callback ) {
-	state.players[currentPlayer].fail = 1;
+	state.players[state.currentPlayer].fail = 1;
 
 	// End game if <= 1 good players left
 	var goodPlayers = 0;
-	for ( int i = 0; i < state.players.length; i++ ) {
-		if ( players[i].fail == 0 ) goodPlayers++;
+	for ( var i = 0; i < state.players.length; i++ ) {
+		if ( state.players[i].fail == 0 ) goodPlayers++;
 	}
 	if ( goodPlayers <= 1 ) state.gameOver = 1;
 
@@ -242,7 +250,7 @@ function failPlayer( state, callback ) {
  */
 function gameOver( state ) {
 	var bestScore = 0;
-	for ( int i = 0; i < state.players.length; i++ ) {
+	for ( var i = 0; i < state.players.length; i++ ) {
 		var score = state.players[i].score;
 		if ( score >= 10000 ) {
 			state.gameOver = 1;
