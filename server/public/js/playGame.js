@@ -16,11 +16,16 @@ var wsUri = "ws://localhost:8080/";
 var websocket = new WebSocket( wsUri );
 websocket.onmessage = function( evt ) { onMessage( evt ) };
 websocket.onerror = function( evt ) { onError( evt ) };
+websocket.onclose = function( evt ) { onClose( evt ) };
 
 window.onload = async function() {
 	// First update the list of viewable games in the select form
 	// updateSelectGame();
 }
+
+window.onbeforeunload = function() {
+	websocket.close();
+};
 
 // TODO: Change to update based on game options (rather than live games)
 function updateSelectGame() {
@@ -71,12 +76,9 @@ function onMessage( evt )
 		case "playersTurn":
 			document.getElementById( 'makeMoveBtn' ).disabled = false;
 			drawGameState( gid );
-			console.log( "HERE" );
 			break;
 		case "gameOver":
 			drawGameState( gid );
-			console.log("GameOver");
-//			websocket.close();
 			break;
 		default:
 			// TODO: Err: Something went wrong
@@ -97,6 +99,17 @@ function makeMove() {
 		move     : move,
 	}
 	websocket.send( JSON.stringify( message ) );
-	console.log( JSON.stringify( message ) );
 	document.getElementById( 'makeMoveBtn' ).disabled = true;
+}
+
+/**
+ * Close websocket connection, sending closed message to sever
+ */
+function onClose() {
+	var message = {
+		msgType : "close",
+		username : username,
+		password : password,
+	}
+	websocket.send( JSON.stringify( message ) );
 }
