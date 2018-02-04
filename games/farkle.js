@@ -15,11 +15,11 @@
 exports.start = function( lgid, usernames, callback ) {
 	var state = {
 		id: lgid, game: "farkle", players: [],
-		bank: [], dice: [],
+		bank: [], dice: [], temp: 0,
 		currentPlayer: 0, gameOver: 0, winner: -1, error: "",
 	};
 	for ( var i = 0; i < usernames.length; i++ ) {
-		state.players.push( { username: usernames[i], pos: i, score: 0, fail: 0 } );
+		state.players.push( { username: usernames[i], score: 0, fail: 0 } );
 	}
 	for ( var i = 0; i < 6; i++ ) {
 		state.dice[i] = Math.floor( Math.random() * 6 + 1);
@@ -37,9 +37,7 @@ exports.start = function( lgid, usernames, callback ) {
  * @return: (JSON) state
  */
 exports.move = function( state, move, callback ) {
-	console.log( "State: " + JSON.stringify(state) + " Move: " + JSON.stringify(move));
 	var validMove = verifyMove( state, move );
-	console.log( "valid? " + validMove );
 	if ( validMove ) {
 		callback( updateState( state, move ) );
 	} else {
@@ -60,10 +58,11 @@ function updateState( state, move ) {
 		// switch player
 		do {
 			state.currentPlayer++;
-			state.currentPlayer % state.players.length;
+			state.currentPlayer = state.currentPlayer % state.players.length;
 		} while ( state.players[state.currentPlayer].fail != 0 );
-		// reset bank
+		// reset bank & temp score
 		state.bank = [];
+		state.temp = 0;
 		// reroll dice
 		for ( var i = 0; i < 6; i++ ) {
 			state.dice[i] = Math.floor( Math.random() * 6 + 1);
@@ -72,14 +71,15 @@ function updateState( state, move ) {
 		// update bank
 		state.bank = state.bank.concat(move.bank);
 		// Add up score
-		state.players[state.currentPlayer].score += calcScore( state.bank );
+		state.players[state.currentPlayer].score += calcScore( state.bank ) + state.temp;
 		// switch player
 		do {
 			state.currentPlayer++;
-			state.currentPlayer % state.players.length;
+			state.currentPlayer = state.currentPlayer % state.players.length;
 		} while ( state.players[state.currentPlayer].fail != 0 );
-		// reset bank
+		// reset bank & temp
 		state.bank = [];
+		state.temp = 0;
 		// reroll dice
 		for ( var i = 0; i < 6; i++ ) {
 			state.dice[i] = Math.floor( Math.random() * 6 + 1);
@@ -87,6 +87,11 @@ function updateState( state, move ) {
 	} else { // Continue play
 		// update bank
 		state.bank = state.bank.concat(move.bank);
+		// Add temp score for if all 6 dice have been banked
+		if ( state.bank.length == 6 ) {
+			state.temp += calcScore( state.bank );
+			state.bank = [];
+		}
 		// reroll remaining dice
 		state.dice = [];
 		for ( var i = 0; i < (6 - state.bank.length); i++ ) {
@@ -135,9 +140,6 @@ function calcScore( bank ) {
 	while ( bankCopy.length != 0 ) {
 		nums[bankCopy.shift()]++;
 	}
-
-	console.log( "\nNums: " + JSON.stringify( nums ));
-	console.log( "\nbank: " + JSON.stringify( bank ));
 
 	// Start score tally
 	var score = 0;
@@ -233,10 +235,17 @@ function failPlayer( state, callback ) {
 
 	// End game if <= 1 good players left
 	var goodPlayers = 0;
+	var goodIndex = -1;
 	for ( var i = 0; i < state.players.length; i++ ) {
-		if ( state.players[i].fail == 0 ) goodPlayers++;
+		if ( state.players[i].fail == 0 ) {
+			goodIndex = i;
+			goodPlayers++;
+		}
 	}
-	if ( goodPlayers <= 1 ) state.gameOver = 1;
+	if ( goodPlayers <= 1 ) {
+		state.gameOver = 1;
+		state.winner = goodIndex;
+	}
 
 	return state;
 }
