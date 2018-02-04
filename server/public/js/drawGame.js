@@ -40,36 +40,28 @@ async function drawGameState(gameID) {
 	let gameName = xmlHttp.responseText;
 	let res = "";
 	while( true ) {
-		switch( gameName ) {
-			case "testGame":
-				xmlHttp.open( "GET", "/api/liveGames/state?gameID=" + gameID, false );
-				xmlHttp.send( null );
-				res = xmlHttp.responseText;
-				if ( res ) {
-					let state = JSON.parse( res );
+		xmlHttp.open( "GET", "/api/liveGames/state?gameID=" + gameID, false );
+		xmlHttp.send( null );
+		res = xmlHttp.responseText;
+		if ( res ) {
+			let state = JSON.parse( res );
+			switch( gameName ) {
+				case "testgame":
 					drawTestGame( state );
-					if ( state.gameOver == 1 ) return;
-				} else {
-					console.log( "GAME ENDED" );
-					return;
-				}
-				break;
-			case "mancala":
-				xmlHttp.open( "GET", "/api/liveGames/state?gameID=" + gameID, false );
-				xmlHttp.send( null );
-				res = xmlHttp.responseText;
-				console.log(res);
-				if ( res ) {
-					let state = JSON.parse( res );
+					break;
+				case "mancala":
 					drawMancala( state );
-					if ( state.gameOver == 1 ) return;
-				} else {
-					console.log( "GAME ENDED" );
-					return;
-				}
-				break;
-			default:
-				console.log( "gameName, " + gameName + " not recognized" );
+					break;
+				case "farkle":
+					drawFarkle( state );
+					break;
+				default:
+					console.log( "gameName, " + gameName + " not recognized" );
+			}
+			if ( state.gameOver == 1 ) return;
+		} else {
+			console.log( "GAME ENDED" );
+			return;
 		}
 		await sleep(200);
 	}
