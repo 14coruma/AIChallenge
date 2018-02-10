@@ -22,15 +22,17 @@ function drawFarkle( state ) {
 	}
 
 	let spacer1 = ( canvas.width - 160 ) / state.dice.length;
-	var spacer2 = 0;
+	var spacer2 = ( canvas.width - 160 ) / state.bank.length;
 	if ( state.bank.length > 0 ) ( canvas.widht - 160 ) / state.bank.length;
 
 	// Draw dice
 	ctx.fillText( "Roll: ", 32, 144 );
 	ctx.textAlign = "center";
 	for ( var i = 0; i < state.dice.length; i++ ) {
+		ctx.beginPath();
 		ctx.rect( 96 + i * spacer1, 128, 32, 32 );
 		ctx.stroke();
+		ctx.closePath();
 		ctx.fillText( state.dice[i], 112 + i * spacer1, 146 );
 	}
 
@@ -39,9 +41,11 @@ function drawFarkle( state ) {
 	ctx.fillText( "Dice Bank: ", 32, 192 );
 	ctx.textAlign = "center";
 	for ( var i = 0; i < state.bank.length; i++ ) {
-		ctx.rect( 96 + i * spacer2, 176, 32, 32 );
+		ctx.beginPath();
+		ctx.rect( 128 + i * spacer2, 176, 32, 32 );
 		ctx.stroke();
-		ctx.fillText( state.bank[i], 112 + i * spacer2, 196 );
+		ctx.closePath();
+		ctx.fillText( state.bank[i], 144 + i * spacer2, 196 );
 	}
 
 	// Draw Score bank
@@ -53,6 +57,6 @@ function drawFarkle( state ) {
 		ctx.font = "30px Arial";
 		ctx.textAlign = "center";
 		ctx.fillText( "Game Over", canvas.width / 2, canvas.height / 4 );
-		ctx.fillText( state.players[state.winner].username + " Wins!", canvas.width / 2, canvas.height / 2);
+		ctx.fillText( state.players[state.winner].username + " Wins!", canvas.width / 2, 3 * canvas.height / 4);
 	}
 }
