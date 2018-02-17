@@ -37,6 +37,9 @@ exports.start = function( lgid, usernames, callback ) {
  * @return: (JSON) state
  */
 exports.move = function( state, move, callback ) {
+	if ( typeof move == "string" ) {
+		move = JSON.parse( move );
+	}
 	var validMove = verifyMove( state, move );
 	if ( validMove ) {
 		callback( updateState( state, move ) );
@@ -114,6 +117,11 @@ function updateState( state, move ) {
  * @return: (bool) valid?
  */
 function verifyMove( state, move ) {
+	// Make sure move is an object with 'bank' and 'done'
+	if ( typeof move != "object" ) return false;
+	if ( typeof move.bank != "object" ) return false;
+	if ( typeof move.done != "number" ) return false;
+
 	// Check that bank is subset of dice
 	var bank = move.bank.slice();
 	var dice = state.dice.slice();
