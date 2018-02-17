@@ -20,6 +20,7 @@ var conn        = mysql.createConnection( {
 } );
 var testGame = require( '../../games/testGame' );
 var mancala = require( '../../games/mancala' );
+var farkle = require( '../../games/farkle' );
 
 /**
  * makeMove will validate, perform a given move, and then return the new state
@@ -38,6 +39,11 @@ exports.makeMove = function( state, move, callback ) {
 			break;
 		case "mancala":
 			mancala.move( state, move, function( res ) {
+				callback( res );
+			} );
+			break;
+		case "farkle":
+			farkle.move( state, move, function( res ) {
 				callback( res );
 			} );
 			break;
@@ -68,6 +74,11 @@ exports.startGame = function( lgid, userNames, callback ) {
 				break;
 			case "mancala":
 				mancala.start( lgid, userNames, function( state ) {
+					callback( state );
+				} );
+				break;
+			case "farkle":
+				farkle.start( lgid, userNames, function( state ) {
 					callback( state );
 				} );
 				break;
