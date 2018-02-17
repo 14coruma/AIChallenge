@@ -12,6 +12,11 @@ var canvas = document.getElementById( "myCanvas" ),
     elements = [],
     move = -1;
 
+/**
+ * Draws the current mancala state
+ *
+ * @param: state, JSON of the current state
+ */
 function drawMancala( state ) {
 	ctx.clearRect( 0, 0, canvas.width, canvas.height );
 	elements = [];
@@ -71,6 +76,15 @@ function drawMancala( state ) {
 	}
 }
 
+/**
+ * Draws a circle around (x,y) with given radius & colors
+ *
+ * @param: x
+ * @param: y
+ * @param: r, radius
+ * @param: color1, fill color
+ * @param: color2, outline color
+ */
 function drawCircle( x, y, r, color1, color2 ) {
 		ctx.save();
 		ctx.beginPath();
@@ -83,6 +97,15 @@ function drawCircle( x, y, r, color1, color2 ) {
 		ctx.restore();
 }
 
+/**
+ * Draws an oval around (x,y) with given radius & colors
+ *
+ * @param: x
+ * @param: y
+ * @param: r, radius
+ * @param: color1, fill color
+ * @param: color2, outline color
+ */
 function drawOval( x, y, r, color1, color2 ) {
 		ctx.save();
 		ctx.translate( x, y );
@@ -99,6 +122,7 @@ function drawOval( x, y, r, color1, color2 ) {
 		ctx.restore();
 }
 
+// Set up the mouse click handler
 canvas.addEventListener( 'click', function( ev ) {
 	var x = ev.pageX - canvasLeft,
 	    y = ev.pageY - canvasTop;
