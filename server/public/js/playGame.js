@@ -12,7 +12,7 @@ var username = "";
 var password = "";
 var game = "";
 var state = {};
-var wsUri = "ws://localhost:8080/";
+var wsUri = "ws://153.106.160.184:8080/"; // Set ip address to local server
 var websocket = new WebSocket( wsUri );
 websocket.onmessage = function( evt ) { onMessage( evt ) };
 websocket.onerror = function( evt ) { onError( evt ) };
@@ -45,8 +45,10 @@ function updateSelectGame() {
 	}
 }
 
+/**
+ * Send request to server to start a game
+ */
 function startGame() {
-	// TODO:  Open 'waiting' div
 	username = document.getElementById( 'formUsername' ).value;
 	password = document.getElementById( 'formPassword' ).value;
 	game = document.getElementById( 'selectGame' ).value;
@@ -89,14 +91,19 @@ function onMessage( evt )
  * Send a player's move to the websocket
  */
 function makeMove() {
-	var move = document.getElementById( 'formMove' ).value;
+	var formMove = document.getElementById( 'formMove' ).value;
 	var message = {
 		msgType  : "move",
 		username : username,
 		password : password,
 		gameName : game,
 		gid      : gid,
-		move     : move,
+		move     : formMove,
+	}
+	switch( game ) {
+		case "farkle":
+			resetFarkleBank();
+			break;
 	}
 	websocket.send( JSON.stringify( message ) );
 	document.getElementById( 'makeMoveBtn' ).disabled = true;

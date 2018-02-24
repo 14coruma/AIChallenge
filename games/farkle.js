@@ -127,7 +127,7 @@ function verifyMove( state, move ) {
 	var dice = state.dice.slice();
 	while ( bank.length > 0 ) {
 		if ( dice.indexOf( bank[0] ) == -1 ) return false;
-		dice.slice( dice.indexOf( bank[0] ), 1 );
+		dice.splice( dice.indexOf( bank[0] ), 1 );
 		bank.shift();
 	}
 

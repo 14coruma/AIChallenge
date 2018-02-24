@@ -25,6 +25,7 @@ function drawMancala( state ) {
 	ctx.fillText( "P1: " + state.players[0].username, 10, canvas.height - 32 );
 	ctx.fillText( "P2: " + state.players[1].username, 10, 32 );
 
+	console.log( "Here" );
 	let spacer = ( canvas.width - 64 ) / 8;
 	ctx.textAlign = "center";
 	// Draw bottom circles
@@ -39,6 +40,7 @@ function drawMancala( state ) {
 		ctx.fillText( state.board[i], x, y );
 		elements.push({
 			id: i,
+			type: "bucket",
 			width: 48,
 			height: 48,
 			top: y - 24,
@@ -57,6 +59,7 @@ function drawMancala( state ) {
 		ctx.fillText( state.board[i], x, y );
 		elements.push({
 			id: i,
+			type: "bucket",
 			width: 48,
 			height: 48,
 			top: y - 24,
@@ -73,6 +76,7 @@ function drawMancala( state ) {
 		ctx.font = "30px Arial";
 		ctx.fillText( "Game Over", canvas.width / 2, canvas.height / 4 );
 		ctx.fillText( state.players[state.winner].username + " Wins!", canvas.width / 2, canvas.height / 2);
+		elements = [];
 	}
 }
 
@@ -131,8 +135,12 @@ canvas.addEventListener( 'click', function( ev ) {
 	elements.forEach( function( element ) {
 		if ( y > element.top && y < element.top + element.height &&
 			x > element.left && x < element.left + element.width ) {
-			move = element.id;
-			document.getElementById( "formMove" ).value = move;
+			if ( element.type == "bucket" ) {
+				move = element.id;
+				document.getElementById( "formMove" ).value = move;
+			} else {
+				return;
+			}
 		}
 	});
 }, false );
