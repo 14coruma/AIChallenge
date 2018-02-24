@@ -10,11 +10,23 @@ var canvas = document.getElementById( "myCanvas" ),
     canvasLeft = canvas.offsetLeft,
     canvasTop = canvas.offsetTop,
     elements = [],
-    moveObj = { bank: [], done: 1 };
+    moveObj = { bank: [], done: 0 };
 
 function drawFarkle( state ) {
 	ctx.clearRect( 0, 0, canvas.width, canvas.height );
 	elements = [];
+
+	// Reset move if it's not viewing player's turn
+	var formUsername = document.getElementById( "formUsername" );
+	if (
+			formUsername &&
+			state.players[state.currentPlayer].username != formUsername.value
+	) {
+		moveObj = { bank: [], done: 0 };
+		ctx.globalAlpha = 0.3;
+		ctx.fillRect( 0, 0, canvas.width, canvas.height );
+		ctx.globalAlpha = 1.0;
+	}
 
 	// Draw player names and scores
 	ctx.font = "18px Arial";
@@ -89,6 +101,22 @@ function drawFarkle( state ) {
 	ctx.textAlign = "left";
 	ctx.fillText( "Score Bank: " + state.temp, 32, 240 );
 
+	// Draw "Done?" button
+	ctx.strokeStyle = moveObj.done ? "Green" : "Black";
+	ctx.beginPath();
+	ctx.rect( 64, 304, 96, 32 );
+	ctx.stroke();
+	ctx.closePath();
+	ctx.fillText( "Done?", 68, 324 );
+	ctx.strokeStyle = "Black";
+	elements.push( {
+		type: "done",
+		width: 96,
+		height: 32,
+		top: 304,
+		left: 68,
+	} );
+
 	// Draw Game Over
 	if (state.gameOver == 1) {
 		ctx.font = "30px Arial";
@@ -115,6 +143,9 @@ canvas.addEventListener( 'click', function( ev ) {
 				case "bank":
 					var index = moveObj.bank.indexOf( element.value );
 					moveObj.bank.splice( index, 1 );
+					break;
+				case "done":
+					moveObj.done = moveObj.done ? 0 : 1;
 					break;
 				default:
 					console.log( "ERROR! Invalid element type clicked!" );
