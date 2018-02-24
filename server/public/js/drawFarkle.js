@@ -123,6 +123,7 @@ function drawFarkle( state ) {
 		ctx.textAlign = "center";
 		ctx.fillText( "Game Over", canvas.width / 2, canvas.height / 4 );
 		ctx.fillText( state.players[state.winner].username + " Wins!", canvas.width / 2, 3 * canvas.height / 4);
+		elements = [];
 	}
 }
 
@@ -148,7 +149,7 @@ canvas.addEventListener( 'click', function( ev ) {
 					moveObj.done = moveObj.done ? 0 : 1;
 					break;
 				default:
-					console.log( "ERROR! Invalid element type clicked!" );
+					return;
 			}
 			document.getElementById( "formMove" ).value = JSON.stringify( moveObj );
 		}

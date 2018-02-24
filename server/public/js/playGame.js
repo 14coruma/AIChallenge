@@ -45,8 +45,10 @@ function updateSelectGame() {
 	}
 }
 
+/**
+ * Send request to server to start a game
+ */
 function startGame() {
-	// TODO:  Open 'waiting' div
 	username = document.getElementById( 'formUsername' ).value;
 	password = document.getElementById( 'formPassword' ).value;
 	game = document.getElementById( 'selectGame' ).value;
