@@ -98,6 +98,11 @@ function makeMove() {
 		gid      : gid,
 		move     : formMove,
 	}
+	switch( game ) {
+		case "farkle":
+			resetFarkleBank();
+			break;
+	}
 	websocket.send( JSON.stringify( message ) );
 	document.getElementById( 'makeMoveBtn' ).disabled = true;
 }

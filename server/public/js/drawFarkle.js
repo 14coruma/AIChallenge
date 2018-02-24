@@ -154,3 +154,12 @@ canvas.addEventListener( 'click', function( ev ) {
 		}
 	});
 }, false );
+
+/**
+ * Empty out the moveObj.bank
+ * Call this when a player makes his/her move to refresh bank
+ */
+function resetFarkleBank() {
+	moveObj.bank = [];
+	document.getElementById( "formMove" ).value = JSON.stringify( moveObj );
+}
