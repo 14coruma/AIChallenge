@@ -32,9 +32,8 @@ function drawFarkle( state ) {
 		tempBank.shift();
 	}
 
-	let spacer1 = ( canvas.width - 160 ) / tempDice;
-	var spacer2 = ( canvas.width - 160 ) / ( state.bank.length + moveObj.bank.length );
-	if ( state.bank.length > 0 ) ( canvas.width - 160 ) / state.bank.length;
+	let spacer1 = ( canvas.width - 160 ) / tempDice.length;
+	var spacer2 = ( canvas.width - 160 ) / ( state.bank.length + moveObj.bank.length + 1 );
 
 	// Draw dice
 	ctx.fillText( "Roll: ", 32, 144 );
