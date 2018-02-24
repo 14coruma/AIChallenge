@@ -12,7 +12,7 @@ var username = "";
 var password = "";
 var game = "";
 var state = {};
-var wsUri = "ws://153.106.160.18:8080/"; // Set ip address to local server
+var wsUri = "ws://153.106.161.225:8080/"; // Set ip address to local server
 var websocket = new WebSocket( wsUri );
 websocket.onmessage = function( evt ) { onMessage( evt ) };
 websocket.onerror = function( evt ) { onError( evt ) };
@@ -89,14 +89,14 @@ function onMessage( evt )
  * Send a player's move to the websocket
  */
 function makeMove() {
-	var move = document.getElementById( 'formMove' ).value;
+	var formMove = document.getElementById( 'formMove' ).value;
 	var message = {
 		msgType  : "move",
 		username : username,
 		password : password,
 		gameName : game,
 		gid      : gid,
-		move     : move,
+		move     : formMove,
 	}
 	websocket.send( JSON.stringify( message ) );
 	document.getElementById( 'makeMoveBtn' ).disabled = true;

@@ -10,7 +10,7 @@ var canvas = document.getElementById( "myCanvas" ),
     canvasLeft = canvas.offsetLeft,
     canvasTop = canvas.offsetTop,
     elements = [],
-    move = { bank: [], done: 1 };
+    moveObj = { bank: [], done: 1 };
 
 function drawFarkle( state ) {
 	ctx.clearRect( 0, 0, canvas.width, canvas.height );
@@ -24,23 +24,31 @@ function drawFarkle( state ) {
 		ctx.fillText( "Score: " + state.players[i-1].score, 10, 48 * i );
 	}
 
-	let spacer1 = ( canvas.width - 160 ) / state.dice.length;
-	var spacer2 = ( canvas.width - 160 ) / ( state.bank.length + move.bank.length );
-	if ( state.bank.length > 0 ) ( canvas.widht - 160 ) / state.bank.length;
+	// Calculate tempDice = state.dice - move.bank
+	var tempBank = moveObj.bank.slice();
+	var tempDice = state.dice.slice();
+	while ( tempBank.length > 0 ) {
+		tempDice.splice( tempDice.indexOf( tempBank[0] ), 1 );
+		tempBank.shift();
+	}
+
+	let spacer1 = ( canvas.width - 160 ) / tempDice;
+	var spacer2 = ( canvas.width - 160 ) / ( state.bank.length + moveObj.bank.length );
+	if ( state.bank.length > 0 ) ( canvas.width - 160 ) / state.bank.length;
 
 	// Draw dice
 	ctx.fillText( "Roll: ", 32, 144 );
 	ctx.textAlign = "center";
-	for ( var i = 0; i < state.dice.length; i++ ) {
+	for ( var i = 0; i < tempDice.length; i++ ) {
 		ctx.beginPath();
 		ctx.rect( 96 + i * spacer1, 128, 32, 32 );
 		ctx.stroke();
 		ctx.closePath();
-		ctx.fillText( state.dice[i], 112 + i * spacer1, 146 );
+		ctx.fillText( tempDice[i], 112 + i * spacer1, 146 );
 		elements.push( {
 			id: i,
 			type: "dice",
-			value: state.dice[i],
+			value: tempDice[i],
 			width: 32,
 			height: 32,
 			top: 128,
@@ -59,18 +67,18 @@ function drawFarkle( state ) {
 		ctx.closePath();
 		ctx.fillText( state.bank[i], 144 + i * spacer2, 196 );
 	}
-	for ( var i = 0; i < move.bank.length; i++ ) {
+	for ( var i = 0; i < moveObj.bank.length; i++ ) {
 		ctx.strokeStyle = "Green";
 		ctx.beginPath();
 		ctx.rect( 128 + (i + state.bank.length) * spacer2, 176, 32, 32 );
 		ctx.stroke();
 		ctx.closePath();
-		ctx.fillText( move.bank[i], 144 + (i + state.bank.length) * spacer2, 196 );
+		ctx.fillText( moveObj.bank[i], 144 + (i + state.bank.length) * spacer2, 196 );
 		ctx.strokeStyle = "Black";
 		elements.push( {
 			id: i,
 			type: "bank",
-			value: move.bank[i],
+			value: moveObj.bank[i],
 			width: 32,
 			height: 32,
 			top: 176,
@@ -100,18 +108,19 @@ canvas.addEventListener( 'click', function( ev ) {
 	elements.forEach( function( element ) {
 		if ( y > element.top && y < element.top + element.height &&
 			x > element.left && x < element.left + element.width ) {
+			console.log( moveObj );
 			switch ( element.type ) {
 				case "dice":
-					move.bank.push( element.value );
+					moveObj.bank.push( element.value );
 					break;
 				case "bank":
-					var index = move.bank.indexOf( element.value );
-					move.bank.splice( index, 1 );
+					var index = moveObj.bank.indexOf( element.value );
+					moveObj.bank.splice( index, 1 );
 					break;
 				default:
 					console.log( "ERROR! Invalid element type clicked!" );
 			}
-			document.getElementById( "formMove" ).value = JSON.stringify( move );
+			document.getElementById( "formMove" ).value = JSON.stringify( moveObj );
 		}
 	});
 }, false );
