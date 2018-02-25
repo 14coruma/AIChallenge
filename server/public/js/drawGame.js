@@ -55,6 +55,9 @@ async function drawGameState(gameID) {
 				case "farkle":
 					drawFarkle( state );
 					break;
+				case "warring":
+					drawWarring( state );
+					break;
 				default:
 					console.log( "gameName, " + gameName + " not recognized" );
 			}

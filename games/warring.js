@@ -34,7 +34,11 @@ exports.start = function( lgid, usernames, callback ) {
 	for ( var row = 0; row < MAP_SIZE; row++ ) {
 		state.map[row] = new Array(MAP_SIZE);
 		for ( var col = 0; col < MAP_SIZE; col++ ) {
-			state.map[row][col] = { type: "grass", solid: false };
+			state.map[row][col] = {
+				type: "grass",
+				style: Math.floor( Math.random() * 4 ),
+				hp: 0, solid: false
+			};
 		}
 	}
 

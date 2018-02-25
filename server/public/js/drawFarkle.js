@@ -136,7 +136,6 @@ canvas.addEventListener( 'click', function( ev ) {
 	elements.forEach( function( element ) {
 		if ( y > element.top && y < element.top + element.height &&
 			x > element.left && x < element.left + element.width ) {
-			console.log( moveObj );
 			switch ( element.type ) {
 				case "dice":
 					moveObj.bank.push( element.value );
