@@ -109,7 +109,15 @@ function drawElement( element ) {
 		case "grass":
 			sy = 0; sx = element.style;
 			break;
-		case "worker":
+		case "keep":
+			drawElement( {
+				type2: "grass", style: 0,
+				left: element.left, top: element.top,
+				width: element.width, height: element.height,
+			} );
+			sy = 4; sx = element.style * -2 + 4;
+			break;
+		case "farmer":
 			sy = 35 + element.player; sx = 2;
 			break;
 		default:
@@ -135,7 +143,7 @@ canvas.addEventListener( 'click', function( ev ) {
 		if ( y > element.top && y < element.top + element.height &&
 			x > element.left && x < element.left + element.width ) {
 			switch ( element.type1 ) {
-				case "unit"
+				case "unit":
 					moveObj.updates.push( element.type1 );
 					break;
 				default:

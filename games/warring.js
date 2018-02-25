@@ -25,34 +25,24 @@ exports.start = function( lgid, usernames, callback ) {
 		state.players.push( {
 			username: usernames[i],
 			units: [],
-			gold: 400,
+			food: 400,
 			errors: 0,
 		} );
 	}
 
 	// Generate map
-	for ( var row = 0; row < MAP_SIZE; row++ ) {
-		state.map[row] = new Array(MAP_SIZE);
-		for ( var col = 0; col < MAP_SIZE; col++ ) {
-			state.map[row][col] = {
-				type: "grass",
-				style: Math.floor( Math.random() * 4 ),
-				hp: 0, solid: false
-			};
-		}
-	}
+	state = generateMap( state );
 
 	// Create initial player units
 	for ( var i = 0; i < usernames.length; i++ ) {
 		// One peasant
 		state.players[i].units[0] = {
-			class: "worker",
+			class: "farmer",
 			x: 1 + 6 * i, y: 2 + 6 * i,
 			hp: 40,
-			ac: 0,
 			attack: 0,
 			range: 0,
-			carrying: true,
+			hasFood: false,
 		};
 	}
 
@@ -114,6 +104,83 @@ function updateState( state, move ) {
 }
 
 /**
+ * train checks if training is valid, impliments it,
+ * and then returns the new state
+ *
+ * @param: (JSON) state
+ * @param: (obj) move
+ *
+ * @return: (JSON) newState
+ */
+function train( state, move ) {
+	let player = state.currentPlayer;
+	// Make sure move is an object with unit# and direction, and not a farmer
+	if ( typeof move != "object" ) {
+		state.players[player].errors++;
+		return state;
+	}
+	if ( typeof move.class != "string" ) {
+		state.players[player].errors++;
+		return state;
+	}
+
+	// Check that there is enough food to train unit
+	var cost, unit;
+	switch( move.class ) {
+		case "farmer":
+			cost = 400;
+			unit = {
+				class: "farmer", hp: 40, attack: 0,  range: 0, hasFood: false,
+			};
+			break;
+		case "soldier":
+			cost = 450;
+			unit = {
+				class: "soldier", hp: 60, attack: 15,  range: 0,
+			};
+			break;
+		case "archer":
+			cost = 500;
+			unit = {
+				class: "archer", hp: 50, attack: 10,  range: 2,
+			};
+			break;
+		default:
+			state.players[player].errors++;
+			return state;
+	}
+	if ( state.players[player].food < cost ) {
+		state.players[player].errors++;
+		return state;
+	}
+
+	// Check for an open space around the keep
+	var keepX, keepY;
+	for ( var row = 0; row < MAP_SIZE; row++ ) {
+		for ( var col = 0; col < MAP_SIZE; col++ ) {
+			if ( state.map[row][col].type == "keep" &&
+				 state.map[row][col].style == player ) {
+				keepX = col; keepY = row;
+				row = col = MAP_SIZE;
+			}
+		}
+	}
+	var space = freeAround( state, keepX, keepY );
+	if ( space == false ) {
+		state.players[player].errors++;
+		return state;
+	}
+	unit.x = space.x;
+	unit.y = space.y;
+
+	// Create unit
+	state.players[player].units.push( unit );
+	state.players[player].food -= cost;
+
+	return state;
+}
+
+/**
  * attack checks if an attack is valid, impliments it,
  * and then returns the new state
  *
@@ -124,7 +191,7 @@ function updateState( state, move ) {
  */
 function attack( state, move ) {
 	let player = state.currentPlayer;
-	// Make sure move is an object with unit# and direction, and not a worker
+	// Make sure move is an object with unit# and direction, and not a farmer
 	if ( typeof move != "object" ) {
 		state.players[player].errors++;
 		return state;
@@ -137,7 +204,7 @@ function attack( state, move ) {
 		state.players[player].errors++;
 		return state;
 	}
-	if ( state.players[player].units[move.unit].class == "worker" ) {
+	if ( state.players[player].units[move.unit].class == "farmer" ) {
 		state.players[player].errors++;
 		return state;
 	}
@@ -248,6 +315,7 @@ function makeMove( state, move ) {
 /**
  * occupied() looks for any occupants at a particular location
  *
+ * @param: (obj) state
  * @param: (int) x
  * @param: (int) y
  *
@@ -259,7 +327,7 @@ function occupied( state, x, y ) {
 		return { type: "empty" };
 
 	// Check map tile
-	if ( state.map[x][y].type == "wall" )
+	if ( state.map[y][x].type == "wall" )
 		return { type: "wall" };
 
 	// Check units
@@ -277,6 +345,7 @@ function occupied( state, x, y ) {
 /**
  * obstructed() looks for any obstructions at a particular location
  *
+ * @param: (obj) state
  * @param: (int) x
  * @param: (int) y
  *
@@ -284,11 +353,11 @@ function occupied( state, x, y ) {
  */
 function obstructed( state, x, y ) {
 	// Check if (x,y) is off the map
-	if ( x >= MAP_SIZE || x < 0 || y > MAP_SIZE || y < 0 )
+	if ( x >= MAP_SIZE || x < 0 || y >= MAP_SIZE || y < 0 )
 		return true;
 
 	// Check map tile
-	if ( state.map[x][y].solid )
+	if ( state.map[y][x].solid )
 		return true;
 
 	// Check units
@@ -330,6 +399,55 @@ function checkBroken( state, x, y ) {
 function checkDead( state, player, unit ) {
 	if ( state.players[player].units[unit].hp <= 0 )
 		state.players[player].units.splice( unit, 1 );
+	return state;
+}
+
+/**
+ * freeAround() finds a free space around a point
+ * returns false on failure
+ *
+ * @param: (obj) state
+ * @param: (int) x
+ * @param: (int) y
+ *
+ * @return: (obj) { x, y }
+ *          (bool) false (upon failure to find free space)
+ */
+function freeAround( state, x, y ) {
+	if ( !obstructed( state, x+1, y ) )
+		return { x: x+1, y: y };
+	if ( !obstructed( state, x, y+1 ) )
+		return { x: x, y: y+1 };
+	if ( !obstructed( state, x-1, y ) )
+		return { x: x-1, y: y };
+	if ( !obstructed( state, x, y-1 ) )
+		return { x: x, y: y-1 };
+	return false;
+}
+
+/**
+ * generateMap() creates the initial game map
+ *
+ * @param: (obj) state
+ *
+ * @return: (obj) state (with map updated)
+ */
+function generateMap( state ) {
+	// Grass tiles
+	for ( var row = 0; row < MAP_SIZE; row++ ) {
+		state.map[row] = new Array(MAP_SIZE);
+		for ( var col = 0; col < MAP_SIZE; col++ ) {
+			state.map[row][col] = {
+				type: "grass",
+				style: Math.floor( Math.random() * 4 ),
+				hp: 0, solid: false
+			};
+		}
+	}
+	// Castles
+	state.map[2][2] = { type: "keep", style: 0, hp: 150, solid: true }
+	state.map[8][8] = { type: "keep", style: 1, hp: 150, solid: true }
+
 	return state;
 }
 

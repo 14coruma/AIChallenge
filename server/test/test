@@ -1,0 +1,123 @@
+
+var mainMap = [
+	[
+		{ "type": "mountain", "solid": true },
+		{ "type": "grass", "solid": false },
+		{ "type": "keep", "style": 0, "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false }
+	],
+	[
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false }
+	],
+	[
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false }
+	],
+	[
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false }
+	],
+	[
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false }
+	],
+	[
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false }
+	],
+	[
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false }
+	],
+	[
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false }
+	],
+	[
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "mountain", "solid": true },
+		{ "type": "grass", "solid": false }
+	],
+	[
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "grass", "solid": false },
+		{ "type": "mountain", "solid": true },
+		{ "type": "keep", "style": 1, "solid": true },
+		{ "type": "wall", "solid": true, "hp": 120 }
+	]
+];

@@ -6,7 +6,7 @@ var gm = require( "../controllers/gameManager.js" );
 var warring = require( "../../games/warring.js" );
 
 // Define mainMap variable
-var mainMap = [    	[    		{ "type": "mountain", "solid": true },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "wall", "solid": true, "hp": 120 }    	]    ];
+var mainMap = [    	[    		{ "type": "mountain", "solid": true },    		{ "type": "grass", "solid": false },    		{ "type": "keep", "style": 0, "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "mountain", "solid": true },    		{ "type": "grass", "solid": false }    	],    	[    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "grass", "solid": false },    		{ "type": "mountain", "solid": true },    		{ "type": "keep", "style": 1, "solid": true },    		{ "type": "wall", "solid": true, "hp": 120 }    	]    ];
 
 describe( "Warring Kings Testing", function() {
 	/*
@@ -18,8 +18,8 @@ describe( "Warring Kings Testing", function() {
 			expect( state.game ).to.equal( "warring" );
 			expect( state.players ).to.have.lengthOf( 2 );
 			expect( state.gameOver ).to.equal( 0 );
-			expect( state.players[0].gold).to.equal( 400 );
-			expect( state.players[1].gold).to.equal( 400 );
+			expect( state.players[0].food).to.equal( 400 );
+			expect( state.players[1].food).to.equal( 400 );
 			expect( state.players[0].units.length).to.equal( 1 );
 			expect( state.players[1].units[0].hp).to.equal( 40 );
 			expect( state.currentPlayer).to.equal( 0 );
@@ -36,11 +36,11 @@ describe( "Warring Kings Testing", function() {
 		gm.makeMove(
 			// Set state
 			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
-				{ username: 'test123', fail: 0, gold: 400, units: [
-					{ class: "worker", x: 2, y: 2, hp: 40 },
+				{ username: 'test123', fail: 0, food: 400, units: [
+					{ class: "farmer", x: 2, y: 2, hp: 40 },
 				] },
-				{ username: 'test456', fail: 0, gold: 400, units: [
-					{ class: "worker", x: 8, y: 8, hp: 40 },
+				{ username: 'test456', fail: 0, food: 400, units: [
+					{ class: "farmer", x: 8, y: 8, hp: 40 },
 				] }],
 				map: mainMap, currentPlayer: 0,
 			},
@@ -51,8 +51,8 @@ describe( "Warring Kings Testing", function() {
 				expect( state.game ).to.equal( "warring" );
 				expect( state.players ).to.have.lengthOf( 2 );
 				expect( state.gameOver ).to.equal( 0 );
-				expect( state.players[0].gold).to.equal( 400 );
-				expect( state.players[1].gold).to.equal( 400 );
+				expect( state.players[0].food).to.equal( 400 );
+				expect( state.players[1].food).to.equal( 400 );
 				expect( state.players[0].units.length).to.equal( 1 );
 				expect( state.players[1].units[0].hp).to.equal( 40 );
 				expect( state.players[0].units[0].x).to.equal( 2 );
@@ -64,11 +64,11 @@ describe( "Warring Kings Testing", function() {
 		gm.makeMove(
 			// Set state
 			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
-				{ username: 'test123', fail: 0, errors: 0, gold: 400, units: [
-					{ class: "worker", x: 2, y: 2, hp: 40 },
+				{ username: 'test123', fail: 0, errors: 0, food: 400, units: [
+					{ class: "farmer", x: 2, y: 2, hp: 40 },
 				] },
-				{ username: 'test456', fail: 0, errors: 0, gold: 400, units: [
-					{ class: "worker", x: 9, y: 9, hp: 40 },
+				{ username: 'test456', fail: 0, errors: 0, food: 400, units: [
+					{ class: "farmer", x: 9, y: 9, hp: 40 },
 				] }],
 				map: mainMap, currentPlayer: 1,
 			},
@@ -79,8 +79,8 @@ describe( "Warring Kings Testing", function() {
 				expect( state.game ).to.equal( "warring" );
 				expect( state.players ).to.have.lengthOf( 2 );
 				expect( state.gameOver ).to.equal( 0 );
-				expect( state.players[0].gold).to.equal( 400 );
-				expect( state.players[1].gold).to.equal( 400 );
+				expect( state.players[0].food).to.equal( 400 );
+				expect( state.players[1].food).to.equal( 400 );
 				expect( state.players[0].units.length).to.equal( 1 );
 				expect( state.players[1].units[0].hp).to.equal( 40 );
 				expect( state.players[1].units[0].x).to.equal( 9 );
@@ -93,11 +93,11 @@ describe( "Warring Kings Testing", function() {
 		gm.makeMove(
 			// Set state
 			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
-				{ username: 'test123', fail: 0, errors: 0, gold: 400, units: [
-					{ class: "worker", x: 1, y: 0, hp: 40 },
+				{ username: 'test123', fail: 0, errors: 0, food: 400, units: [
+					{ class: "farmer", x: 1, y: 0, hp: 40 },
 				] },
-				{ username: 'test456', fail: 0, errors: 0, gold: 400, units: [
-					{ class: "worker", x: 8, y: 8, hp: 40 },
+				{ username: 'test456', fail: 0, errors: 0, food: 400, units: [
+					{ class: "farmer", x: 8, y: 8, hp: 40 },
 				] }],
 				map: mainMap, currentPlayer: 0,
 			},
@@ -108,8 +108,8 @@ describe( "Warring Kings Testing", function() {
 				expect( state.game ).to.equal( "warring" );
 				expect( state.players ).to.have.lengthOf( 2 );
 				expect( state.gameOver ).to.equal( 0 );
-				expect( state.players[0].gold).to.equal( 400 );
-				expect( state.players[1].gold).to.equal( 400 );
+				expect( state.players[0].food).to.equal( 400 );
+				expect( state.players[1].food).to.equal( 400 );
 				expect( state.players[0].units.length).to.equal( 1 );
 				expect( state.players[0].units[0].hp).to.equal( 40 );
 				expect( state.players[0].units[0].x).to.equal( 1 );
@@ -122,11 +122,11 @@ describe( "Warring Kings Testing", function() {
 		gm.makeMove(
 			// Set state
 			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
-				{ username: 'test123', fail: 0, errors: 0, gold: 400, units: [
-					{ class: "worker", x: 8, y: 7, hp: 40 },
+				{ username: 'test123', fail: 0, errors: 0, food: 400, units: [
+					{ class: "farmer", x: 8, y: 7, hp: 40 },
 				] },
-				{ username: 'test456', fail: 0, errors: 0, gold: 400, units: [
-					{ class: "worker", x: 8, y: 8, hp: 40 },
+				{ username: 'test456', fail: 0, errors: 0, food: 400, units: [
+					{ class: "farmer", x: 8, y: 8, hp: 40 },
 				] }],
 				map: mainMap, currentPlayer: 0,
 			},
@@ -137,8 +137,8 @@ describe( "Warring Kings Testing", function() {
 				expect( state.game ).to.equal( "warring" );
 				expect( state.players ).to.have.lengthOf( 2 );
 				expect( state.gameOver ).to.equal( 0 );
-				expect( state.players[0].gold).to.equal( 400 );
-				expect( state.players[1].gold).to.equal( 400 );
+				expect( state.players[0].food).to.equal( 400 );
+				expect( state.players[1].food).to.equal( 400 );
 				expect( state.players[0].units.length).to.equal( 1 );
 				expect( state.players[0].units[0].hp).to.equal( 40 );
 				expect( state.players[0].units[0].x).to.equal( 8 );
@@ -155,10 +155,10 @@ describe( "Warring Kings Testing", function() {
 		gm.makeMove(
 			// Set state
 			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
-				{ username: 'test123', fail: 0, gold: 400, units: [
+				{ username: 'test123', fail: 0, food: 400, units: [
 					{ class: "soldier", x: 2, y: 2, hp: 40, attack: 10 },
 				] },
-				{ username: 'test456', fail: 0, gold: 400, units: [
+				{ username: 'test456', fail: 0, food: 400, units: [
 					{ class: "soldier", x: 3, y: 2, hp: 40, attack: 10 },
 				] }],
 				map: mainMap, currentPlayer: 0,
@@ -170,8 +170,8 @@ describe( "Warring Kings Testing", function() {
 				expect( state.game ).to.equal( "warring" );
 				expect( state.players ).to.have.lengthOf( 2 );
 				expect( state.gameOver ).to.equal( 0 );
-				expect( state.players[0].gold).to.equal( 400 );
-				expect( state.players[1].gold).to.equal( 400 );
+				expect( state.players[0].food).to.equal( 400 );
+				expect( state.players[1].food).to.equal( 400 );
 				expect( state.players[0].units.length).to.equal( 1 );
 				expect( state.players[1].units[0].hp).to.equal( 30 );
 				expect( state.players[0].units[0].x).to.equal( 2 );
@@ -183,10 +183,10 @@ describe( "Warring Kings Testing", function() {
 		gm.makeMove(
 			// Set state
 			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
-				{ username: 'test123', fail: 0, gold: 400, units: [
+				{ username: 'test123', fail: 0, food: 400, units: [
 					{ class: "soldier", x: 2, y: 2, hp: 40, attack: 10 },
 				] },
-				{ username: 'test456', fail: 0, gold: 400, units: [
+				{ username: 'test456', fail: 0, food: 400, units: [
 					{ class: "soldier", x: 3, y: 2, hp: 7, attack: 10 },
 				] }],
 				map: mainMap, currentPlayer: 0,
@@ -198,8 +198,8 @@ describe( "Warring Kings Testing", function() {
 				expect( state.game ).to.equal( "warring" );
 				expect( state.players ).to.have.lengthOf( 2 );
 				expect( state.gameOver ).to.equal( 0 );
-				expect( state.players[0].gold).to.equal( 400 );
-				expect( state.players[1].gold).to.equal( 400 );
+				expect( state.players[0].food).to.equal( 400 );
+				expect( state.players[1].food).to.equal( 400 );
 				expect( state.players[1].units.length).to.equal( 0 );
 				expect( state.players[0].units[0].x).to.equal( 2 );
 				expect( state.players[0].units[0].y).to.equal( 2 );
@@ -210,10 +210,10 @@ describe( "Warring Kings Testing", function() {
 		gm.makeMove(
 			// Set state
 			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
-				{ username: 'test123', fail: 0, gold: 400, units: [
+				{ username: 'test123', fail: 0, food: 400, units: [
 					{ class: "soldier", x: 2, y: 2, hp: 40, attack: 10 },
 				] },
-				{ username: 'test456', fail: 0, gold: 400, units: [
+				{ username: 'test456', fail: 0, food: 400, units: [
 					{ class: "soldier", x: 9, y: 8, hp: 7, attack: 10 },
 				] }],
 				map: mainMap, currentPlayer: 1,
@@ -225,8 +225,8 @@ describe( "Warring Kings Testing", function() {
 				expect( state.game ).to.equal( "warring" );
 				expect( state.players ).to.have.lengthOf( 2 );
 				expect( state.gameOver ).to.equal( 0 );
-				expect( state.players[0].gold).to.equal( 400 );
-				expect( state.players[1].gold).to.equal( 400 );
+				expect( state.players[0].food).to.equal( 400 );
+				expect( state.players[1].food).to.equal( 400 );
 				expect( state.players[1].units.length).to.equal( 1 );
 				expect( state.players[1].units[0].x).to.equal( 9 );
 				expect( state.players[1].units[0].y).to.equal( 8 );
@@ -239,10 +239,10 @@ describe( "Warring Kings Testing", function() {
 		gm.makeMove(
 			// Set state
 			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
-				{ username: 'test123', fail: 0, gold: 400, units: [
+				{ username: 'test123', fail: 0, food: 400, units: [
 					{ class: "soldier", x: 2, y: 2, hp: 40, attack: 10 },
 				] },
-				{ username: 'test456', fail: 0, gold: 400, units: [
+				{ username: 'test456', fail: 0, food: 400, units: [
 					{ class: "soldier", x: 9, y: 8, hp: 7, attack: 120 },
 				] }],
 				map: mainMap, currentPlayer: 1,
@@ -254,8 +254,8 @@ describe( "Warring Kings Testing", function() {
 				expect( state.game ).to.equal( "warring" );
 				expect( state.players ).to.have.lengthOf( 2 );
 				expect( state.gameOver ).to.equal( 0 );
-				expect( state.players[0].gold).to.equal( 400 );
-				expect( state.players[1].gold).to.equal( 400 );
+				expect( state.players[0].food).to.equal( 400 );
+				expect( state.players[1].food).to.equal( 400 );
 				expect( state.players[1].units.length).to.equal( 1 );
 				expect( state.players[1].units[0].x).to.equal( 9 );
 				expect( state.players[1].units[0].y).to.equal( 8 );
@@ -267,10 +267,10 @@ describe( "Warring Kings Testing", function() {
 		gm.makeMove(
 			// Set state
 			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
-				{ username: 'test123', fail: 0, errors: 0, gold: 400, units: [
+				{ username: 'test123', fail: 0, errors: 0, food: 400, units: [
 					{ class: "soldier", x: 2, y: 2, hp: 40, attack: 10 },
 				] },
-				{ username: 'test456', fail: 0, errors: 0, gold: 400, units: [
+				{ username: 'test456', fail: 0, errors: 0, food: 400, units: [
 					{ class: "soldier", x: 9, y: 8, hp: 7, attack: 10 },
 				] }],
 				map: mainMap, currentPlayer: 0,
@@ -282,8 +282,8 @@ describe( "Warring Kings Testing", function() {
 				expect( state.game ).to.equal( "warring" );
 				expect( state.players ).to.have.lengthOf( 2 );
 				expect( state.gameOver ).to.equal( 0 );
-				expect( state.players[0].gold).to.equal( 400 );
-				expect( state.players[1].gold).to.equal( 400 );
+				expect( state.players[0].food).to.equal( 400 );
+				expect( state.players[1].food).to.equal( 400 );
 				expect( state.players[1].units.length).to.equal( 1 );
 				expect( state.players[0].units[0].x).to.equal( 2 );
 				expect( state.players[0].units[0].y).to.equal( 2 );
@@ -296,10 +296,10 @@ describe( "Warring Kings Testing", function() {
 		gm.makeMove(
 			// Set state
 			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
-				{ username: 'test123', fail: 0, errors: 0, gold: 400, units: [
+				{ username: 'test123', fail: 0, errors: 0, food: 400, units: [
 					{ class: "soldier", x: 2, y: 2, hp: 40, attack: 10 },
 				] },
-				{ username: 'test456', fail: 0, errors: 0, gold: 400, units: [
+				{ username: 'test456', fail: 0, errors: 0, food: 400, units: [
 					{ class: "soldier", x: 9, y: 8, hp: 7, attack: 10 },
 				] }],
 				map: mainMap, currentPlayer: 1,
@@ -311,8 +311,8 @@ describe( "Warring Kings Testing", function() {
 				expect( state.game ).to.equal( "warring" );
 				expect( state.players ).to.have.lengthOf( 2 );
 				expect( state.gameOver ).to.equal( 0 );
-				expect( state.players[0].gold).to.equal( 400 );
-				expect( state.players[1].gold).to.equal( 400 );
+				expect( state.players[0].food).to.equal( 400 );
+				expect( state.players[1].food).to.equal( 400 );
 				expect( state.players[1].units.length).to.equal( 1 );
 				expect( state.players[1].units[0].x).to.equal( 9 );
 				expect( state.players[1].units[0].y).to.equal( 8 );
@@ -320,15 +320,15 @@ describe( "Warring Kings Testing", function() {
 				done();
 		} );
 	} );
-	it( "makeMove( worker -atk-> unit )", function( done ) {
+	it( "makeMove( farmer -atk-> unit )", function( done ) {
 		gm.makeMove(
 			// Set state
 			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
-				{ username: 'test123', fail: 0, errors: 0, gold: 400, units: [
+				{ username: 'test123', fail: 0, errors: 0, food: 400, units: [
 					{ class: "soldier", x: 2, y: 2, hp: 40, attack: 10 },
 				] },
-				{ username: 'test456', fail: 0, errors: 0, gold: 400, units: [
-					{ class: "worker", x: 3, y: 2, hp: 7 },
+				{ username: 'test456', fail: 0, errors: 0, food: 400, units: [
+					{ class: "farmer", x: 3, y: 2, hp: 7 },
 				] }],
 				map: mainMap, currentPlayer: 1,
 			},
@@ -339,11 +339,111 @@ describe( "Warring Kings Testing", function() {
 				expect( state.game ).to.equal( "warring" );
 				expect( state.players ).to.have.lengthOf( 2 );
 				expect( state.gameOver ).to.equal( 0 );
-				expect( state.players[0].gold).to.equal( 400 );
-				expect( state.players[1].gold).to.equal( 400 );
+				expect( state.players[0].food).to.equal( 400 );
+				expect( state.players[1].food).to.equal( 400 );
 				expect( state.players[1].units.length ).to.equal( 1 );
 				expect( state.players[0].units[0].hp ).to.equal( 40 );
 				expect( state.players[1].units[0].hp ).to.equal( 7 );
+				expect( state.players[1].errors ).to.equal( 1 );
+				done();
+		} );
+	} );
+
+	/**
+	 * Test unit training
+	 */
+	it( "makeMove( player0 -train-> worker )", function( done ) {
+		gm.makeMove(
+			// Set state
+			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
+				{ username: 'test123', fail: 0, errors: 0, food: 450, units: [
+					{ class: "soldier", x: 2, y: 2, hp: 30, attack: 10 },
+				] },
+				{ username: 'test456', fail: 0, errors: 0, food: 400, units: [
+					{ class: "farmer", x: 3, y: 2, hp: 7 },
+				] }],
+				map: mainMap, currentPlayer: 0,
+			},
+			// Define updates
+			{ updates: [{ type: "train", class: "farmer" }] },
+			function( state ) {
+				expect( state.players[0].food).to.equal( 50 );
+				expect( state.players[1].food).to.equal( 400 );
+				expect( state.players[0].units.length ).to.equal( 2 );
+				expect( state.players[0].units[1].hp ).to.equal( 40 );
+				expect( state.players[0].units[1].x ).to.equal( 3 );
+				expect( state.players[0].units[1].y ).to.equal( 0 );
+				expect( state.players[0].errors ).to.equal( 0 );
+				done();
+		} );
+	} );
+	it( "makeMove( player0 -train-> soldier )", function( done ) {
+		gm.makeMove(
+			// Set state
+			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
+				{ username: 'test123', fail: 0, errors: 0, food: 450, units: [
+					{ class: "soldier", x: 2, y: 2, hp: 30, attack: 10 },
+				] },
+				{ username: 'test456', fail: 0, errors: 0, food: 400, units: [
+					{ class: "farmer", x: 3, y: 2, hp: 7 },
+				] }],
+				map: mainMap, currentPlayer: 0,
+			},
+			// Define updates
+			{ updates: [{ type: "train", class: "soldier" }] },
+			function( state ) {
+				expect( state.players[0].food).to.equal( 0 );
+				expect( state.players[1].food).to.equal( 400 );
+				expect( state.players[0].units.length ).to.equal( 2 );
+				expect( state.players[0].units[1].hp ).to.equal( 60 );
+				expect( state.players[0].units[1].x ).to.equal( 3 );
+				expect( state.players[0].units[1].y ).to.equal( 0 );
+				expect( state.players[0].errors ).to.equal( 0 );
+				done();
+		} );
+	} );
+	it( "makeMove( player0 -train-> archer (too expensive) )", function( done ) {
+		gm.makeMove(
+			// Set state
+			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
+				{ username: 'test123', fail: 0, errors: 0, food: 450, units: [
+					{ class: "soldier", x: 2, y: 2, hp: 30, attack: 10 },
+				] },
+				{ username: 'test456', fail: 0, errors: 0, food: 400, units: [
+					{ class: "farmer", x: 3, y: 2, hp: 7 },
+				] }],
+				map: mainMap, currentPlayer: 0,
+			},
+			// Define updates
+			{ updates: [{ type: "train", class: "archer" }] },
+			function( state ) {
+				expect( state.players[0].food).to.equal( 450 );
+				expect( state.players[1].food).to.equal( 400 );
+				expect( state.players[0].units.length ).to.equal( 1 );
+				expect( state.players[0].errors ).to.equal( 1 );
+				done();
+		} );
+	} );
+	it( "makeMove( player1 -train-> archer (no space) )", function( done ) {
+		mainMap[9][9] = { type: "wall", hp: 120, solid: true };
+		mainMap[9][7] = { type: "wall", hp: 120, solid: true };
+		gm.makeMove(
+			// Set state
+			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
+				{ username: 'test123', fail: 0, errors: 0, food: 450, units: [
+					{ class: "soldier", x: 2, y: 2, hp: 30, attack: 10 },
+				] },
+				{ username: 'test456', fail: 0, errors: 0, food: 500, units: [
+					{ class: "farmer", x: 3, y: 2, hp: 7 },
+				] }],
+				map: mainMap, currentPlayer: 1,
+			},
+			// Define updates
+			{ updates: [{ type: "train", class: "archer" }] },
+			function( state ) {
+				expect( state.players[0].food).to.equal( 450 );
+				expect( state.players[1].food).to.equal( 500 );
+				expect( state.players[1].units.length ).to.equal( 1 );
 				expect( state.players[1].errors ).to.equal( 1 );
 				done();
 		} );
