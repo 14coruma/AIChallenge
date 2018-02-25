@@ -22,12 +22,12 @@
   "homepage": "https://github.com/14coruma/AIChallenge#readme",
   "devDependencies": {
     "chai": "^4.1.2",
-    "mocha": "^4.0.1",
+    "mocha": "^4.1.0",
     "mysql": "^2.15.0"
   },
   "dependencies": {
     "async": "^2.5.0",
     "body-parser": "^1.17.2",
-    "ws": "^3.2.0"
+    "ws": "^3.3.3"
   }
 }
