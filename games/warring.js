@@ -78,16 +78,16 @@ function updateState( state, move ) {
 		var player = move.player;
 		switch ( update.type ) {
 			case "move":
-				state = makeMove( state, update, player );
+				state = makeMove( state, update );
 				break;
 			case "attack":
-				state = attack( state, update, player );
+				state = attack( state, update );
 				break;
 			case "train":
-				state = train( state, update, player );
+				state = train( state, update );
 				break;
 			case "build":
-				state = build( state, update, player );
+				state = build( state, update );
 				break;
 			default:
 				state.players[move.player].errors++;
@@ -104,6 +104,76 @@ function updateState( state, move ) {
 }
 
 /**
+ * build checks if building is valid, impliments it,
+ * and then returns the new state
+ *
+ * @param: (JSON) state
+ * @param: (obj) move
+ *
+ * @return: (JSON) newState
+ */
+function build( state, move ) {
+	let player = state.currentPlayer;
+	// Make sure move is an object with unit# and direction
+	if ( typeof move != "object" ) {
+		state.players[player].errors++;
+		return state;
+	}
+	if ( typeof move.unit != "number" ) {
+		state.players[player].errors++;
+		return state;
+	}
+	if ( typeof move.direction != "string" ) {
+		state.players[player].errors++;
+		return state;
+	}
+
+	// Check that there is enough food to build wall
+	let cost = 250;
+	if ( state.players[player].food < cost ) {
+		state.players[player].errors++;
+		return state;
+	}
+
+	// Calculate newX and newY of wall
+	var newX = state.players[player].units[move.unit].x;
+	var newY = state.players[player].units[move.unit].y;
+	switch( move.direction ) {
+		case "N":
+			newY -= 1;
+			break;
+		case "E":
+			newX += 1;
+			break;
+		case "S":
+			newY += 1;
+			break;
+		case "W":
+			newX -= 1;
+			break;
+		default:
+			state.players[player].errors++;
+			return state;
+	}
+
+	// Check if there is space for the wall
+	if ( obstructed( state, newX, newY ) ) {
+		state.players[player].errors++;
+		return state;
+	}
+
+	// Build the wall & make payment
+	state.map[newY][newX] = {
+		type: "wall",
+		style: 0,
+		hp: 150, solid: true
+	}
+	state.players[player].food -= cost;
+
+	return state;
+}
+
+/**
  * train checks if training is valid, impliments it,
  * and then returns the new state
  *
@@ -114,7 +184,7 @@ function updateState( state, move ) {
  */
 function train( state, move ) {
 	let player = state.currentPlayer;
-	// Make sure move is an object with unit# and direction, and not a farmer
+	// Make sure move is an object with unit class
 	if ( typeof move != "object" ) {
 		state.players[player].errors++;
 		return state;
@@ -445,8 +515,8 @@ function generateMap( state ) {
 		}
 	}
 	// Castles
-	state.map[2][2] = { type: "keep", style: 0, hp: 150, solid: true }
-	state.map[8][8] = { type: "keep", style: 1, hp: 150, solid: true }
+	state.map[2][2] = { type: "keep", style: 0, hp: 500, solid: true }
+	state.map[8][8] = { type: "keep", style: 1, hp: 500, solid: true }
 
 	return state;
 }

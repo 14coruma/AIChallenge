@@ -448,4 +448,53 @@ describe( "Warring Kings Testing", function() {
 				done();
 		} );
 	} );
+
+	/**
+	 * Test building
+	 */
+	it( "makeMove( player0 -build-> wall )", function( done ) {
+		gm.makeMove(
+			// Set state
+			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
+				{ username: 'test123', fail: 0, errors: 0, food: 450, units: [
+					{ class: "soldier", x: 2, y: 2, hp: 30, attack: 10 },
+				] },
+				{ username: 'test456', fail: 0, errors: 0, food: 400, units: [
+					{ class: "farmer", x: 3, y: 2, hp: 7 },
+				] }],
+				map: mainMap, currentPlayer: 0,
+			},
+			// Define updates
+			{ updates: [{ type: "build", unit: 0, direction: "S" }] },
+			function( state ) {
+				expect( state.players[0].food).to.equal( 200 );
+				expect( state.players[1].food).to.equal( 400 );
+				expect( state.players[0].units.length ).to.equal( 1 );
+				expect( state.players[0].errors ).to.equal( 0 );
+				expect( state.map[3][2].type ).to.equal( "wall" );
+				expect( state.map[3][2].solid ).to.equal( true );
+				done();
+		} );
+	} );
+	it( "makeMove( player0 -build-> wall (obstructed) )", function( done ) {
+		gm.makeMove(
+			// Set state
+			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
+				{ username: 'test123', fail: 0, errors: 0, food: 450, units: [
+					{ class: "soldier", x: 2, y: 2, hp: 30, attack: 10 },
+				] },
+				{ username: 'test456', fail: 0, errors: 0, food: 400, units: [
+					{ class: "farmer", x: 0, y: 5, hp: 7 },
+				] }],
+				map: mainMap, currentPlayer: 1,
+			},
+			// Define updates
+			{ updates: [{ type: "build", unit: 0, direction: "W" }] },
+			function( state ) {
+				expect( state.players[0].food).to.equal( 450 );
+				expect( state.players[1].food).to.equal( 400 );
+				expect( state.players[1].errors ).to.equal( 1 );
+				done();
+		} );
+	} );
 } );
