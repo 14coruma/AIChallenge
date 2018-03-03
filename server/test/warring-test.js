@@ -497,4 +497,54 @@ describe( "Warring Kings Testing", function() {
 				done();
 		} );
 	} );
+
+	/**
+	 * Test auto farm and food dropoff
+	 */
+	it( "makeMove( player0 -move-> on farm )", function( done ) {
+		mainMap[3][2] = { type: "farm", solid: "false" };
+		gm.makeMove(
+			// Set state
+			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
+				{ username: 'test123', fail: 0, errors: 0, food: 450, units: [
+					{ class: "farmer", x: 2, y: 2, hp: 30, attack: 10, hasFood: false },
+				] },
+				{ username: 'test456', fail: 0, errors: 0, food: 400, units: [
+					{ class: "farmer", x: 3, y: 2, hp: 7 },
+				] }],
+				map: mainMap, currentPlayer: 0,
+			},
+			// Define updates
+			{ updates: [{ type: "move", unit: 0, direction: "S" }] },
+			function( state ) {
+				expect( state.players[0].food).to.equal( 450 );
+				expect( state.players[1].food).to.equal( 400 );
+				expect( state.players[0].errors ).to.equal( 0 );
+				expect( state.players[0].units[0].hasFood ).to.equal( true );
+				done();
+		} );
+	} );
+	it( "makeMove( player1 -move-> near keep w/ food )", function( done ) {
+		mainMap[9][9] = { type: "grass", solid: "false" };
+		gm.makeMove(
+			// Set state
+			{ id: 1, game: "warring", gameOver: 0, error: "", players: [
+				{ username: 'test123', fail: 0, errors: 0, food: 450, units: [
+					{ class: "farmer", x: 2, y: 2, hp: 30, attack: 10, hasFood: false },
+				] },
+				{ username: 'test456', fail: 0, errors: 0, food: 400, units: [
+					{ class: "farmer", x: 8, y: 9, hp: 7, hasFood: true },
+				] }],
+				map: mainMap, currentPlayer: 1,
+			},
+			// Define updates
+			{ updates: [{ type: "move", unit: 0, direction: "E" }] },
+			function( state ) {
+				expect( state.players[0].food).to.equal( 450 );
+				expect( state.players[1].food).to.equal( 600 );
+				expect( state.players[1].errors ).to.equal( 0 );
+				expect( state.players[1].units[0].hasFood ).to.equal( false );
+				done();
+		} );
+	} );
 } );

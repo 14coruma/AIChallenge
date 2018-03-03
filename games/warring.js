@@ -379,6 +379,18 @@ function makeMove( state, move ) {
 	state.players[player].units[move.unit].x = newX;
 	state.players[player].units[move.unit].y = newY;
 
+	// Check to see if farmer is by a farm or the keep
+	if ( state.players[player].units[move.unit].class == "farmer" ) {
+		if ( !state.players[player].units[move.unit].hasFood 
+		     && state.map[newY][newX].type == "farm" ) {
+			state.players[player].units[move.unit].hasFood = true;
+		} else if ( state.players[player].units[move.unit].hasFood
+		     && byKeep( state, newX, newY ) ) {
+			state.players[player].units[move.unit].hasFood = false;
+			state.players[player].food += 200;
+		}
+	}
+
 	return state;
 }
 
@@ -427,8 +439,9 @@ function obstructed( state, x, y ) {
 		return true;
 
 	// Check map tile
-	if ( state.map[y][x].solid )
+	if ( state.map[y][x].solid == true ) {
 		return true;
+	}
 
 	// Check units
 	for ( var i = 0; i < state.players.length; i++ ) {
@@ -492,6 +505,31 @@ function freeAround( state, x, y ) {
 		return { x: x-1, y: y };
 	if ( !obstructed( state, x, y-1 ) )
 		return { x: x, y: y-1 };
+	return false;
+}
+
+/**
+ * byKeep() checks if currentPlayer's keep is around a point
+ *
+ * @param: (obj) state
+ * @param: (int) x
+ * @param: (int) y
+ *
+ * @return: (bool) result
+ */
+function byKeep( state, x, y ) {
+	if ( x+1 < MAP_SIZE && state.map[y][x+1].type == "keep"
+	     && state.map[y][x+1].style == state.currentPlayer )
+		return true;
+	if ( x-1 > 0 && state.map[y][x-1].type == "keep"
+	     && state.map[y][x-1].style == state.currentPlayer )
+		return true;
+	if ( y+1 < MAP_SIZE && state.map[y+1][x].type == "keep"
+	     && state.map[y-1][x].style == state.currentPlayer )
+		return true;
+	if ( y-1 > 0 && state.map[y-1][x].type == "keep"
+	     && state.map[y-1][x].style == state.currentPlayer )
+		return true;
 	return false;
 }
 
