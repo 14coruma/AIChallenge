@@ -7,7 +7,7 @@ var PF = require( 'pathfinding' );
 const MAP_SIZE = 17;
 const KEEP1 = { x: 4, y: 4 };
 const KEEP2 = { x: MAP_SIZE - 5, y: MAP_SIZE - 5 };
-const FARM_DIST = 5;
+const FARM_DIST = 4;
 
 var usernames = ["joe", "bob"];
 var state = {
@@ -865,8 +865,10 @@ function diamond_square( hmap, width, height ) {
  * @return: (2d array) stateMap (updated)
  */
 function generateFarm( stateMap, x, y ) {
-	var farmX = x + Math.floor( (Math.random()-.5) * 5 );
-	var farmY = y + ( FARM_DIST - (farmX - x) ) % (FARM_DIST-1);
+	var shiftX = Math.floor( (Math.random() - 0.5)*FARM_DIST );
+	var shiftY = (shiftX < 0 ) ? (FARM_DIST + shiftX) : (FARM_DIST - shiftX);
+	var farmX = x + shiftX;
+	var farmY = y + shiftY; 
 
 	// Create windy path between castle and farm (using A*)
 	var success = false;
@@ -885,7 +887,7 @@ function generateFarm( stateMap, x, y ) {
 	// Convert path into tiles on map
 	stateMap = setPathStyles( stateMap, pathmap, "free" );
 	stateMap[farmY][farmX] = {
-		type: "farm", style: Math.random() * 4, solid: false
+		type: "farm", style: Math.floor(Math.random() * 4), solid: false
 	};
 
 	return stateMap;

@@ -107,7 +107,7 @@ function drawElement( element ) {
 			sy = 0; sx = element.style;
 			break;
 		case "water":
-			sy = 24; sx = element.style + 1;
+			sy = 24; sx = Math.floor( Math.random() * 4 );
 			break;
 		case "tree":
 			drawElement( {
