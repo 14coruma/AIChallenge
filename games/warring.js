@@ -4,7 +4,26 @@
  * Created by: Andrew Corum, 2/24/2018
  */
 
-const MAP_SIZE = 10;
+const MAP_SIZE = 17;
+
+var usernames = ["joe", "bob"];
+var state = {
+	id: 15, game: "warring", players: [], currentPlayer: 0,
+	map: [], 
+	gameOver: 0, winner: -1, error: "",
+};
+for ( var i = 0; i < usernames.length; i++ ) {
+	state.players.push( {
+		username: usernames[i],
+		units: [],
+		food: 400,
+		errors: 0,
+	} );
+}
+
+	// Generate map
+	state = generateMap( state );
+
 
 /**
  * start creates then returns initial game state
@@ -534,32 +553,6 @@ function byKeep( state, x, y ) {
 }
 
 /**
- * generateMap() creates the initial game map
- *
- * @param: (obj) state
- *
- * @return: (obj) state (with map updated)
- */
-function generateMap( state ) {
-	// Grass tiles
-	for ( var row = 0; row < MAP_SIZE; row++ ) {
-		state.map[row] = new Array(MAP_SIZE);
-		for ( var col = 0; col < MAP_SIZE; col++ ) {
-			state.map[row][col] = {
-				type: "grass",
-				style: Math.floor( Math.random() * 4 ),
-				hp: 0, solid: false
-			};
-		}
-	}
-	// Castles
-	state.map[2][2] = { type: "keep", style: 0, hp: 500, solid: true }
-	state.map[8][8] = { type: "keep", style: 1, hp: 500, solid: true }
-
-	return state;
-}
-
-/**
  * gameOver returns state updated with whether or not the game is over
  *
  * @param: (JSON) state
@@ -568,4 +561,151 @@ function generateMap( state ) {
  */
 function gameOver( state ) {
 	return state;
+}
+
+/**
+ * generateMap() creates the initial game map
+ *
+ * @param: (obj) state
+ *
+ * @return: (obj) state (with map updated)
+ */
+function generateMap( state ) {
+	// Grass tiles
+	/*for ( var row = 0; row < MAP_SIZE; row++ ) {
+		state.map[row] = new Array(MAP_SIZE);
+		for ( var col = 0; col < MAP_SIZE; col++ ) {
+			state.map[row][col] = {
+				type: "grass",
+				style: Math.floor( Math.random() * 4 ),
+				hp: 0, solid: false
+			};
+		}
+	}*/
+	// Initialize map
+	for ( var row = 0; row < MAP_SIZE; row++ ) {
+		state.map[row] = new Array(MAP_SIZE);
+	}
+
+	// Initialize height map
+	var hmap = new Array( MAP_SIZE );
+	for ( var row = 0; row < MAP_SIZE; row++ ) {
+		hmap[row] = new Array( MAP_SIZE );
+		for ( var col = 0; col < MAP_SIZE; col++ ) {
+			hmap[row][col] = 0;
+		}
+	}
+
+	// Initialize Corners
+	hmap[0][0] = hmap[0][MAP_SIZE-1] = hmap[MAP_SIZE-1][MAP_SIZE-1] = hmap[MAP_SIZE-1][0] = 50;
+
+	// Create heightmap with diamond-square algorithm
+	var hmap = diamond_square( hmap, MAP_SIZE, MAP_SIZE );
+
+	// Create game map from heightmap
+	for ( var row = 0; row < MAP_SIZE; row++ ) {
+		console.log( hmap[row] );
+		for ( var col = 0; col < MAP_SIZE; col++ ) {
+			if ( hmap[row][col] < 66 ) {
+				state.map[row][col] = {
+					type: "water", style: 0, solid: true
+				};
+			} else if ( hmap[row][col] < 75 ) {
+				state.map[row][col] = {
+					type: "grass", style: Math.floor( Math.random() * 4 ),
+					solid: false
+				}
+			} else {
+				state.map[row][col] = {
+					type: "mountain", style: 0, solid: true
+				};
+			}
+		}
+	}
+
+	// Castles
+	state.map[2][2] = { type: "keep", style: 0, hp: 500, solid: true }
+	state.map[8][8] = { type: "keep", style: 1, hp: 500, solid: true }
+
+	return state;
+}
+
+/**
+ * Creates a random height map
+ *
+ * @param: (int) map width
+ * @param: (int) map height
+ *
+ * @return: (2d array) height map
+ */
+function diamond_square( hmap, width, height ) {
+	if ( width <= 2 || height <= 2 ) return hmap;
+
+	let scale = 5 * width;
+	// Diamond average
+	hmap[Math.floor(height/2)][Math.floor(width/2)] = (
+		hmap[0][0] + hmap[0][width-1] + hmap[height-1][width-1] + hmap[height-1][0]
+		+ Math.random() * scale - 0.5
+	) / 4;
+
+	// Square averages
+	hmap[0][Math.floor(width/2)] = (
+		hmap[0][0] + hmap[0][width-1] + hmap[Math.floor(height/2)][Math.floor(width/2)]
+		+ Math.random() * scale - 0.5
+	) / 3;
+	hmap[Math.floor(height/2)][0] = (
+		hmap[0][0] + hmap[Math.floor(height/2)][Math.floor(width/2)] + hmap[height-1][0]
+		+ Math.random() * scale - 0.5
+	) / 3;
+	hmap[Math.floor(height/2)][width-1] = (
+		hmap[0][width-1] + hmap[Math.floor(height/2)][Math.floor(width/2)] + hmap[height-1][width-1]
+		+ Math.random() * scale - 0.5
+	) / 3;
+	hmap[height-1][Math.floor(width/2)] = (
+		hmap[height-1][0] + hmap[Math.floor(height/2)][Math.floor(width/2)] + hmap[height-1][width-1]
+		+ Math.random() * scale - 0.5
+	) / 3;
+
+	// Recursively calculate in each quadrant of hmap
+	var q1 = new Array( Math.ceil(height/2) );
+	var q2 = new Array( Math.ceil(height/2) );
+	var q3 = new Array( Math.ceil(height/2) );
+	var q4 = new Array( Math.ceil(height/2) );
+	for ( var row = 0; row < Math.ceil(height/2); row++ ) {
+		q1[row] = hmap[row].slice( Math.floor(width/2), width );
+		q2[row] = hmap[row].slice( 0, Math.ceil(width/2) );
+	}
+	for ( var row = Math.floor(height/2); row < height; row++ ) {
+		q3[row-Math.floor(height/2)] = hmap[row].slice( 0, Math.ceil(width/2) );
+		q4[row-Math.floor(height/2)] = hmap[row].slice( Math.floor(width/2), width );
+	}
+
+	q1 = diamond_square( q1, Math.ceil(width/2), Math.ceil(height/2) );
+	q2 = diamond_square( q2, Math.ceil(width/2), Math.ceil(height/2) );
+	q3 = diamond_square( q3, Math.ceil(width/2), Math.ceil(height/2) );
+	q4 = diamond_square( q4, Math.ceil(width/2), Math.ceil(height/2) );
+
+	// Combine quadrants back together
+	for ( var row = 0; row < Math.ceil(height/2); row++ ) {
+		for ( var col = Math.floor(width/2); col < width; col++ ) {
+			hmap[row][col] = q1[row][col-Math.floor(width/2)];
+		}
+	}
+	for ( var row = 0; row < Math.ceil(height/2); row++ ) {
+		for ( var col = 0; col < Math.ceil(width/2); col++ ) {
+			hmap[row][col] = q2[row][col];
+		}
+	}
+	for ( var row = Math.floor(height/2); row < height; row++ ) {
+		for ( var col = 0; col < Math.ceil(width/2); col++ ) {
+			hmap[row][col] = q3[row-Math.floor(height/2)][col];
+		}
+	}
+	for ( var row = Math.floor(height/2); row < height; row++ ) {
+		for ( var col = Math.floor(width/2); col < width; col++ ) {
+			hmap[row][col] = q4[row-Math.floor(height/2)][col-Math.floor(width/2)];
+		}
+	}
+
+	return hmap;
 }
