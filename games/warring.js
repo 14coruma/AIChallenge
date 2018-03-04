@@ -3,7 +3,7 @@
  *
  * Created by: Andrew Corum, 2/24/2018
  */
-
+var PF = require( 'pathfinding' );
 const MAP_SIZE = 17;
 
 var usernames = ["joe", "bob"];
@@ -53,17 +53,23 @@ exports.start = function( lgid, usernames, callback ) {
 	state = generateMap( state );
 
 	// Create initial player units
-	for ( var i = 0; i < usernames.length; i++ ) {
-		// One peasant
-		state.players[i].units[0] = {
-			class: "farmer",
-			x: 1 + 6 * i, y: 2 + 6 * i,
-			hp: 40,
-			attack: 0,
-			range: 0,
-			hasFood: false,
-		};
-	}
+	// One peasant
+	state.players[0].units[0] = {
+		class: "farmer",
+		x: 1, y: 2,
+		hp: 40,
+		attack: 0,
+		range: 0,
+		hasFood: false,
+	};
+	state.players[1].units[0] = {
+		class: "farmer",
+		x: MAP_SIZE-4, y: MAP_SIZE-3,
+		hp: 40,
+		attack: 0,
+		range: 0,
+		hasFood: false,
+	};
 
 	callback( state );
 }
@@ -571,17 +577,6 @@ function gameOver( state ) {
  * @return: (obj) state (with map updated)
  */
 function generateMap( state ) {
-	// Grass tiles
-	/*for ( var row = 0; row < MAP_SIZE; row++ ) {
-		state.map[row] = new Array(MAP_SIZE);
-		for ( var col = 0; col < MAP_SIZE; col++ ) {
-			state.map[row][col] = {
-				type: "grass",
-				style: Math.floor( Math.random() * 4 ),
-				hp: 0, solid: false
-			};
-		}
-	}*/
 	// Initialize map
 	for ( var row = 0; row < MAP_SIZE; row++ ) {
 		state.map[row] = new Array(MAP_SIZE);
@@ -604,30 +599,165 @@ function generateMap( state ) {
 
 	// Create game map from heightmap
 	for ( var row = 0; row < MAP_SIZE; row++ ) {
-		console.log( hmap[row] );
 		for ( var col = 0; col < MAP_SIZE; col++ ) {
 			if ( hmap[row][col] < 66 ) {
 				state.map[row][col] = {
-					type: "water", style: 0, solid: true
+					type: "water", style: Math.floor( Math.random() * 2 ),
+					solid: true
 				};
 			} else if ( hmap[row][col] < 75 ) {
 				state.map[row][col] = {
 					type: "grass", style: Math.floor( Math.random() * 4 ),
 					solid: false
 				}
+			} else if ( hmap[row][col] < 78 ) {
+				state.map[row][col] = {
+					type: "tree", style: Math.floor( Math.random() * 3 ),
+					solid: false
+				}
 			} else {
 				state.map[row][col] = {
-					type: "mountain", style: 0, solid: true
+					type: "mountain", style: Math.floor( Math.random() * 3 ),
+					solid: true
 				};
 			}
 		}
 	}
 
+	// Create windy path between castles (using A*)
+	// This algorithm can fail, so re-run algorithm until successful
+	var success = false;
+	while ( !success ) {
+		var pathmap = new Array( MAP_SIZE );
+		for ( var row = 0; row < MAP_SIZE; row++ ) {
+			pathmap[row] = new Array( MAP_SIZE );
+			for ( var col = 0; col < MAP_SIZE; col++ ) {
+				pathmap[row][col] = 0;
+			}
+		}
+		success = buildPath( 2, 2, MAP_SIZE-3, MAP_SIZE-3, pathmap );
+	}
+	pathmap = success;
+
+	// Convert path into tiles on map
+	state.map = setPathStyles( state.map, pathmap, "path" );
+
 	// Castles
 	state.map[2][2] = { type: "keep", style: 0, hp: 500, solid: true }
-	state.map[8][8] = { type: "keep", style: 1, hp: 500, solid: true }
+	state.map[MAP_SIZE-3][MAP_SIZE-3] = { type: "keep", style: 1, hp: 500, solid: true }
 
 	return state;
+}
+
+/**
+ * Creates a path between two points, with some random variation
+ *
+ * @param: (int) startX
+ * @param: (int) startY
+ * @param: (int) endX
+ * @param: (int) endY
+ * @param: (2d map) map
+ *
+ * @return: (2d map) map (updated with path)
+ *          (bool) false (upon failure to build a path)
+ */
+function buildPath( startX, startY, endX, endY, map ) {
+	// Base case: we're done
+	if ( startX == endX && startY == endY ) {
+		map[startY][startX] = 1;
+		return map;
+	}
+
+	// Find A* path
+	var grid = new PF.Grid( map );
+	var finder = new PF.AStarFinder();
+	var path = finder.findPath( startX, startY, endX, endY, grid );
+
+	// if no path was found, then the algorithm failed and should be re-run
+	if ( path.length == 0 ) {
+		return false;
+	}
+
+	map[startY][startX] = 1;
+
+	// Add random bend, calculate buildPath from there
+	var r = Math.random();
+	var dir = (r < 0.2) ? -1 : 0;
+	dir = (r > 0.6) ? 1 : dir;
+	if ( startX == path[1][0] ) {
+		startX += dir;
+		startX = (startX < 0 || startX >= MAP_SIZE) ? startX - dir : startX;
+		startY = (dir == 0) ? path[1][1] : startY;
+	} else {
+		startX = (dir == 0) ? path[1][0] : startX;
+		startY += dir;
+		startY = (startY < 0 || startY >= MAP_SIZE) ? startY - dir : startY;
+	}
+	map[startY][startX] = 0;
+	map = buildPath( startX, startY, endX, endY, map );
+
+	return map;
+}
+
+/**
+ * Sets the proper path style (bends, straight, T, etc.)
+ * for a given pathmap
+ *
+ * @param: (2d array) state map
+ * @param: (2d array) pathmap
+ * @param: (string) type (eg. wall, river, path...)
+ *
+ * @return: (2d array) updated state map
+ */
+function setPathStyles( statemap, pathmap, type ) {
+	var style = 0;
+	for ( var row = 0; row < MAP_SIZE; row++ ) {
+		for ( var col = 0; col < MAP_SIZE; col++ ) {
+			if ( pathmap[row][col] == 0 ) continue;
+
+			// Figure out style
+			if ( col < MAP_SIZE-1 && row < MAP_SIZE-1
+			     && pathmap[row][col+1] && pathmap[row+1][col] ) // ╔
+				style = 1;
+			if ( col > 0 && col < MAP_SIZE-1
+			     && pathmap[row][col-1] && pathmap[row][col+1] ) // ═
+				style = 2;
+			if ( col > 0 && row < MAP_SIZE-1
+			     && pathmap[row][col-1] && pathmap[row+1][col] ) // ╗
+				style = 3;
+			if ( row > 0 && row < MAP_SIZE-1
+			     && pathmap[row-1][col] && pathmap[row+1][col] ) // ║
+				style = 4;
+			if ( row > 0 && col < MAP_SIZE-1
+			     && pathmap[row-1][col] && pathmap[row][col+1] ) // ╚
+				style = 6;
+			if ( col > 0 && row > 0
+			     && pathmap[row][col-1] && pathmap[row-1][col] ) // ╝
+				style = 8;
+			if ( col < MAP_SIZE-1 && row > 0 && row < MAP_SIZE-1
+			     && pathmap[row-1][col] && pathmap[row+1][col] && pathmap[row][col+1] ) // ╠
+				style = 9;
+			if ( col > 0 && row > 0 && row < MAP_SIZE-1
+			     && pathmap[row-1][col] && pathmap[row+1][col] && pathmap[row][col-1] ) // ╣
+				style = 10;
+			if ( col > 0 && row > 0 && col < MAP_SIZE-1
+			     && pathmap[row][col-1] && pathmap[row-1][col] && pathmap[row][col+1] ) // ╩
+				style = 11;
+			if ( col > 0 && row < MAP_SIZE-1 && col < MAP_SIZE-1
+			     && pathmap[row][col-1] && pathmap[row+1][col] && pathmap[row][col+1] ) // ╦
+				style = 12;
+			if ( col > 0 && row > 0 && col < MAP_SIZE-1 && row < MAP_SIZE-1
+			     && pathmap[row][col-1] && pathmap[row-1][col] && pathmap[row][col+1] && pathmap[row+1][col] ) // ╬
+				style = 0;
+
+			// update map
+			statemap[row][col].style = style;
+			statemap[row][col].type = type;
+			statemap[row][col].solid = (type == "river");
+		}
+	}
+
+	return statemap;
 }
 
 /**

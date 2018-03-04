@@ -89,9 +89,6 @@ function drawWarring( state ) {
  * renderElements() draws all of the elements in the array
  */
 function renderElements() {
-/*	elements.forEach( function( element ) {
-		drawElement( element );
-	} );*/
 	for ( var i = 0; i < elements.length; i++ ) {
 		drawElement( elements[i] );
 	}
@@ -109,9 +106,28 @@ function drawElement( element ) {
 		case "grass":
 			sy = 0; sx = element.style;
 			break;
-		case "keep":
+		case "water":
+			sy = 24; sx = element.style + 1;
+			break;
+		case "tree":
 			drawElement( {
 				type2: "grass", style: 0,
+				left: element.left, top: element.top,
+				width: element.width, height: element.height,
+			} );
+			sy = 0; sx = element.style + 4;
+			break;
+		case "mountain":
+			drawElement( {
+				type2: "grass", style: 0,
+				left: element.left, top: element.top,
+				width: element.width, height: element.height,
+			} );
+			sy = 1; sx = element.style + 3;
+			break;
+		case "keep":
+			drawElement( {
+				type2: "grass", style: 2,
 				left: element.left, top: element.top,
 				width: element.width, height: element.height,
 			} );
@@ -119,6 +135,41 @@ function drawElement( element ) {
 			break;
 		case "farmer":
 			sy = 35 + element.player; sx = 2;
+			break;
+		case "path":
+			drawElement( {
+				type2: "grass", style: 2,
+				left: element.left, top: element.top,
+				width: element.width, height: element.height,
+			} );
+			switch ( element.style ) {
+				case 1:
+					sy = 10; sx = 0; break;
+				case 2:
+					sy = 10; sx = 1; break;
+				case 3:
+					sy = 10; sx = 2; break;
+				case 4:
+					sy = 11; sx = 0; break;
+				case 5:
+					sy = 11; sx = 2; break;
+				case 6:
+					sy = 12; sx = 0; break;
+				case 7:
+					sy = 12; sx = 1; break;
+				case 8:
+					sy = 12; sx = 2; break;
+				case 9:
+					sy = 9; sx = 0; break;
+				case 10:
+					sy = 9; sx = 1; break;
+				case 11:
+					sy = 9; sx = 2; break;
+				case 12:
+					sy = 9; sx = 3; break;
+				default:
+					sy = 11; sx = 1; break;
+			}
 			break;
 		default:
 			return;
