@@ -649,6 +649,11 @@ function generateMap( state ) {
 	state.map = generateFarm( state.map, KEEP1.x+1, KEEP1.y );
 	state.map = generateFarm( state.map, KEEP2.x-1, KEEP2.y );
 
+	// Create lakes, islands, and beaches
+	state.map = createIslands( state.map );
+	state.map = createLakes( state.map );
+	//state.map = createBeaches( state.map ); TODO
+
 	// Castles
 	state.map[KEEP1.y][KEEP1.x] = { type: "keep", style: 0, hp: 500, solid: true }
 	state.map[KEEP2.y][KEEP2.x] = { type: "keep", style: 1, hp: 500, solid: true }
@@ -716,16 +721,16 @@ function buildPath( startX, startY, endX, endY, map ) {
  *
  * @return: (2d array) updated state map
  */
-function setPathStyles( statemap, pathmap, type ) {
+function setPathStyles( stateMap, pathmap, type ) {
 	var style = 0;
 	for ( var row = 0; row < MAP_SIZE; row++ ) {
 		for ( var col = 0; col < MAP_SIZE; col++ ) {
 			if ( pathmap[row][col] == 0 ) continue;
 			if ( type == "free" ) {
-				if ( statemap[row][col].type != "path" ) {
-					statemap[row][col].type = "grass";
-					statemap[row][col].style = 0;
-					statemap[row][col].solid = false;
+				if ( stateMap[row][col].type != "path" ) {
+					stateMap[row][col].type = "grass";
+					stateMap[row][col].style = 0;
+					stateMap[row][col].solid = false;
 				}
 				continue;
 			}
@@ -766,13 +771,13 @@ function setPathStyles( statemap, pathmap, type ) {
 				style = 0;
 
 			// update map
-			statemap[row][col].style = style;
-			statemap[row][col].type = type;
-			statemap[row][col].solid = (type == "river");
+			stateMap[row][col].style = style;
+			stateMap[row][col].type = type;
+			stateMap[row][col].solid = (type == "river");
 		}
 	}
 
-	return statemap;
+	return stateMap;
 }
 
 /**
@@ -889,6 +894,105 @@ function generateFarm( stateMap, x, y ) {
 	stateMap[farmY][farmX] = {
 		type: "farm", style: Math.floor(Math.random() * 4), solid: false
 	};
+
+	return stateMap;
+}
+
+/**
+ * TODO: Needs some work...
+ * Finds grass that is touching water. Uses setPathStyles() to set
+ * beach style.
+ *
+ * @param: (2d array) stateMap
+ *
+ * @return: (2d array) stateMap (updated)
+ */
+function createBeaches( stateMap ) {
+	// Create beach map mask
+	var beachMap = new Array( MAP_SIZE );
+	for ( var row = 0; row < MAP_SIZE; row++ ) {
+		beachMap[row] = new Array( MAP_SIZE );
+		for ( var col = 0; col < MAP_SIZE; col++ ) {
+			beachMap[row][col] = 0;
+			if ( stateMap[row][col].type != "grass" ) continue;
+			if ( row > 0 && stateMap[row-1][col].type == "water" ) {
+				beachMap[row][col] = 1;
+			} else if ( row < MAP_SIZE-1 && stateMap[row+1][col].type == "water" ) {
+				beachMap[row][col] = 1;
+			} else if ( col > 0 && stateMap[row][col-1].type == "water" ) {
+				beachMap[row][col-1] = 1;
+			} else if ( col < MAP_SIZE-1 && stateMap[row][col+1].type == "water" ) {
+				beachMap[row][col] = 1;
+			}
+		}
+	}
+
+	stateMap = setPathStyles( stateMap, beachMap, "beach" );
+
+	return stateMap;
+}
+
+/**
+ * Create islands on map
+ *
+ * @param: (2d array) stateMap
+ *
+ * @return: (2d array) stateMap (updated)
+ */
+function createIslands( stateMap ) {
+	for ( var row = 0; row < MAP_SIZE; row++ ) {
+		for ( var col = 0; col < MAP_SIZE; col++ ) {
+			if ( stateMap[row][col].type == "water" ) continue;
+			if ( row > 0 && stateMap[row-1][col].type != "water" ) {
+				continue;
+			} else if ( row < MAP_SIZE-1 && stateMap[row+1][col].type != "water" ) {
+				continue;
+			} else if ( col > 0 && stateMap[row][col-1].type != "water" ) {
+				continue;
+			} else if ( col < MAP_SIZE-1 && stateMap[row][col+1].type != "water" ) {
+				continue;
+			} else {
+				stateMap[row][col] = {
+					type: "island", style: Math.floor( Math.random() * 4 ),
+					solid: false
+				};
+			}
+		}
+	}
+
+	return stateMap;
+}
+
+/**
+ * Create lakes on map
+ *
+ * @param: (2d array) stateMap
+ *
+ * @return: (2d array) stateMap (updated)
+ */
+function createLakes( stateMap ) {
+	for ( var row = 0; row < MAP_SIZE; row++ ) {
+		for ( var col = 0; col < MAP_SIZE; col++ ) {
+			if ( stateMap[row][col].type != "water" ) continue;
+			if ( row > 0 && stateMap[row-1][col].type == "water" ||
+			     row > 0 && stateMap[row-1][col].type == "island" ) {
+				continue;
+			} else if ( row < MAP_SIZE-1 && stateMap[row+1][col].type == "water" ||
+			            row < MAP_SIZE-1 && stateMap[row+1][col].type == "island" ) {
+				continue;
+			} else if ( col > 0 && stateMap[row][col-1].type == "water" ||
+			            col > 0 && stateMap[row][col-1].type == "island" ) {
+				continue;
+			} else if ( col < MAP_SIZE-1 && stateMap[row][col+1].type == "water" ||
+			            col < MAP_SIZE-1 && stateMap[row][col+1].type == "island" ) {
+				continue;
+			} else {
+				stateMap[row][col] = {
+					type: "lake", style: 0, solid: true
+				};
+			}
+		}
+	}
 
 	return stateMap;
 }

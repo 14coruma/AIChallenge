@@ -179,6 +179,33 @@ function drawElement( element ) {
 					sy = 11; sx = 1; break;
 			}
 			break;
+		case "lake":
+			drawElement( {
+				type2: "grass", style: 3,
+				left: element.left, top: element.top,
+				width: element.width, height: element.height,
+			} );
+			sy = 2; sx = Math.floor( Math.random() * 3 ) + 4;
+			break;
+		case "island":
+			drawElement( {
+				type2: "water", style: 0,
+				left: element.left, top: element.top,
+				width: element.width, height: element.height,
+			} );
+			switch ( element.style ) {
+				case 1:
+					sy = 1; sx = 6; break;
+				case 2:
+					sy = 3; sx = 6; break;
+				case 3:
+					sy = 34; sx = 0; break;
+				case 4:
+					sy = 34; sx = 1; break;
+				default:
+					sy = 1; sx = 6; break;
+			}
+			break;
 		default:
 			return;
 	}
