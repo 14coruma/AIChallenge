@@ -9,25 +9,6 @@ const KEEP1 = { x: 4, y: 4 };
 const KEEP2 = { x: MAP_SIZE - 5, y: MAP_SIZE - 5 };
 const FARM_DIST = 4;
 
-var usernames = ["joe", "bob"];
-var state = {
-	id: 15, game: "warring", players: [], currentPlayer: 0,
-	map: [], 
-	gameOver: 0, winner: -1, error: "",
-};
-for ( var i = 0; i < usernames.length; i++ ) {
-	state.players.push( {
-		username: usernames[i],
-		units: [],
-		food: 400,
-		errors: 0,
-	} );
-}
-
-	// Generate map
-	state = generateMap( state );
-
-
 /**
  * start creates then returns initial game state
  *

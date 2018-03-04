@@ -25,7 +25,6 @@ function drawMancala( state ) {
 	ctx.fillText( "P1: " + state.players[0].username, 10, canvas.height - 32 );
 	ctx.fillText( "P2: " + state.players[1].username, 10, 32 );
 
-	console.log( "Here" );
 	let spacer = ( canvas.width - 64 ) / 8;
 	ctx.textAlign = "center";
 	// Draw bottom circles

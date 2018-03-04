@@ -10,7 +10,7 @@ var canvas = document.getElementById( "myCanvas" ),
     canvasLeft = canvas.offsetLeft,
     canvasTop = canvas.offsetTop,
     elements = [],
-    moveObj = { type: "move", units: [] },
+    moveObjWarring = { type: "move", units: [] },
     img = new Image;
 img.src = "../images/warring/sprites.png";
 
@@ -29,7 +29,7 @@ function drawWarring( state ) {
 			formUsername &&
 			state.players[state.currentPlayer].username != formUsername.value
 	) {
-		moveObj = { bank: [], done: 0 };
+		moveObjWarring = { bank: [], done: 0 };
 		ctx.globalAlpha = 0.3;
 		ctx.fillRect( 0, 0, canvas.width, canvas.height );
 		ctx.globalAlpha = 1.0;
@@ -230,12 +230,12 @@ canvas.addEventListener( 'click', function( ev ) {
 			x > element.left && x < element.left + element.width ) {
 			switch ( element.type1 ) {
 				case "unit":
-					moveObj.updates.push( element.type1 );
+					moveObjWarring.updates.push( element.type1 );
 					break;
 				default:
 					return;
 			}
-			document.getElementById( "formMove" ).value = JSON.stringify( moveObj );
+			document.getElementById( "formMove" ).value = JSON.stringify( moveObjWarring );
 		}
 	});
 }, false );
