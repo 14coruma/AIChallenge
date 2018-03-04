@@ -5,6 +5,9 @@
  */
 var PF = require( 'pathfinding' );
 const MAP_SIZE = 17;
+const KEEP1 = { x: 4, y: 4 };
+const KEEP2 = { x: MAP_SIZE - 5, y: MAP_SIZE - 5 };
+const FARM_DIST = 5;
 
 var usernames = ["joe", "bob"];
 var state = {
@@ -56,7 +59,7 @@ exports.start = function( lgid, usernames, callback ) {
 	// One peasant
 	state.players[0].units[0] = {
 		class: "farmer",
-		x: 1, y: 2,
+		x: KEEP1.x + 1, y: KEEP1.y,
 		hp: 40,
 		attack: 0,
 		range: 0,
@@ -64,7 +67,7 @@ exports.start = function( lgid, usernames, callback ) {
 	};
 	state.players[1].units[0] = {
 		class: "farmer",
-		x: MAP_SIZE-4, y: MAP_SIZE-3,
+		x: KEEP2.x - 1, y: KEEP2.y,
 		hp: 40,
 		attack: 0,
 		range: 0,
@@ -635,16 +638,20 @@ function generateMap( state ) {
 				pathmap[row][col] = 0;
 			}
 		}
-		success = buildPath( 2, 2, MAP_SIZE-3, MAP_SIZE-3, pathmap );
+		success = buildPath( KEEP1.x, KEEP1.y, KEEP2.x, KEEP2.y, pathmap );
 	}
 	pathmap = success;
 
 	// Convert path into tiles on map
 	state.map = setPathStyles( state.map, pathmap, "path" );
 
+	// Add a farm for each player within FARM_DIST moves away
+	state.map = generateFarm( state.map, KEEP1.x+1, KEEP1.y );
+	state.map = generateFarm( state.map, KEEP2.x-1, KEEP2.y );
+
 	// Castles
-	state.map[2][2] = { type: "keep", style: 0, hp: 500, solid: true }
-	state.map[MAP_SIZE-3][MAP_SIZE-3] = { type: "keep", style: 1, hp: 500, solid: true }
+	state.map[KEEP1.y][KEEP1.x] = { type: "keep", style: 0, hp: 500, solid: true }
+	state.map[KEEP2.y][KEEP2.x] = { type: "keep", style: 1, hp: 500, solid: true }
 
 	return state;
 }
@@ -714,6 +721,14 @@ function setPathStyles( statemap, pathmap, type ) {
 	for ( var row = 0; row < MAP_SIZE; row++ ) {
 		for ( var col = 0; col < MAP_SIZE; col++ ) {
 			if ( pathmap[row][col] == 0 ) continue;
+			if ( type == "free" ) {
+				if ( statemap[row][col].type != "path" ) {
+					statemap[row][col].type = "grass";
+					statemap[row][col].style = 0;
+					statemap[row][col].solid = false;
+				}
+				continue;
+			}
 
 			// Figure out style
 			if ( col < MAP_SIZE-1 && row < MAP_SIZE-1
@@ -838,4 +853,40 @@ function diamond_square( hmap, width, height ) {
 	}
 
 	return hmap;
+}
+
+/**
+ * Places farm by point on the map, adds a path to farm
+ *
+ * @param: (2d array) stateMap
+ * @param: (int) x
+ * @param: (int) y
+ * 
+ * @return: (2d array) stateMap (updated)
+ */
+function generateFarm( stateMap, x, y ) {
+	var farmX = x + Math.floor( (Math.random()-.5) * 5 );
+	var farmY = y + ( FARM_DIST - (farmX - x) ) % (FARM_DIST-1);
+
+	// Create windy path between castle and farm (using A*)
+	var success = false;
+	while ( !success ) {
+		var pathmap = new Array( MAP_SIZE );
+		for ( var row = 0; row < MAP_SIZE; row++ ) {
+			pathmap[row] = new Array( MAP_SIZE );
+			for ( var col = 0; col < MAP_SIZE; col++ ) {
+				pathmap[row][col] = 0;
+			}
+		}
+		success = buildPath( x, y, farmX, farmY, pathmap );
+	}
+	pathmap = success;
+
+	// Convert path into tiles on map
+	stateMap = setPathStyles( stateMap, pathmap, "free" );
+	stateMap[farmY][farmX] = {
+		type: "farm", style: Math.random() * 4, solid: false
+	};
+
+	return stateMap;
 }

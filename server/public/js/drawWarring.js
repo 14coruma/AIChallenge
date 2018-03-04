@@ -136,6 +136,14 @@ function drawElement( element ) {
 		case "farmer":
 			sy = 35 + element.player; sx = 2;
 			break;
+		case "farm":
+			drawElement( {
+				type2: "grass", style: 2,
+				left: element.left, top: element.top,
+				width: element.width, height: element.height,
+			} );
+			sy = 9; sx = 6;
+			break;
 		case "path":
 			drawElement( {
 				type2: "grass", style: 2,
