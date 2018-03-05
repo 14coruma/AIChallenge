@@ -69,7 +69,11 @@ exports.start = function( lgid, usernames, callback ) {
  */
 exports.move = function( state, move, callback ) {
 	if ( typeof move == "string" ) {
-		move = JSON.parse( move );
+		try {
+			move = JSON.parse( move );
+		} catch ( e ) {
+			callback( state );
+		}
 	}
 	callback( updateState( state, move ) );
 }
@@ -83,6 +87,9 @@ exports.move = function( state, move, callback ) {
  * @return: (JSON) new state
  */
 function updateState( state, move ) {
+	if ( typeof move.updates == "undefined" )
+		return state;
+
 	move.updates.forEach( function( update ) {
 		var player = move.player;
 		switch ( update.type ) {

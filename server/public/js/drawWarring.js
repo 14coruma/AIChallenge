@@ -11,8 +11,10 @@ var canvas = document.getElementById( "myCanvas" ),
     canvasTop = canvas.offsetTop,
     elements = [],
     moveObjWarring = { type: "move", units: [] },
-    img = new Image;
+    img = new Image,
+    background = new Image;
 img.src = "../images/warring/sprites.png";
+background.src = "../images/warring/stone_tex.png";
 
 // Disable image smoothing (looks better without it)
 ctx.webkitImageSmoothingEnabled = false;
@@ -20,7 +22,16 @@ ctx.mozImageSmoothingEnabled = false;
 ctx.imageSmoothingEnabled = false;
 
 function drawWarring( state ) {
-//	ctx.clearRect( 0, 0, canvas.width, canvas.height );
+	// Draw background
+	var pattern = ctx.createPattern( background, "repeat" );
+	ctx.fillStyle = pattern;
+	ctx.fillRect( 0, 0, canvas.width, canvas.height );
+	ctx.beginPath();
+	ctx.lineWidth = "8";
+	ctx.strokeStyle = "grey";
+	ctx.rect( 16, 16, 544, 544 );
+	ctx.stroke();
+
 	elements = [];
 
 	// Reset move if it's not viewing player's turn
@@ -36,12 +47,13 @@ function drawWarring( state ) {
 	}
 
 	// Draw player names and scores
-	/*ctx.font = "18px Arial";
+	ctx.font = "26px Alagard";
 	ctx.textAlign = "left";
+	ctx.fillStyle = "red";
 	for ( var i = 1; i <= state.players.length; i++ ) {
-		ctx.fillText( "P" + i + ": " + state.players[i-1].username, 10, -16 + 48 * i );
-		ctx.fillText( "Score: " + state.players[i-1].score, 10, 48 * i );
-	}*/
+		ctx.fillText( "P" + i + ": " + state.players[i-1].username, 576, -16 + 64 * i );
+		ctx.fillText( "Food: " + state.players[i-1].food, 576, 16 + 64 * i );
+	}
 
 	// Create all map elements
 	for ( var y = 0; y < state.map.length; y++ ) {
@@ -71,6 +83,8 @@ function drawWarring( state ) {
 			} );
 		}
 	}
+
+	// Create
 
 	// Render all elements
 	renderElements();
