@@ -41,7 +41,7 @@ function drawWarring( state ) {
 			state.players[state.currentPlayer].username != formUsername.value
 	) {
 		moveObjWarring = { bank: [], done: 0 };
-		ctx.globalAlpha = 0.3;
+		ctx.globalAlpha = 0.5;
 		ctx.fillRect( 0, 0, canvas.width, canvas.height );
 		ctx.globalAlpha = 1.0;
 	}
