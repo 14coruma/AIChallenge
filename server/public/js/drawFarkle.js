@@ -10,10 +10,21 @@ var canvas = document.getElementById( "myCanvas" ),
     canvasLeft = canvas.offsetLeft,
     canvasTop = canvas.offsetTop,
     elements = [],
-    moveObjFarkle = { bank: [], done: 0 };
+    moveObjFarkle = { bank: [], done: 0 },
+    farkleBack = new Image,
+    rDiceImg = new Image,
+    wDiceImg = new Image,
+    greenButtons = new Image;
+farkleBack.src = "../images/farkle/Boards.JPG";
+rDiceImg.src = "../images/farkle/diceRed_border.png";
+wDiceImg.src = "../images/farkle/diceWhite_border.png";
+greenButtons.src = "../images/farkle/greenSheet.png";
 
 function drawFarkle( state ) {
 	ctx.clearRect( 0, 0, canvas.width, canvas.height );
+	// Draw background
+	ctx.drawImage( farkleBack, 0, 0, canvas.width, canvas.height );
+
 	elements = [];
 
 	// Reset move if it's not viewing player's turn
@@ -29,11 +40,20 @@ function drawFarkle( state ) {
 	}
 
 	// Draw player names and scores
-	ctx.font = "18px Arial";
+	ctx.font = "28px Arial";
 	ctx.textAlign = "left";
 	for ( var i = 1; i <= state.players.length; i++ ) {
-		ctx.fillText( "P" + i + ": " + state.players[i-1].username, 10, -16 + 48 * i );
-		ctx.fillText( "Score: " + state.players[i-1].score, 10, 48 * i );
+		ctx.strokeStyle = "black";
+		ctx.lineWidth = 4;
+		ctx.strokeText( "P" + i + ": " + state.players[i-1].username, 10, -16 + 54 * i );
+		ctx.fillStyle = "white";
+		ctx.fillText( "P" + i + ": " + state.players[i-1].username, 10, -16 + 54 * i );
+
+		ctx.strokeStyle = "black";
+		ctx.lineWidth = 4;
+		ctx.strokeText( "Score: " + state.players[i-1].score, 10, 8 + 54 * i );
+		ctx.fillStyle = "white";
+		ctx.fillText( "Score: " + state.players[i-1].score, 10, 8 + 54 * i );
 	}
 
 	// Calculate tempDice = state.dice - move.bank
@@ -48,83 +68,103 @@ function drawFarkle( state ) {
 	var spacer2 = ( canvas.width - 160 ) / ( state.bank.length + moveObjFarkle.bank.length + 1 );
 
 	// Draw dice
-	ctx.fillText( "Roll: ", 32, 144 );
+	ctx.strokeStyle = "black";
+	ctx.lineWidth = 4;
+	ctx.strokeText( "Roll: ", 32, 156 );
+	ctx.fillStyle = "white";
+	ctx.fillText( "Roll: ", 32, 156 );
+
 	ctx.textAlign = "center";
 	for ( var i = 0; i < tempDice.length; i++ ) {
-		ctx.beginPath();
-		ctx.rect( 96 + i * spacer1, 128, 32, 32 );
-		ctx.stroke();
-		ctx.closePath();
-		ctx.fillText( tempDice[i], 112 + i * spacer1, 146 );
 		elements.push( {
 			id: i,
 			type: "dice",
 			value: tempDice[i],
-			width: 32,
-			height: 32,
-			top: 128,
-			left: 96 + i * spacer1,
+			width: 48,
+			height: 48,
+			top: 140,
+			left: 108 + i * spacer1,
 		} );
 	}
 
 	// Draw dice bank (including move bank)
 	ctx.textAlign = "left";
-	ctx.fillText( "Dice Bank: ", 32, 192 );
+	ctx.strokeStyle = "black";
+	ctx.lineWidth = 4;
+	ctx.strokeText( "Dice Bank: ", 32, 216 );
+	ctx.fillStyle = "white";
+	ctx.fillText( "Dice Bank: ", 32, 216 );
+
 	ctx.textAlign = "center";
 	for ( var i = 0; i < state.bank.length; i++ ) {
-		ctx.beginPath();
-		ctx.rect( 128 + i * spacer2, 176, 32, 32 );
-		ctx.stroke();
-		ctx.closePath();
-		ctx.fillText( state.bank[i], 144 + i * spacer2, 196 );
+		elements.push( {
+			type: "white",
+			value: state.bank[i],
+			width: 48,
+			height: 48,
+			top: 200,
+			left: 172 + i * spacer2,
+		} );
 	}
 	for ( var i = 0; i < moveObjFarkle.bank.length; i++ ) {
-		ctx.strokeStyle = "Green";
-		ctx.beginPath();
-		ctx.rect( 128 + (i + state.bank.length) * spacer2, 176, 32, 32 );
-		ctx.stroke();
-		ctx.closePath();
-		ctx.fillText( moveObjFarkle.bank[i], 144 + (i + state.bank.length) * spacer2, 196 );
-		ctx.strokeStyle = "Black";
 		elements.push( {
 			id: i,
 			type: "bank",
 			value: moveObjFarkle.bank[i],
-			width: 32,
-			height: 32,
-			top: 176,
-			left: 128 + (i + state.bank.length) * spacer2,
+			width: 48,
+			height: 48,
+			top: 200,
+			left: 172 + (i + state.bank.length) * spacer2,
 		} );
 	}
 
 	// Draw Score bank
 	ctx.textAlign = "left";
-	ctx.fillText( "Score Bank: " + state.temp, 32, 240 );
+	ctx.strokeStyle = "black";
+	ctx.lineWidth = 4;
+	ctx.strokeText( "Score Bank: " + state.temp, 32, 276 );
+	ctx.fillStyle = "white";
+	ctx.fillText( "Score Bank: " + state.temp, 32, 276 );
 
 	// Draw "Done?" button
-	ctx.strokeStyle = moveObjFarkle.done ? "Green" : "Black";
-	ctx.beginPath();
-	ctx.rect( 64, 304, 96, 32 );
-	ctx.stroke();
-	ctx.closePath();
-	ctx.fillText( "Done?", 68, 324 );
-	ctx.strokeStyle = "Black";
+	ctx.drawImage(
+		greenButtons, 0, 143*moveObjFarkle.done, 190, 49,
+		48, 320, 190, 49
+	);
+	var text = moveObjFarkle.done ? "Done!" : "Continue...";
+	ctx.strokeStyle = "black";
+	ctx.lineWidth = 4;
+	ctx.strokeText( text, 68, 348 );
+	ctx.fillStyle = "white";
+	ctx.fillText( text, 68, 348 );
+
 	elements.push( {
 		type: "done",
-		width: 96,
-		height: 32,
-		top: 304,
-		left: 68,
+		width: 190,
+		height: 49,
+		top: 320,
+		left: 48,
 	} );
 
 	// Draw Game Over
 	if (state.gameOver == 1) {
-		ctx.font = "30px Arial";
+		ctx.font = "38px Arial";
 		ctx.textAlign = "center";
+		ctx.strokeStyle = "black";
+		ctx.lineWidth = 4;
+		ctx.strokeText( "Game Over", canvas.width / 2, canvas.height / 4 );
+		ctx.fillStyle = "white";
 		ctx.fillText( "Game Over", canvas.width / 2, canvas.height / 4 );
+
+		ctx.strokeStyle = "black";
+		ctx.lineWidth = 4;
+		ctx.strokeText( state.players[state.winner].username + " Wins!", canvas.width / 2, 3 * canvas.height / 4);
+		ctx.fillStyle = "white";
 		ctx.fillText( state.players[state.winner].username + " Wins!", canvas.width / 2, 3 * canvas.height / 4);
 		elements = [];
 	}
+
+	renderFarkle();
 }
 
 // Set up the mouse click handler
@@ -154,6 +194,68 @@ canvas.addEventListener( 'click', function( ev ) {
 		}
 	});
 }, false );
+
+/**
+ * renderFarkle() draws all of the elements in the array
+ */
+function renderFarkle() {
+	for ( var i = 0; i < elements.length; i++ ) {
+		drawFarkleElement( elements[i] );
+	}
+}
+
+/**
+ * drawFarkleElement() draws an image for a single Element
+ *
+ * @param: (obj) element
+ */
+function drawFarkleElement( element ) {
+	// Find coordinates for sprite and which image to use
+	var sx, sy, img;
+	switch ( element.type ) {
+		case "dice":
+		case "bank":
+			img = rDiceImg;
+			if ( element.value == 1 ) {
+				sy = 136; sx = 0;
+			} else if ( element.value == 2 ) {
+				sy = 68; sx = 68;
+			} else if ( element.value == 3 ) {
+				sy = 0; sx = 68;
+			} else if ( element.value == 4 ) {
+				sy = 136; sx = 68;
+			} else if ( element.value == 5 ) {
+				sy = 68; sx = 0;
+			} else if ( element.value == 6 ) {
+				sy = 0; sx = 0;
+			}
+			break;
+		case "white":
+			img = wDiceImg;
+			if ( element.value == 1 ) {
+				sy = 136; sx = 0;
+			} else if ( element.value == 2 ) {
+				sy = 68; sx = 68;
+			} else if ( element.value == 3 ) {
+				sy = 0; sx = 68;
+			} else if ( element.value == 4 ) {
+				sy = 136; sx = 68;
+			} else if ( element.value == 5 ) {
+				sy = 68; sx = 0;
+			} else if ( element.value == 6 ) {
+				sy = 0; sx = 0;
+			}
+			break;
+		default:
+			return;
+	}
+
+	// draw image
+	ctx.drawImage(
+		img, sx, sy, 68, 68,
+		element.left, element.top, element.width, element.height
+	);
+}
 
 /**
  * Empty out the moveObjFarkle.bank

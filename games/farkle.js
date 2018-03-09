@@ -4,6 +4,8 @@
  * Created by: Andrew Corum, 2/2018
  */
 
+const WINNING_SCORE = 10000;
+
 /**
  * start creates then returns initial game state
  *
@@ -158,7 +160,8 @@ function calcScore( bank ) {
 	// two triplets
 	if ( bank.length == 6 && nums.indexOf(3) != -1 ) {
 		var triplet1 = nums.indexOf(3);
-		let tempNums = nums.splice(triplet1, 1);
+		var tempNums = nums;
+		tempNums.splice(triplet1, 1);
 		if ( tempNums.indexOf(3) != -1 ) return 2500;
 	}
 
@@ -171,17 +174,19 @@ function calcScore( bank ) {
 	// Four of any number with a pair
 	if ( bank.length == 6 && nums.indexOf(4) != -1 ) {
 		var index = nums.indexOf(4);
-		let tempNums = nums.splice(index, 1);
+		var tempNums = nums;
+		tempNums.splice(index, 1);
 		if (tempNums.indexOf(2) != -1 ) return 1500;
 	}
 
 	// Three pairs
 	if ( bank.length == 6 && nums.indexOf(2) != -1 ) {
 		var index = nums.indexOf(2);
-		var tempNums = nums.splice(index, 1);
+		var tempNums = nums
+		tempNums.splice(index, 1);
 		index = tempNums.indexOf(2);
 		if (index != -1) {
-			tempNums = tempNums.splice(index, 1);
+			tempNums.splice(index, 1);
 			if (tempNums.indexOf(2) != -1) return 1500;
 		}
 	}
@@ -219,15 +224,32 @@ function calcScore( bank ) {
 
 	// Single 5s
 	score += 50 * nums[5];
+	nums[5] = 0;
 
 	// Single 1s
 	score += 100 * nums[1];
+	nums[1] = 0;
 
-	if ( score == 0 ) {
+	if ( score == 0 || diceLeft( nums ) ) {
 		return -1;
 	} else {
 		return score;
 	}
+}
+
+/**
+ * checks to see if there are any dice left in bank after being scored
+ *
+ * @param: (array) nums, the set of counted dice in bank
+ *
+ * @return: (bool) diceLeft
+ */
+function diceLeft( nums ) {
+	for ( var i = 0; i < nums.length; i++ ) {
+		if ( nums[i] > 0 )
+			return true;
+	}
+	return false;
 }
 
 /**
@@ -269,7 +291,7 @@ function gameOver( state ) {
 	var bestScore = 0;
 	for ( var i = 0; i < state.players.length; i++ ) {
 		var score = state.players[i].score;
-		if ( score >= 10000 ) {
+		if ( score >= WINNING_SCORE ) {
 			state.gameOver = 1;
 			if ( score >= bestScore ) {
 				bestScore = score;
