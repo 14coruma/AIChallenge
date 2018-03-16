@@ -110,7 +110,6 @@ function drawMancala( state ) {
 
 		ctx.strokeStyle = "black";
 		ctx.lineWidth = 4;
-		console.log( state );
 		ctx.strokeText( state.players[state.winner].username + " Wins!", canvas.width / 2, 3 * canvas.height / 4);
 		ctx.fillStyle = "white";
 		ctx.fillText( state.players[state.winner].username + " Wins!", canvas.width / 2, 3 * canvas.height / 4);

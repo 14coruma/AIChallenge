@@ -10,7 +10,8 @@ var canvas = document.getElementById( "myCanvas" ),
     canvasLeft = canvas.offsetLeft,
     canvasTop = canvas.offsetTop,
     elements = [],
-    moveObjWarring = { type: "move", units: [] },
+    selected,
+    moveObjWarring = { updates:[] },
     img = new Image,
     background = new Image;
 img.src = "../images/warring/sprites.png";
@@ -84,10 +85,19 @@ function drawWarring( state ) {
 		}
 	}
 
-	// Create
-
 	// Render all elements
 	renderElements();
+
+	// Draw user selected units
+	if ( selected >= 0 ) {
+		drawElement( {
+			type2: "selected",
+			left: elements[selected].left,
+			top: elements[selected].top,
+			width: elements[selected].width,
+			height: elements[selected].height
+		} );
+	}
 
 	// Draw Game Over
 	if (state.gameOver == 1) {
@@ -220,6 +230,9 @@ function drawElement( element ) {
 					sy = 1; sx = 6; break;
 			}
 			break;
+		case "selected":
+			sy = 42; sx = 3;
+			break;
 		default:
 			return;
 	}
@@ -244,7 +257,8 @@ canvas.addEventListener( 'click', function( ev ) {
 			x > element.left && x < element.left + element.width ) {
 			switch ( element.type1 ) {
 				case "unit":
-					moveObjWarring.updates.push( element.type1 );
+					selected = elements.indexOf(element);
+					//moveObjWarring.updates.push( element.type1 );
 					break;
 				default:
 					return;
