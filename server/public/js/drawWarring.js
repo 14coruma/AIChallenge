@@ -12,9 +12,12 @@ var canvas = document.getElementById( "myCanvas" ),
     elements = [],
     selected,
     moveObjWarring = { updates:[] },
-    img = new Image,
+    playerNumber,
+    img1 = new Image,
+    img2 = new Image,
     background = new Image;
-img.src = "../images/warring/sprites.png";
+img1.src = "../images/warring/sprites.png";
+img2.src = "../images/warring/ui.png";
 background.src = "../images/warring/stone_tex.png";
 
 // Disable image smoothing (looks better without it)
@@ -37,6 +40,11 @@ function drawWarring( state ) {
 
 	// Reset move if it's not viewing player's turn
 	var formUsername = document.getElementById( "formUsername" );
+	if ( state.players[1].username == formUsername.value ) {
+		playerNumber = 1;
+	} else {
+		playerNumber = 0;
+	}
 	if (
 			formUsername &&
 			state.players[state.currentPlayer].username != formUsername.value
@@ -85,6 +93,76 @@ function drawWarring( state ) {
 		}
 	}
 
+	// Create ui elements for unit training (based on food count)
+	var myFood = state.players[playerNumber].food;
+	if ( myFood >= 400 ) {
+		elements.push( {
+			type1: "ui",
+			type2: "trainFarmerButton",
+			width: 64, height: 64,
+			top: 332,  left: 572,
+			player: playerNumber,
+			pressed: false,
+		} );
+	}
+	if ( myFood >= 450 ) {
+		elements.push( {
+			type1: "ui",
+			type2: "trainSoldierButton",
+			width: 64, height: 64,
+			top: 332,  left: 638,
+			player: playerNumber,
+			pressed: false,
+		} );
+	}
+	if ( myFood >= 500 ) {
+		elements.push( {
+			type1: "ui",
+			type2: "trainArcherButton",
+			width: 64, height: 64,
+			top: 400,  left: 572,
+			player: playerNumber,
+			pressed: false,
+		} );
+	}
+
+	// Create UI elements based on selected unit
+	if ( selected ) {
+		elements.push( {
+			type1: "ui",
+			type2: "moveButton",
+			width: 64, height: 64,
+			top: 168,  left: 572,
+			pressed: false,
+		} );
+		if ( elements[selected].type2 == "soldier" ||
+		     elements[selected].type2 == "archer" ) {
+			elements.push( {
+				type1: "ui",
+				type2: "attackButton",
+				width: 64, height: 64,
+				top: 168, left: 638,
+				pressed: false,
+			} );
+		}
+		if ( myFood >= 250 ) {
+			elements.push( {
+				type1: "ui",
+				type2: "buildButton",
+				width: 64, height: 64,
+				top: 236, left: 572,
+				pressed: false,
+			} );
+		}
+		elements.push( {
+			type1: "ui",
+			type2: "stopButton",
+			width: 64, height: 64,
+			top: 236, left: 638,
+			pressed: false,
+		} );
+	}
+
 	// Render all elements
 	renderElements();
 
@@ -124,14 +202,18 @@ function renderElements() {
  * @param: (obj) element
  */
 function drawElement( element ) {
-	// Find coordinates for sprite
+	// Find coordinates for sprite and which image to use
 	var sx, sy;
+	var size = 16;
+	var sImg;
 	switch( element.type2 ) {
 		case "grass":
 			sy = 0; sx = element.style;
+			sImg = img1;
 			break;
 		case "water":
 			sy = 24; sx = Math.floor( Math.random() * 4 );
+			sImg = img1;
 			break;
 		case "tree":
 			drawElement( {
@@ -140,6 +222,7 @@ function drawElement( element ) {
 				width: element.width, height: element.height,
 			} );
 			sy = 0; sx = element.style + 4;
+			sImg = img1;
 			break;
 		case "mountain":
 			drawElement( {
@@ -148,6 +231,7 @@ function drawElement( element ) {
 				width: element.width, height: element.height,
 			} );
 			sy = 1; sx = element.style + 3;
+			sImg = img1;
 			break;
 		case "keep":
 			drawElement( {
@@ -156,9 +240,19 @@ function drawElement( element ) {
 				width: element.width, height: element.height,
 			} );
 			sy = 4; sx = element.style * -2 + 4;
+			sImg = img1;
 			break;
 		case "farmer":
 			sy = 35 + element.player; sx = 2;
+			sImg = img1;
+			break;
+		case "soldier":
+			sy = 16 + element.player; sx = 2;
+			sImg = img1;
+			break;
+		case "archer":
+			sy = 16 + element.player; sx = 0;
+			sImg = img1;
 			break;
 		case "farm":
 			drawElement( {
@@ -167,6 +261,7 @@ function drawElement( element ) {
 				width: element.width, height: element.height,
 			} );
 			sy = 9; sx = 6;
+			sImg = img1;
 			break;
 		case "path":
 			drawElement( {
@@ -202,6 +297,7 @@ function drawElement( element ) {
 				default:
 					sy = 11; sx = 1; break;
 			}
+			sImg = img1;
 			break;
 		case "lake":
 			drawElement( {
@@ -210,6 +306,7 @@ function drawElement( element ) {
 				width: element.width, height: element.height,
 			} );
 			sy = 2; sx = Math.floor( Math.random() * 3 ) + 4;
+			sImg = img1
 			break;
 		case "island":
 			drawElement( {
@@ -229,9 +326,110 @@ function drawElement( element ) {
 				default:
 					sy = 1; sx = 6; break;
 			}
+			sImg = img1;
 			break;
 		case "selected":
 			sy = 42; sx = 3;
+			sImg = img1;
+			break;
+		case "blueButton":
+			sy = 1; sx = 1; size = 32;
+			sImg = img2;
+			break;
+		case "redButton":
+			sy = 1; sx = 2; size = 32;
+			sImg = img2;
+			break;
+		case "moveButton":
+			drawElement( {
+				type2: "blueButton", style: 0,
+				left: element.left, top: element.top,
+				width: element.width, height: element.height,
+			} );
+			if ( element.pressed ) {
+				ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+				ctx.fillRect( 0, 0, canvas.width, canvas.height );
+			}
+			sy = 0; sx = 0; size = 32;
+			sImg = img2;
+			break;
+		case "attackButton":
+			drawElement( {
+				type2: "blueButton", style: 0,
+				left: element.left, top: element.top,
+				width: element.width, height: element.height,
+			} );
+			if ( element.pressed ) {
+				ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+				ctx.fillRect( 0, 0, canvas.width, canvas.height );
+			}
+			sy = 0; sx = 1; size = 32;
+			sImg = img2;
+			break;
+		case "buildButton":
+			drawElement( {
+				type2: "blueButton", style: 0,
+				left: element.left, top: element.top,
+				width: element.width, height: element.height,
+			} );
+			if ( element.pressed ) {
+				ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+				ctx.fillRect( 0, 0, canvas.width, canvas.height );
+			}
+			sy = 0; sx = 2; size = 32;
+			sImg = img2;
+			break;
+		case "stopButton":
+			drawElement( {
+				type2: "redButton", style: 0,
+				left: element.left, top: element.top,
+				width: element.width, height: element.height,
+			} );
+			if ( element.pressed ) {
+				ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+				ctx.fillRect( 0, 0, canvas.width, canvas.height );
+			}
+			sy = 1; sx = 0; size = 32;
+			sImg = img2;
+			break;
+		case "trainFarmerButton":
+			drawElement( {
+				type2: "blueButton", style: 0,
+				left: element.left, top: element.top,
+				width: element.width, height: element.height,
+			} );
+			if ( element.pressed ) {
+				ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+				ctx.fillRect( 0, 0, canvas.width, canvas.height );
+			}
+			sy = 35 + element.player; sx = 2;
+			sImg = img1;
+			break;
+		case "trainSoldierButton":
+			drawElement( {
+				type2: "blueButton", style: 0,
+				left: element.left, top: element.top,
+				width: element.width, height: element.height,
+			} );
+			if ( element.pressed ) {
+				ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+				ctx.fillRect( 0, 0, canvas.width, canvas.height );
+			}
+			sy = 16 + element.player; sx = 2;
+			sImg = img1;
+			break;
+		case "trainArcherButton":
+			drawElement( {
+				type2: "blueButton", style: 0,
+				left: element.left, top: element.top,
+				width: element.width, height: element.height,
+			} );
+			if ( element.pressed ) {
+				ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+				ctx.fillRect( 0, 0, canvas.width, canvas.height );
+			}
+			sy = 16 + element.player; sx = 0;
+			sImg = img1;
 			break;
 		default:
 			return;
@@ -239,7 +437,7 @@ function drawElement( element ) {
 
 	// draw image
 	ctx.drawImage(
-		img, sx * 16, sy * 16, 16, 16,
+		sImg, sx * size, sy * size, size, size,
 		element.left, element.top, element.width, element.height
 	);
 }
@@ -257,8 +455,9 @@ canvas.addEventListener( 'click', function( ev ) {
 			x > element.left && x < element.left + element.width ) {
 			switch ( element.type1 ) {
 				case "unit":
-					selected = elements.indexOf(element);
-					//moveObjWarring.updates.push( element.type1 );
+					if ( element.player == playerNumber ) {
+						selected = elements.indexOf(element);
+					}
 					break;
 				default:
 					return;
