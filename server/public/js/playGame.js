@@ -74,10 +74,13 @@ function onMessage( evt )
 	var serverObj = JSON.parse( evt.data );
 	gid = serverObj.gid;
 	state = serverObj.state;
-	console.log( "Message: " + evt.data);
+	// console.log( "Message: " + evt.data);
 	switch( serverObj.msgType ) {
 		case "playersTurn":
 			document.getElementById( 'makeMoveBtn' ).disabled = false;
+			if ( serverObj.state.game == "warring" ) {
+				setTimeout( function() { makeMove(); }, 4000 );
+			}
 			if ( !drawing ) {
 				drawGameState( gid );
 				drawing = true;

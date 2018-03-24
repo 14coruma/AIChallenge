@@ -72,9 +72,11 @@ exports.move = function( state, move, callback ) {
 		try {
 			move = JSON.parse( move );
 		} catch ( e ) {
+			state.currentPlayer = (state.currentPlayer + 1) % state.players.length;
 			callback( state );
 		}
 	}
+	state.currentPlayer = (state.currentPlayer + 1) % state.players.length;
 	callback( updateState( state, move ) );
 }
 
@@ -112,9 +114,6 @@ function updateState( state, move ) {
 
 	// Check for game over
 	state = gameOver( state );
-
-	// Update currentPlayer
-	state.currentPlayer = (state.currentPlayer + 1) % state.players.length;
 
 	return state;
 }

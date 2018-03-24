@@ -26,6 +26,7 @@ ctx.mozImageSmoothingEnabled = false;
 ctx.imageSmoothingEnabled = false;
 
 function drawWarring( state ) {
+	document.getElementById( "formMove" ).value = JSON.stringify( moveObjWarring );
 	// Draw background
 	var pattern = ctx.createPattern( background, "repeat" );
 	ctx.fillStyle = pattern;
@@ -49,7 +50,6 @@ function drawWarring( state ) {
 			formUsername &&
 			state.players[state.currentPlayer].username != formUsername.value
 	) {
-		moveObjWarring = { bank: [], done: 0 };
 		ctx.globalAlpha = 0.5;
 		ctx.fillRect( 0, 0, canvas.width, canvas.height );
 		ctx.globalAlpha = 1.0;
