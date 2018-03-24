@@ -76,8 +76,9 @@ exports.move = function( state, move, callback ) {
 			callback( state );
 		}
 	}
+	state = updateState( state, move );
 	state.currentPlayer = (state.currentPlayer + 1) % state.players.length;
-	callback( updateState( state, move ) );
+	callback( state );
 }
 
 /**
@@ -681,8 +682,8 @@ function buildPath( startX, startY, endX, endY, map ) {
 
 	// Add random bend, calculate buildPath from there
 	var r = Math.random();
-	var dir = (r < 0.2) ? -1 : 0;
-	dir = (r > 0.6) ? 1 : dir;
+	var dir = (r < 0.1) ? -1 : 0;
+	dir = (r > 0.8) ? 1 : dir;
 	if ( startX == path[1][0] ) {
 		startX += dir;
 		startX = (startX < 0 || startX >= MAP_SIZE) ? startX - dir : startX;

@@ -1,7 +1,5 @@
 /**
- * drawWarring.js draws the game state of Warring Kingdoms
- *
- * Created by: Andrew Corum, Feb 24 2018
+ * drawWarring.js draws the game state of Warring Kingdoms * * Created by: Andrew Corum, Feb 24 2018
  */
 
 'use strict';
@@ -457,6 +455,15 @@ canvas.addEventListener( 'click', function( ev ) {
 				case "unit":
 					if ( element.player == playerNumber ) {
 						selected = elements.indexOf(element);
+					}
+					break;
+				case "ui":
+					switch ( element.type2 ) {
+						case "trainFarmerButton":
+							moveObjWarring.updates.push({
+								type: "train", class: "farmer"
+							} );
+							break;
 					}
 					break;
 				default:
