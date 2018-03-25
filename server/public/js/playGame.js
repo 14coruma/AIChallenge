@@ -108,7 +108,7 @@ function makeMove() {
 		gid      : gid,
 		move     : formMove,
 	}
-	console.log( message );
+	// console.log( message );
 	switch( game ) {
 		case "farkle":
 			resetFarkleBank();

@@ -3,12 +3,16 @@
  */
 
 'use strict';
+
+const MAP_SIZE = 17;
+
 var canvas = document.getElementById( "myCanvas" ),
     ctx = canvas.getContext( "2d" ),
     canvasLeft = canvas.offsetLeft,
     canvasTop = canvas.offsetTop,
     elements = [],
-    selected,
+    selectedUnit,
+    selectedTile,
     moveObjWarring = { updates:[] },
     playerNumber,
     img1 = new Image,
@@ -69,7 +73,9 @@ function drawWarring( state ) {
 				type1: "map",
 				type2: state.map[y][x].type,
 				hp: state.map[y][x].hp,
+				solid: state.map[y][x].solid,
 				style: state.map[y][x].style,
+				x: x, y: y,
 				width: 32, height: 32,
 				top: y * 32 + 16, left: x * 32 + 16,
 			} );
@@ -83,7 +89,9 @@ function drawWarring( state ) {
 				type1: "unit",
 				type2: state.players[i].units[j].class,
 				hp: state.players[i].units[j].hp,
-				player: i,
+				player: i, unitIndex: j,
+				solid: true,
+				x: state.players[i].units[j].x, y: state.players[i].units[j].y,
 				width: 32, height: 32,
 				top: state.players[i].units[j].y * 32 + 16,
 				left: state.players[i].units[j].x * 32 + 16,
@@ -124,8 +132,8 @@ function drawWarring( state ) {
 		} );
 	}
 
-	// Create UI elements based on selected unit
-	if ( selected ) {
+	// Create UI elements based on selectedUnit unit
+	if ( selectedUnit ) {
 		elements.push( {
 			type1: "ui",
 			type2: "moveButton",
@@ -133,8 +141,8 @@ function drawWarring( state ) {
 			top: 168,  left: 572,
 			pressed: false,
 		} );
-		if ( elements[selected].type2 == "soldier" ||
-		     elements[selected].type2 == "archer" ) {
+		if ( elements[selectedUnit].type2 == "soldier" ||
+		     elements[selectedUnit].type2 == "archer" ) {
 			elements.push( {
 				type1: "ui",
 				type2: "attackButton",
@@ -164,14 +172,23 @@ function drawWarring( state ) {
 	// Render all elements
 	renderElements();
 
-	// Draw user selected units
-	if ( selected >= 0 ) {
+	// Draw user selectedUnit and selectedTile
+	if ( selectedUnit >= 0 ) {
 		drawElement( {
-			type2: "selected",
-			left: elements[selected].left,
-			top: elements[selected].top,
-			width: elements[selected].width,
-			height: elements[selected].height
+			type2: "selectedUnit",
+			left: elements[selectedUnit].left,
+			top: elements[selectedUnit].top,
+			width: elements[selectedUnit].width,
+			height: elements[selectedUnit].height
+		} );
+	}
+	if ( selectedTile >= 0 ) {
+		drawElement( {
+			type2: "selectedTile",
+			left: elements[selectedTile].left,
+			top: elements[selectedTile].top,
+			width: elements[selectedTile].width,
+			height: elements[selectedTile].height,
 		} );
 	}
 
@@ -326,8 +343,12 @@ function drawElement( element ) {
 			}
 			sImg = img1;
 			break;
-		case "selected":
+		case "selectedUnit":
 			sy = 42; sx = 3;
+			sImg = img1;
+			break;
+		case "selectedTile":
+			sy = 29; sx = 4;
 			sImg = img1;
 			break;
 		case "blueButton":
@@ -454,11 +475,43 @@ canvas.addEventListener( 'click', function( ev ) {
 			switch ( element.type1 ) {
 				case "unit":
 					if ( element.player == playerNumber ) {
-						selected = elements.indexOf(element);
+						selectedUnit = elements.indexOf(element);
+					}
+					break;
+				case "map":
+					if ( !element.solid ) {
+						selectedTile = elements.indexOf(element);
 					}
 					break;
 				case "ui":
 					switch ( element.type2 ) {
+						case "moveButton":
+							var mapMask = [];
+							for ( var row = 0; row < MAP_SIZE; row++ ) {
+								mapMask[row] = new Array( MAP_SIZE );
+								for ( var col = 0; col < MAP_SIZE; col++ ) {
+									mapMask[row][col] = 0;
+								}
+							}
+							for ( var i = 0; i < elements.length; i++ ) {
+								if ( elements[i].solid ) {
+									mapMask[elements[i].y][elements[i].x] = 1;
+								}
+							}
+							var startX = elements[selectedUnit].x;
+							var startY = elements[selectedUnit].y;
+							var endX = elements[selectedTile].x;
+							var endY = elements[selectedTile].y;
+							var dir = dirTowards( startX, startY, endX, endY, mapMask );
+							console.log( dir );
+							if ( dir ) {
+								moveObjWarring.updates.push({
+									type: "move",
+									unit: elements[selectedUnit].unitIndex,
+									direction: dir
+								} );
+							}
+							break;
 						case "trainFarmerButton":
 							moveObjWarring.updates.push({
 								type: "train", class: "farmer"
@@ -473,3 +526,33 @@ canvas.addEventListener( 'click', function( ev ) {
 		}
 	});
 }, false );
+
+/**
+ * Find the direction a unit must take to reach a given destination
+ *
+ * @param: (ints) startX, startY
+ * @param: (ints) endX, endY
+ * @param: (2d array) map
+ *
+ * @return: (char) direction
+ *          (bool) false (if no path is found)
+ */
+function dirTowards( startX, startY, endX, endY, map ) {
+	map[startY][startX] = 0;
+	var grid = new PF.Grid( map );
+	var finder = new PF.AStarFinder();
+	var path = finder.findPath( startX, startY, endX, endY, grid );
+	console.log( path );
+	if ( path.length <= 1 ) {
+		return false;
+	}
+	console.log( "x: " + startX + " y: " + startY );
+	if ( path[1][1] - startY == -1 )
+		return "N";
+	if ( path[1][0] - startX == 1 )
+		return "E";
+	if ( path[1][1] - startY == 1 )
+		return "S";
+	if ( path[1][0] - startX == -1 )
+		return "W";
+}
