@@ -11,6 +11,7 @@ var canvas = document.getElementById( "myCanvas" ),
     canvasLeft = canvas.offsetLeft,
     canvasTop = canvas.offsetTop,
     elements = [],
+    unitDests = [],
     selectedUnit,
     selectedTile,
     moveObjWarring = { updates:[] },
@@ -190,6 +191,39 @@ function drawWarring( state ) {
 			width: elements[selectedTile].width,
 			height: elements[selectedTile].height,
 		} );
+	}
+
+	// Create updates based on unit destinations
+	var mapMask = [];
+	for ( var row = 0; row < MAP_SIZE; row++ ) {
+		mapMask[row] = new Array( MAP_SIZE );
+		for ( var col = 0; col < MAP_SIZE; col++ ) {
+			mapMask[row][col] = 0;
+		}
+	}
+	for ( var i = 0; i < elements.length; i++ ) {
+		if ( elements[i].solid ) {
+			mapMask[elements[i].y][elements[i].x] = 1;
+		}
+	}
+
+	for ( var i = 0; i < unitDests.length; i++ ) {
+		var dir = dirTowards(
+			state.players[playerNumber].units[unitDests[i].unit].x,
+			state.players[playerNumber].units[unitDests[i].unit].y,
+			unitDests[i].dest[0],
+			unitDests[i].dest[1],
+			mapMask
+		);
+		if ( dir ) {
+			moveObjWarring.updates.push({
+				type: "move",
+				unit: unitDests[i].unit,
+				direction: dir
+			} );
+		} else {
+			unitDests.splice( i, 1 );
+		}
 	}
 
 	// Draw Game Over
@@ -502,15 +536,10 @@ canvas.addEventListener( 'click', function( ev ) {
 							var startY = elements[selectedUnit].y;
 							var endX = elements[selectedTile].x;
 							var endY = elements[selectedTile].y;
-							var dir = dirTowards( startX, startY, endX, endY, mapMask );
-							console.log( dir );
-							if ( dir ) {
-								moveObjWarring.updates.push({
-									type: "move",
-									unit: elements[selectedUnit].unitIndex,
-									direction: dir
-								} );
-							}
+							unitDests.push( {
+								unit: elements[selectedUnit].unitIndex,
+								dest: [endX, endY],
+							} );
 							break;
 						case "trainFarmerButton":
 							moveObjWarring.updates.push({
@@ -542,11 +571,9 @@ function dirTowards( startX, startY, endX, endY, map ) {
 	var grid = new PF.Grid( map );
 	var finder = new PF.AStarFinder();
 	var path = finder.findPath( startX, startY, endX, endY, grid );
-	console.log( path );
 	if ( path.length <= 1 ) {
 		return false;
 	}
-	console.log( "x: " + startX + " y: " + startY );
 	if ( path[1][1] - startY == -1 )
 		return "N";
 	if ( path[1][0] - startX == 1 )
@@ -555,4 +582,5 @@ function dirTowards( startX, startY, endX, endY, map ) {
 		return "S";
 	if ( path[1][0] - startX == -1 )
 		return "W";
+	return false;
 }

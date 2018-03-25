@@ -45,6 +45,7 @@ exports.start = function( lgid, usernames, callback ) {
 		attack: 0,
 		range: 0,
 		hasFood: false,
+		canMove: true,
 	};
 	state.players[1].units[0] = {
 		class: "farmer",
@@ -53,6 +54,7 @@ exports.start = function( lgid, usernames, callback ) {
 		attack: 0,
 		range: 0,
 		hasFood: false,
+		canMove: true,
 	};
 
 	callback( state );
@@ -116,6 +118,13 @@ function updateState( state, move ) {
 	// Check for game over
 	state = gameOver( state );
 
+	// Rest 'canMove' for each unit
+	for ( var i = 0; i < state.players.length; i++ ) {
+		for ( var j = 0; j < state.players[i].units.length; j++ ) {
+			state.players[i].units[j].canMove = true;
+		}
+	}
+
 	return state;
 }
 
@@ -140,6 +149,10 @@ function build( state, move ) {
 		return state;
 	}
 	if ( typeof move.direction != "string" ) {
+		state.players[player].errors++;
+		return state;
+	}
+	if ( !state.players[player].units[move.unit].canMove ) {
 		state.players[player].errors++;
 		return state;
 	}
@@ -186,6 +199,9 @@ function build( state, move ) {
 	}
 	state.players[player].food -= cost;
 
+	// Disable future moves
+	state.players[player].units[move.unit].canMove = false;
+
 	return state;
 }
 
@@ -216,19 +232,19 @@ function train( state, move ) {
 		case "farmer":
 			cost = 400;
 			unit = {
-				class: "farmer", hp: 40, attack: 0,  range: 0, hasFood: false,
+				class: "farmer", hp: 40, attack: 0,  range: 0, hasFood: false, canMove: true,
 			};
 			break;
 		case "soldier":
 			cost = 450;
 			unit = {
-				class: "soldier", hp: 60, attack: 15,  range: 0,
+				class: "soldier", hp: 60, attack: 15,  range: 0, canMove: true,
 			};
 			break;
 		case "archer":
 			cost = 500;
 			unit = {
-				class: "archer", hp: 50, attack: 10,  range: 2,
+				class: "archer", hp: 50, attack: 10,  range: 2, canMove: true,
 			};
 			break;
 		default:
@@ -294,6 +310,10 @@ function attack( state, move ) {
 		state.players[player].errors++;
 		return state;
 	}
+	if ( !state.players[player].units[move.unit].canMove ) {
+		state.players[player].errors++;
+		return state;
+	}
 
 	// Calculate newX and newY
 	var newX = state.players[player].units[move.unit].x;
@@ -335,6 +355,9 @@ function attack( state, move ) {
 			break;
 	}
 
+	// Disable future moves
+	state.players[player].units[move.unit].canMove = false;
+
 	return state;
 }
 
@@ -360,6 +383,10 @@ function makeMove( state, move ) {
 		return state;
 	}
 	if ( typeof move.direction != "string" || move.direction.length != 1 ) {
+		state.players[player].errors++;
+		return state;
+	}
+	if ( !state.players[player].units[move.unit].canMove ) {
 		state.players[player].errors++;
 		return state;
 	}
@@ -406,6 +433,9 @@ function makeMove( state, move ) {
 			state.players[player].food += 200;
 		}
 	}
+
+	// Disable future moves
+	state.players[player].units[move.unit].canMove = false;
 
 	return state;
 }
