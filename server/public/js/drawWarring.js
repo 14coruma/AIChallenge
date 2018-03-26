@@ -273,6 +273,42 @@ function drawElement( element ) {
 			sy = 0; sx = element.style + 4;
 			sImg = img1;
 			break;
+		case "wall":
+			drawElement( {
+				type2: "grass", style: 1,
+				left: element.left, top: element.top,
+				width: element.width, height: element.height,
+			} );
+			switch ( element.style ) {
+				case 1:
+					sy = 31; sx = 2; break;
+				case 2:
+					sy = 31; sx = 3; break;
+				case 3:
+					sy = 31; sx = 4; break;
+				case 4:
+					sy = 32; sx = 2; break;
+				case 5:
+					sy = 32; sx = 4; break;
+				case 6:
+					sy = 33; sx = 2; break;
+				case 7:
+					sy = 33; sx = 3; break;
+				case 8:
+					sy = 33; sx = 4; break;
+				case 9:
+					sy = 31; sx = 1; break;
+				case 10:
+					sy = 31; sx = 0; break;
+				case 11:
+					sy = 32; sx = 1; break;
+				case 12:
+					sy = 32; sx = 0; break;
+				default:
+					sy = 32; sx = 3; break;
+			}
+			sImg = img1;
+			break;
 		case "mountain":
 			drawElement( {
 				type2: "grass", style: 0,
@@ -542,9 +578,37 @@ canvas.addEventListener( 'click', function( ev ) {
 							} );
 							break;
 						case "trainFarmerButton":
-							moveObjWarring.updates.push({
+							moveObjWarring.updates.push( {
 								type: "train", class: "farmer"
 							} );
+							break;
+						case "trainSoldierButton":
+							moveObjWarring.updates.push( {
+								type: "train", class: "soldier"
+							} );
+							break;
+						case "trainArcherButton":
+							moveObjWarring.updates.push( {
+								type: "train", class: "archer"
+							} );
+							break;
+						case "buildButton":
+							var startX = elements[selectedUnit].x;
+							var startY = elements[selectedUnit].y;
+							var endX = elements[selectedTile].x;
+							var endY = elements[selectedTile].y;
+							var dir = false;
+							if ( endY - startY == -1 ) dir = "N";
+							if ( endX - startX == 1 ) dir = "E";
+							if ( endY - startY == 1 ) dir = "S";
+							if ( endX - startX == -1 ) dir = "W";
+							if ( dir ) {
+								moveObjWarring.updates.push( {
+									type: "build",
+									unit: elements[selectedUnit].unitIndex,
+									direction: dir
+								} );
+							}
 							break;
 					}
 					break;

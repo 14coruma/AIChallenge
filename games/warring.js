@@ -118,12 +118,26 @@ function updateState( state, move ) {
 	// Check for game over
 	state = gameOver( state );
 
-	// Rest 'canMove' for each unit
+	// Reset 'canMove' for each unit
 	for ( var i = 0; i < state.players.length; i++ ) {
 		for ( var j = 0; j < state.players[i].units.length; j++ ) {
 			state.players[i].units[j].canMove = true;
 		}
 	}
+
+	// Update wall styles on map
+	var pathmap = [];
+	for ( var row = 0; row < MAP_SIZE; row++ ) {
+		pathmap[row] = new Array( MAP_SIZE );
+		for ( var col = 0; col < MAP_SIZE; col++ ) {
+			if ( state.map[row][col].type == "wall" ){
+				pathmap[row][col] = 1;
+			} else {
+				pathmap[row][col] = 0;
+			}
+		}
+	}
+	state.map = setPathStyles( state.map, pathmap, "wall" );
 
 	return state;
 }
@@ -740,7 +754,6 @@ function buildPath( startX, startY, endX, endY, map ) {
  * @return: (2d array) updated state map
  */
 function setPathStyles( stateMap, pathmap, type ) {
-	var style = 0;
 	for ( var row = 0; row < MAP_SIZE; row++ ) {
 		for ( var col = 0; col < MAP_SIZE; col++ ) {
 			if ( pathmap[row][col] == 0 ) continue;
@@ -754,6 +767,7 @@ function setPathStyles( stateMap, pathmap, type ) {
 			}
 
 			// Figure out style
+			var style = 0;
 			if ( col < MAP_SIZE-1 && row < MAP_SIZE-1
 			     && pathmap[row][col+1] && pathmap[row+1][col] ) // ╔
 				style = 1;
@@ -791,7 +805,7 @@ function setPathStyles( stateMap, pathmap, type ) {
 			// update map
 			stateMap[row][col].style = style;
 			stateMap[row][col].type = type;
-			stateMap[row][col].solid = (type == "river");
+			stateMap[row][col].solid = (type == "river" || type == "wall" );
 		}
 	}
 
