@@ -13,7 +13,7 @@ var password = "";
 var game = "";
 var state = {};
 var drawing = false;
-var wsUri = "ws://153.106.160.184:8080/"; // Set ip address to local server
+var wsUri = "ws://153.106.86.30:8080/"; // Set ip address to local server
 var websocket = new WebSocket( wsUri );
 websocket.onmessage = function( evt ) { onMessage( evt ) };
 websocket.onerror = function( evt ) { onError( evt ) };
@@ -74,12 +74,11 @@ function onMessage( evt )
 	var serverObj = JSON.parse( evt.data );
 	gid = serverObj.gid;
 	state = serverObj.state;
-	// console.log( "Message: " + evt.data);
 	switch( serverObj.msgType ) {
 		case "playersTurn":
 			document.getElementById( 'makeMoveBtn' ).disabled = false;
 			if ( serverObj.state.game == "warring" ) {
-				setTimeout( function() { makeMove(); moveObjWarring = {updates:[]}; }, 500 );
+				setTimeout( function() { makeMove(); moveObjWarring = {updates:[]}; }, 400 );
 			}
 			if ( !drawing ) {
 				drawGameState( gid );
@@ -108,7 +107,6 @@ function makeMove() {
 		gid      : gid,
 		move     : formMove,
 	}
-	// console.log( message );
 	switch( game ) {
 		case "farkle":
 			resetFarkleBank();

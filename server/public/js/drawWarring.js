@@ -83,7 +83,7 @@ function drawWarring( state ) {
 		}
 	}
 
-	// Create all unit elements
+	// Create all unit and hp elements
 	for ( var i = 0; i < state.players.length; i++ ) {
 		for ( var j = 0; j < state.players[i].units.length; j++ ) {
 			elements.push( {
@@ -93,6 +93,14 @@ function drawWarring( state ) {
 				player: i, unitIndex: j,
 				solid: true,
 				x: state.players[i].units[j].x, y: state.players[i].units[j].y,
+				width: 32, height: 32,
+				top: state.players[i].units[j].y * 32 + 16,
+				left: state.players[i].units[j].x * 32 + 16,
+			} );
+			elements.push( {
+				type1: "hp",
+				type2: "hp",
+				style: state.players[i].units[j].hp,
 				width: 32, height: 32,
 				top: state.players[i].units[j].y * 32 + 16,
 				left: state.players[i].units[j].x * 32 + 16,
@@ -348,13 +356,48 @@ function drawElement( element ) {
 			sy = 9; sx = 6;
 			sImg = img1;
 			break;
+		case "hp":
+			switch( Math.floor( element.style / 10 ) ) {
+				case 0:
+					sy = 20; sx = 0;
+					break;
+				case 1:
+					sy = 21; sx = 0;
+					break;
+				case 2:
+					sy = 21; sx = 1;
+					break;
+				case 3:
+					sy = 21; sx = 2;
+					break;
+				case 4:
+					sy = 22; sx = 0;
+					break;
+				case 5:
+					sy = 22; sx = 1;
+					break;
+				case 6:
+					sy = 22; sx = 2;
+					break;
+				case 7:
+					sy = 23; sx = 0;
+					break;
+				case 8:
+					sy = 23; sx = 1;
+					break;
+				default: // case 9:
+					sy = 23; sx = 2;
+					break;
+			}
+			sImg = img1;
+			break;
 		case "path":
 			drawElement( {
 				type2: "grass", style: 2,
 				left: element.left, top: element.top,
 				width: element.width, height: element.height,
 			} );
-			switch ( element.style ) {
+			switch( element.style ) {
 				case 1:
 					sy = 10; sx = 0; break;
 				case 2:
