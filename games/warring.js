@@ -252,13 +252,13 @@ function train( state, move ) {
 		case "soldier":
 			cost = 450;
 			unit = {
-				class: "soldier", hp: 60, attack: 15,  range: 0, canMove: true,
+				class: "soldier", hp: 60, attack: 15,  range: 1, canMove: true,
 			};
 			break;
 		case "archer":
 			cost = 500;
 			unit = {
-				class: "archer", hp: 50, attack: 10,  range: 2, canMove: true,
+				class: "archer", hp: 50, attack: 10,  range: 3, canMove: true,
 			};
 			break;
 		default:

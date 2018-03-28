@@ -83,27 +83,36 @@ function drawWarring( state ) {
 		}
 	}
 
-	// Create all unit and hp elements
+	// Create all unit and status elements
 	for ( var i = 0; i < state.players.length; i++ ) {
 		for ( var j = 0; j < state.players[i].units.length; j++ ) {
+			var unit = state.players[i].units[j];
 			elements.push( {
 				type1: "unit",
-				type2: state.players[i].units[j].class,
-				hp: state.players[i].units[j].hp,
+				type2: unit.class,
+				hp: unit.hp, range: unit.range,
 				player: i, unitIndex: j,
 				solid: true,
-				x: state.players[i].units[j].x, y: state.players[i].units[j].y,
+				x: unit.x, y: unit.y,
 				width: 32, height: 32,
-				top: state.players[i].units[j].y * 32 + 16,
-				left: state.players[i].units[j].x * 32 + 16,
+				top: unit.y * 32 + 16,
+				left: unit.x * 32 + 16,
 			} );
 			elements.push( {
-				type1: "hp",
+				type1: "status",
 				type2: "hp",
-				style: state.players[i].units[j].hp,
+				style: unit.hp,
 				width: 32, height: 32,
-				top: state.players[i].units[j].y * 32 + 16,
-				left: state.players[i].units[j].x * 32 + 16,
+				top: unit.y * 32 + 16,
+				left: unit.x * 32 + 16,
+			} );
+			elements.push( {
+				type1: "status",
+				type2: "hasFood",
+				hasFood: unit.hasFood,
+				width: 32, height: 32,
+				top: unit.y * 32 + 16,
+				left: unit.x * 32 + 16,
 			} );
 		}
 	}
@@ -216,21 +225,32 @@ function drawWarring( state ) {
 	}
 
 	for ( var i = 0; i < unitDests.length; i++ ) {
-		var dir = dirTowards(
-			state.players[playerNumber].units[unitDests[i].unit].x,
-			state.players[playerNumber].units[unitDests[i].unit].y,
-			unitDests[i].dest[0],
-			unitDests[i].dest[1],
-			mapMask
-		);
-		if ( dir ) {
-			moveObjWarring.updates.push({
-				type: "move",
+		var attackDir = unitDests[i].attack ? canAttack( state, playerNumber, unitDests[i].unit ) : false;
+		// If unit is in attack mode and can attack...then attack
+		if ( attackDir ) {
+			moveObjWarring.updates.push( {
+				type: "attack",
 				unit: unitDests[i].unit,
-				direction: dir
+				direction: attackDir,
 			} );
-		} else {
-			unitDests.splice( i, 1 );
+		} else { // Otherwise just move
+			mapMask[unitDests[i].dest[1]][unitDests[i].dest[0]] = 0;
+			var dir = dirTowards(
+				state.players[playerNumber].units[unitDests[i].unit].x,
+				state.players[playerNumber].units[unitDests[i].unit].y,
+				unitDests[i].dest[0],
+				unitDests[i].dest[1],
+				mapMask
+			);
+			if ( dir ) {
+				moveObjWarring.updates.push( {
+					type: "move",
+					unit: unitDests[i].unit,
+					direction: dir,
+				} );
+			} else {
+				unitDests.splice( i, 1 );
+			}
 		}
 	}
 
@@ -354,6 +374,14 @@ function drawElement( element ) {
 				width: element.width, height: element.height,
 			} );
 			sy = 9; sx = 6;
+			sImg = img1;
+			break;
+		case "hasFood":
+			if ( element.hasFood ) {
+				sy = 21; sx = 6;
+			} else {
+				sy = 34; sx = 6;
+			}
 			sImg = img1;
 			break;
 		case "hp":
@@ -599,24 +627,24 @@ canvas.addEventListener( 'click', function( ev ) {
 				case "ui":
 					switch ( element.type2 ) {
 						case "moveButton":
-							var mapMask = [];
-							for ( var row = 0; row < MAP_SIZE; row++ ) {
-								mapMask[row] = new Array( MAP_SIZE );
-								for ( var col = 0; col < MAP_SIZE; col++ ) {
-									mapMask[row][col] = 0;
-								}
-							}
-							for ( var i = 0; i < elements.length; i++ ) {
-								if ( elements[i].solid ) {
-									mapMask[elements[i].y][elements[i].x] = 1;
-								}
-							}
 							var startX = elements[selectedUnit].x;
 							var startY = elements[selectedUnit].y;
 							var endX = elements[selectedTile].x;
 							var endY = elements[selectedTile].y;
 							unitDests.push( {
 								unit: elements[selectedUnit].unitIndex,
+								attack: false,
+								dest: [endX, endY],
+							} );
+							break;
+						case "attackButton":
+							var startX = elements[selectedUnit].x;
+							var startY = elements[selectedUnit].y;
+							var endX = elements[selectedTile].x;
+							var endY = elements[selectedTile].y;
+							unitDests.push( {
+								unit: elements[selectedUnit].unitIndex,
+								attack: true,
 								dest: [endX, endY],
 							} );
 							break;
@@ -689,5 +717,33 @@ function dirTowards( startX, startY, endX, endY, map ) {
 		return "S";
 	if ( path[1][0] - startX == -1 )
 		return "W";
+	return false;
+}
+
+/**
+ * Check if a unit can attack an enemy unit. Return dir if attack is possible
+ *
+ * @param: (obj) current game state
+ * @param: (int) player number
+ * @param: (int) unit index
+ *
+ * @return: (char) direction
+ *          (bool) false (if cannot attack)
+ */
+function canAttack( state, playerNumber, unitIndex ) {
+	var unit = state.players[playerNumber].units[unitIndex];
+	var eUnits = state.players[(playerNumber+1)%2].units;
+	for ( var eIndex = 0; eIndex < eUnits.length; eIndex++ ) {
+		for ( var i = 0; i < unit.range; i++ ) {
+			if ( eUnits[eIndex].y + unit.range == unit.y && eUnits[eIndex].x == unit.x )
+				return "N";
+			if ( eUnits[eIndex].x - unit.range == unit.x && eUnits[eIndex].y == unit.y )
+				return "E";
+			if ( eUnits[eIndex].y - unit.range == unit.y && eUnits[eIndex].x == unit.x )
+				return "S";
+			if ( eUnits[eIndex].x + unit.range == unit.x && eUnits[eIndex].y == unit.y )
+				return "W";
+		}
+	}
 	return false;
 }
