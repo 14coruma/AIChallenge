@@ -8,7 +8,7 @@ const MAP_SIZE = 17;
 const KEEP1 = { x: 4, y: 4 };
 const KEEP2 = { x: MAP_SIZE - 5, y: MAP_SIZE - 5 };
 const FARM_DIST = 4;
-const GAME_LENGTH = 100;
+const GAME_LENGTH = 500;
 
 /**
  * start creates then returns initial game state
@@ -216,7 +216,7 @@ function build( state, move ) {
 	state.map[newY][newX] = {
 		type: "wall",
 		style: 0,
-		hp: 150, solid: true
+		hp: 200, solid: true
 	}
 	state.players[player].food -= cost;
 

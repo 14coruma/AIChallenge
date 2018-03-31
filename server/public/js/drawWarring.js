@@ -80,6 +80,15 @@ function drawWarring( state ) {
 				width: 32, height: 32,
 				top: y * 32 + 16, left: x * 32 + 16,
 			} );
+			if ( state.map[y][x].type == "wall" && state.map[y][x].hp <= 100 ) {
+				elements.push( {
+					type2: "fire", style: 0,
+					left: x * 32 + 16, top: y * 32 + 16,
+					solid: false, hp: 0,
+					x: x, y: y,
+					width: 32, height: 32,
+				} );
+			}
 		}
 	}
 
@@ -249,6 +258,11 @@ function drawWarring( state ) {
 					unit: unitDests[i].unit,
 					direction: dir,
 				} );
+				moveObjWarring.updates.push( {
+					type: "attack",
+					unit: unitDests[i].unit,
+					direction: dir,
+				} );
 			} else {
 				unitDests.splice( i, 1 );
 			}
@@ -314,6 +328,19 @@ function drawElement( element ) {
 				width: element.width, height: element.height,
 			} );
 			sy = 0; sx = element.style + 4;
+			sImg = img1;
+			break;
+		case "rubble":
+			drawElement( {
+				type2: "grass", style: 1,
+				left: element.left, top: element.top,
+				width: element.width, height: element.height,
+			} );
+			sy = 4; sx = 0;
+			sImg = img1;
+			break;
+		case "fire":
+			sy = 33; sx = Math.floor( Math.random() * 2 );
 			sImg = img1;
 			break;
 		case "wall":
@@ -642,7 +669,7 @@ canvas.addEventListener( 'click', function( ev ) {
 					}
 					break;
 				case "map":
-					if ( !element.solid ) {
+					if ( !element.solid || element.type2 == "wall" ) {
 						selectedTile = elements.indexOf( element );
 					}
 					break;
