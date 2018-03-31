@@ -121,7 +121,8 @@ function updateState( state, move ) {
 	// Reset 'canMove' for each unit
 	for ( var i = 0; i < state.players.length; i++ ) {
 		for ( var j = 0; j < state.players[i].units.length; j++ ) {
-			state.players[i].units[j].canMove = true;
+			if ( state.players[i].units[j].class != "dead" )
+				state.players[i].units[j].canMove = true;
 		}
 	}
 
@@ -162,6 +163,10 @@ function build( state, move ) {
 		state.players[player].errors++;
 		return state;
 	}
+	if ( move.unit >= state.players[player].units.length ) {
+		state.players[player].errors++;
+		return state;
+	}
 	if ( typeof move.direction != "string" ) {
 		state.players[player].errors++;
 		return state;
@@ -172,7 +177,7 @@ function build( state, move ) {
 	}
 
 	// Check that there is enough food to build wall
-	let cost = 250;
+	let cost = 150;
 	if ( state.players[player].food < cost ) {
 		state.players[player].errors++;
 		return state;
@@ -258,7 +263,7 @@ function train( state, move ) {
 		case "archer":
 			cost = 500;
 			unit = {
-				class: "archer", hp: 50, attack: 10,  range: 3, canMove: true,
+				class: "archer", hp: 50, attack: 10,  range: 2, canMove: true,
 			};
 			break;
 		default:
@@ -307,7 +312,7 @@ function train( state, move ) {
  */
 function attack( state, move ) {
 	let player = state.currentPlayer;
-	// Make sure move is an object with unit# and direction, and not a farmer
+	// Make sure move is an object with unit# and direction, and has attack strength
 	if ( typeof move != "object" ) {
 		state.players[player].errors++;
 		return state;
@@ -316,11 +321,15 @@ function attack( state, move ) {
 		state.players[player].errors++;
 		return state;
 	}
+	if ( move.unit >= state.players[player].units.length ) {
+		state.players[player].errors++;
+		return state;
+	}
 	if ( typeof move.direction != "string" || move.direction.length != 1 ) {
 		state.players[player].errors++;
 		return state;
 	}
-	if ( state.players[player].units[move.unit].class == "farmer" ) {
+	if ( state.players[player].units[move.unit].attack <= 0 ) {
 		state.players[player].errors++;
 		return state;
 	}
@@ -329,44 +338,44 @@ function attack( state, move ) {
 		return state;
 	}
 
-	// Calculate newX and newY
 	var newX = state.players[player].units[move.unit].x;
 	var newY = state.players[player].units[move.unit].y;
-	switch( move.direction ) {
-		case "N":
-			newY -= 1;
-			break;
-		case "E":
-			newX += 1;
-			break;
-		case "S":
-			newY += 1;
-			break;
-		case "W":
-			newX -= 1;
-			break;
-		default:
-			state.players[player].errors++;
-			return state;
-	}
+	for ( var range = 1; range <= state.players[player].units[move.unit].range; range++ ) {
+		// Calculate newX and newY
+			switch( move.direction ) {
+				case "N":
+					newY -= 1;
+					break;
+				case "E":
+					newX += 1;
+					break;
+				case "S":
+					newY += 1;
+					break;
+				case "W":
+					newX -= 1;
+					break;
+				default:
+					state.players[player].errors++;
+					return state;
+			}
 
-	// Check for occupants
-	var victim = occupied( state, newX, newY );
-	switch( victim.type ) {
-		case "wall":
-			state.map[newY][newX].hp
-				-= state.players[player].units[move.unit].attack;
-			state = checkBroken( state, newX, newY );
-			break;
-		case "unit":
-			state.players[victim.player].units[victim.unit].hp
-				-= state.players[player].units[move.unit].attack;
-			state = checkDead( state, victim.player, victim.unit );
-			break;
-		case "empty":
-			state.players[player].errors++;
-			return state;
-			break;
+		// Check for occupants
+		var victim = occupied( state, newX, newY );
+		switch( victim.type ) {
+			case "wall":
+				state.map[newY][newX].hp
+					-= state.players[player].units[move.unit].attack;
+				state = checkBroken( state, newX, newY );
+				range = 99;
+				break;
+			case "unit":
+				state.players[victim.player].units[victim.unit].hp
+					-= state.players[player].units[move.unit].attack;
+				state = checkDead( state, victim.player, victim.unit );
+				range = 99;
+				break;
+		}
 	}
 
 	// Disable future moves
@@ -393,6 +402,10 @@ function makeMove( state, move ) {
 		return state;
 	}
 	if ( typeof move.unit != "number" ) {
+		state.players[player].errors++;
+		return state;
+	}
+	if ( move.unit >= state.players[player].units.length ) {
 		state.players[player].errors++;
 		return state;
 	}
@@ -476,6 +489,7 @@ function occupied( state, x, y ) {
 	for ( var i = 0; i < state.players.length; i++ ) {
 		for ( var j = 0; j < state.players[i].units.length; j++ ) {
 			let unit = state.players[i].units[j];
+			if ( unit.class == "dead" ) continue;
 			if ( unit.x == x && unit.y == y )
 				return { type: "unit", player: i, unit: j };
 		}
@@ -507,6 +521,7 @@ function obstructed( state, x, y ) {
 	for ( var i = 0; i < state.players.length; i++ ) {
 		for ( var j = 0; j < state.players[i].units.length; j++ ) {
 			let unit = state.players[i].units[j];
+			if ( unit.class == "dead" ) continue;
 			if ( unit.x == x && unit.y == y )
 				return true;
 		}
@@ -540,8 +555,11 @@ function checkBroken( state, x, y ) {
  * @return: (obj) updated state
  */
 function checkDead( state, player, unit ) {
-	if ( state.players[player].units[unit].hp <= 0 )
-		state.players[player].units.splice( unit, 1 );
+	if ( state.players[player].units[unit].hp <= 0 ) {
+		state.players[player].units[unit].class = "dead";
+		state.players[player].units[unit].attack = 0;
+		state.players[player].units[unit].canMove = false;
+	}
 	return state;
 }
 

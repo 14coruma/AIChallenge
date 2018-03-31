@@ -54,7 +54,7 @@ class States {
 			}
 			gm.endLiveGame( gid, state, function(res) { /*TODO ERR?*/ } );
 			delete states.stateList[gid];
-		}, 550 );
+		}, 600 );
 	}
 	endTime(gid){
 		clearTimeout(this.timeout);

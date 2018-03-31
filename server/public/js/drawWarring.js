@@ -12,8 +12,9 @@ var canvas = document.getElementById( "myCanvas" ),
     canvasTop = canvas.offsetTop,
     elements = [],
     unitDests = [],
-    selectedUnit,
-    selectedTile,
+    warringState,
+    selectedUnit = { eIndex: 0, uIndex: 0 },
+    selectedTile = 0,
     moveObjWarring = { updates:[] },
     playerNumber,
     img1 = new Image,
@@ -29,6 +30,7 @@ ctx.mozImageSmoothingEnabled = false;
 ctx.imageSmoothingEnabled = false;
 
 function drawWarring( state ) {
+	warringState = state;
 	document.getElementById( "formMove" ).value = JSON.stringify( moveObjWarring );
 	// Draw background
 	var pattern = ctx.createPattern( background, "repeat" );
@@ -92,7 +94,7 @@ function drawWarring( state ) {
 				type2: unit.class,
 				hp: unit.hp, range: unit.range,
 				player: i, unitIndex: j,
-				solid: true,
+				solid: unit.class != "dead",
 				x: unit.x, y: unit.y,
 				width: 32, height: 32,
 				top: unit.y * 32 + 16,
@@ -151,7 +153,7 @@ function drawWarring( state ) {
 	}
 
 	// Create UI elements based on selectedUnit unit
-	if ( selectedUnit ) {
+	if ( selectedUnit.eIndex > 0 ) {
 		elements.push( {
 			type1: "ui",
 			type2: "moveButton",
@@ -159,8 +161,8 @@ function drawWarring( state ) {
 			top: 168,  left: 572,
 			pressed: false,
 		} );
-		if ( elements[selectedUnit].type2 == "soldier" ||
-		     elements[selectedUnit].type2 == "archer" ) {
+		if ( state.players[playerNumber].units[selectedUnit.uIndex].class == "soldier" ||
+		     state.players[playerNumber].units[selectedUnit.uIndex].class == "archer" ) {
 			elements.push( {
 				type1: "ui",
 				type2: "attackButton",
@@ -169,7 +171,7 @@ function drawWarring( state ) {
 				pressed: false,
 			} );
 		}
-		if ( myFood >= 250 ) {
+		if ( myFood >= 150 ) {
 			elements.push( {
 				type1: "ui",
 				type2: "buildButton",
@@ -191,21 +193,21 @@ function drawWarring( state ) {
 	renderElements();
 
 	// Draw user selectedUnit and selectedTile
-	if ( selectedUnit >= 0 ) {
+	if ( selectedUnit.eIndex > 0 ) {
 		drawElement( {
 			type2: "selectedUnit",
-			left: elements[selectedUnit].left,
-			top: elements[selectedUnit].top,
-			width: elements[selectedUnit].width,
-			height: elements[selectedUnit].height
+			left:   elements[selectedUnit.eIndex].left,
+			top:    elements[selectedUnit.eIndex].top,
+			width:  elements[selectedUnit.eIndex].width,
+			height: elements[selectedUnit.eIndex].height
 		} );
 	}
 	if ( selectedTile >= 0 ) {
 		drawElement( {
 			type2: "selectedTile",
-			left: elements[selectedTile].left,
-			top: elements[selectedTile].top,
-			width: elements[selectedTile].width,
+			left:   elements[selectedTile].left,
+			top:    elements[selectedTile].top,
+			width:  elements[selectedTile].width,
 			height: elements[selectedTile].height,
 		} );
 	}
@@ -225,6 +227,7 @@ function drawWarring( state ) {
 	}
 
 	for ( var i = 0; i < unitDests.length; i++ ) {
+		if ( state.players[playerNumber].units[unitDests[i].unit].class == "dead" ) continue;
 		var attackDir = unitDests[i].attack ? canAttack( state, playerNumber, unitDests[i].unit ) : false;
 		// If unit is in attack mode and can attack...then attack
 		if ( attackDir ) {
@@ -251,6 +254,20 @@ function drawWarring( state ) {
 			} else {
 				unitDests.splice( i, 1 );
 			}
+		}
+	}
+
+	// Check if stationary units can attack
+	for ( var i = 0; i < state.players[playerNumber].units.length; i++ ) {
+		if ( state.players[playerNumber].units[i].class == "dead" )
+			continue;
+		var attackDir = canAttack( state, playerNumber, i );
+		if ( attackDir ) {
+			moveObjWarring.updates.push( {
+				type: "attack",
+				unit: i,
+				direction: attackDir,
+			} );
 		}
 	}
 
@@ -385,6 +402,11 @@ function drawElement( element ) {
 			sImg = img1;
 			break;
 		case "hp":
+			sImg = img1;
+			if ( element.style <= 0 ) {
+				sy = 34; sx = 6;
+				break;
+			}
 			switch( Math.floor( element.style / 10 ) ) {
 				case 0:
 					sy = 20; sx = 0;
@@ -417,7 +439,6 @@ function drawElement( element ) {
 					sy = 23; sx = 2;
 					break;
 			}
-			sImg = img1;
 			break;
 		case "path":
 			drawElement( {
@@ -615,35 +636,38 @@ canvas.addEventListener( 'click', function( ev ) {
 			x > element.left && x < element.left + element.width ) {
 			switch ( element.type1 ) {
 				case "unit":
-					if ( element.player == playerNumber ) {
-						selectedUnit = elements.indexOf(element);
+					if ( element.player == playerNumber && element.type2 != "dead" ) {
+						selectedUnit = {
+							uIndex: element.unitIndex,
+							eIndex: elements.indexOf( element ),
+						};
 					}
 					break;
 				case "map":
 					if ( !element.solid ) {
-						selectedTile = elements.indexOf(element);
+						selectedTile = elements.indexOf( element );
 					}
 					break;
 				case "ui":
 					switch ( element.type2 ) {
 						case "moveButton":
-							var startX = elements[selectedUnit].x;
-							var startY = elements[selectedUnit].y;
-							var endX = elements[selectedTile].x;
-							var endY = elements[selectedTile].y;
+							var startX = warringState.players[playerNumber].units[selectedUnit.uIndex].x;
+							var startY = warringState.players[playerNumber].units[selectedUnit.uIndex].y;
+							var endX   = elements[selectedTile].x;
+							var endY   = elements[selectedTile].y;
 							unitDests.push( {
-								unit: elements[selectedUnit].unitIndex,
+								unit: selectedUnit.uIndex,
 								attack: false,
 								dest: [endX, endY],
 							} );
 							break;
 						case "attackButton":
-							var startX = elements[selectedUnit].x;
-							var startY = elements[selectedUnit].y;
-							var endX = elements[selectedTile].x;
-							var endY = elements[selectedTile].y;
+							var startX = warringState.players[playerNumber].units[selectedUnit.uIndex].x;
+							var startY = warringState.players[playerNumber].units[selectedUnit.uIndex].y;
+							var endX   = elements[selectedTile].x;
+							var endY   = elements[selectedTile].y;
 							unitDests.push( {
-								unit: elements[selectedUnit].unitIndex,
+								unit: selectedUnit.uIndex,
 								attack: true,
 								dest: [endX, endY],
 							} );
@@ -664,10 +688,10 @@ canvas.addEventListener( 'click', function( ev ) {
 							} );
 							break;
 						case "buildButton":
-							var startX = elements[selectedUnit].x;
-							var startY = elements[selectedUnit].y;
-							var endX = elements[selectedTile].x;
-							var endY = elements[selectedTile].y;
+							var startX = warringState.players[playerNumber].units[selectedUnit.uIndex].x;
+							var startY = warringState.players[playerNumber].units[selectedUnit.uIndex].y;
+							var endX   = elements[selectedTile].x;
+							var endY   = elements[selectedTile].y;
 							var dir = false;
 							if ( endY - startY == -1 ) dir = "N";
 							if ( endX - startX == 1 ) dir = "E";
@@ -676,7 +700,7 @@ canvas.addEventListener( 'click', function( ev ) {
 							if ( dir ) {
 								moveObjWarring.updates.push( {
 									type: "build",
-									unit: elements[selectedUnit].unitIndex,
+									unit: selectedUnit.uIndex,
 									direction: dir
 								} );
 							}
@@ -733,15 +757,16 @@ function dirTowards( startX, startY, endX, endY, map ) {
 function canAttack( state, playerNumber, unitIndex ) {
 	var unit = state.players[playerNumber].units[unitIndex];
 	var eUnits = state.players[(playerNumber+1)%2].units;
-	for ( var eIndex = 0; eIndex < eUnits.length; eIndex++ ) {
-		for ( var i = 0; i < unit.range; i++ ) {
-			if ( eUnits[eIndex].y + unit.range == unit.y && eUnits[eIndex].x == unit.x )
+	for ( var i = 1; i <= unit.range; i++ ) {
+		for ( var eIndex = 0; eIndex < eUnits.length; eIndex++ ) {
+			if ( eUnits[eIndex].class == "dead" ) continue;
+			if ( eUnits[eIndex].y + i == unit.y && eUnits[eIndex].x == unit.x )
 				return "N";
-			if ( eUnits[eIndex].x - unit.range == unit.x && eUnits[eIndex].y == unit.y )
+			if ( eUnits[eIndex].x - i == unit.x && eUnits[eIndex].y == unit.y )
 				return "E";
-			if ( eUnits[eIndex].y - unit.range == unit.y && eUnits[eIndex].x == unit.x )
+			if ( eUnits[eIndex].y - i == unit.y && eUnits[eIndex].x == unit.x )
 				return "S";
-			if ( eUnits[eIndex].x + unit.range == unit.x && eUnits[eIndex].y == unit.y )
+			if ( eUnits[eIndex].x + i == unit.x && eUnits[eIndex].y == unit.y )
 				return "W";
 		}
 	}
