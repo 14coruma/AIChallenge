@@ -371,6 +371,12 @@ function attack( state, move ) {
 				state = checkBroken( state, newX, newY );
 				range = 99;
 				break;
+			case "keep":
+				state.map[newY][newX].hp
+					-= state.players[player].units[move.unit].attack;
+				state = checkBroken( state, newX, newY );
+				range = 99;
+				break;
 			case "unit":
 				state.players[victim.player].units[victim.unit].hp
 					-= state.players[player].units[move.unit].attack;
@@ -484,8 +490,8 @@ function occupied( state, x, y ) {
 		return { type: "empty" };
 
 	// Check map tile
-	if ( state.map[y][x].type == "wall" )
-		return { type: "wall" };
+	if ( state.map[y][x].type == "wall" || state.map[y][x].type == "keep" )
+		return { type: state.map[y][x].type };
 
 	// Check units
 	for ( var i = 0; i < state.players.length; i++ ) {
@@ -515,7 +521,7 @@ function obstructed( state, x, y ) {
 		return true;
 
 	// Check map tile
-	if ( state.map[y][x].solid == true ) {
+	if ( state.map[y][x].solid ) {
 		return true;
 	}
 
@@ -543,7 +549,7 @@ function obstructed( state, x, y ) {
  */
 function checkBroken( state, x, y ) {
 	if ( state.map[y][x].hp <= 0 )
-		state.map[y][x] = { type: "rubble", solid: false };
+		state.map[y][x] = { type: "rubble", solid: false, hp: 0 };
 	return state;
 }
 
@@ -621,6 +627,7 @@ function byKeep( state, x, y ) {
  * @return: (JSON) state
  */
 function gameOver( state ) {
+	// Check for "out of time" condition
 	if ( state.turn >= GAME_LENGTH ) state.gameOver = 1;
 
 	if ( state.gameOver ) {
@@ -635,6 +642,16 @@ function gameOver( state ) {
 		}
 		state.winner = winner;
 	}
+
+	// Check if keep has been destroyed
+	if ( state.map[KEEP1.y][KEEP1.x].hp <= 0 ) {
+		state.gameOver = 1;
+		state.winner = 1;
+	} else if ( state.map[KEEP2.y][KEEP2.x].hp <= 0 ) {
+		state.gameOver = 1;
+		state.winner = 0;
+	}
+
 	return state;
 }
 

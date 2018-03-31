@@ -70,9 +70,10 @@ function drawWarring( state ) {
 	// Create all map elements
 	for ( var y = 0; y < state.map.length; y++ ) {
 		for ( var x = 0; x < state.map[y].length; x++ ) {
+			var type = state.map[y][x].type;
 			elements.push( { 
 				type1: "map",
-				type2: state.map[y][x].type,
+				type2: type,
 				hp: state.map[y][x].hp,
 				solid: state.map[y][x].solid,
 				style: state.map[y][x].style,
@@ -80,7 +81,7 @@ function drawWarring( state ) {
 				width: 32, height: 32,
 				top: y * 32 + 16, left: x * 32 + 16,
 			} );
-			if ( state.map[y][x].type == "wall" && state.map[y][x].hp <= 100 ) {
+			if ( (type == "wall" || type == "keep") && state.map[y][x].hp <= 100 ) {
 				elements.push( {
 					type2: "fire", style: 0,
 					left: x * 32 + 16, top: y * 32 + 16,
@@ -669,7 +670,7 @@ canvas.addEventListener( 'click', function( ev ) {
 					}
 					break;
 				case "map":
-					if ( !element.solid || element.type2 == "wall" ) {
+					if ( !element.solid || element.type2 == "wall" || element.type2 == "keep" ) {
 						selectedTile = elements.indexOf( element );
 					}
 					break;
