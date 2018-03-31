@@ -55,9 +55,6 @@ function drawWarring( state ) {
 			formUsername &&
 			state.players[state.currentPlayer].username != formUsername.value
 	) {
-		ctx.globalAlpha = 0.5;
-		ctx.fillRect( 0, 0, canvas.width, canvas.height );
-		ctx.globalAlpha = 1.0;
 	}
 
 	// Draw player names and scores
@@ -68,6 +65,7 @@ function drawWarring( state ) {
 		ctx.fillText( "P" + i + ": " + state.players[i-1].username, 576, -16 + 64 * i );
 		ctx.fillText( "Food: " + state.players[i-1].food, 576, 16 + 64 * i );
 	}
+	ctx.fillText( "Turn " + state.turn, 16, 584 );
 
 	// Create all map elements
 	for ( var y = 0; y < state.map.length; y++ ) {

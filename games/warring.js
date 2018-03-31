@@ -8,6 +8,7 @@ const MAP_SIZE = 17;
 const KEEP1 = { x: 4, y: 4 };
 const KEEP2 = { x: MAP_SIZE - 5, y: MAP_SIZE - 5 };
 const FARM_DIST = 4;
+const GAME_LENGTH = 100;
 
 /**
  * start creates then returns initial game state
@@ -20,7 +21,7 @@ const FARM_DIST = 4;
 exports.start = function( lgid, usernames, callback ) {
 	// Initialize state & players variables
 	var state = {
-		id: lgid, game: "warring", players: [], currentPlayer: 0,
+		id: lgid, game: "warring", players: [], currentPlayer: 0, turn: 0,
 		map: [], 
 		gameOver: 0, winner: -1, error: "",
 	};
@@ -70,6 +71,7 @@ exports.start = function( lgid, usernames, callback ) {
  * @return: (JSON) state
  */
 exports.move = function( state, move, callback ) {
+	state.turn++;
 	if ( typeof move == "string" ) {
 		try {
 			move = JSON.parse( move );
@@ -619,6 +621,20 @@ function byKeep( state, x, y ) {
  * @return: (JSON) state
  */
 function gameOver( state ) {
+	if ( state.turn >= GAME_LENGTH ) state.gameOver = 1;
+
+	if ( state.gameOver ) {
+		var winner = -1;
+		var maxScore = 0;
+		for ( var i = 0; i < state.players.length; i++ ) {
+			if ( state.players[i].food > maxScore )
+			{
+				maxScore = state.players[i].food;
+				winner = i;
+			}
+		}
+		state.winner = winner;
+	}
 	return state;
 }
 
