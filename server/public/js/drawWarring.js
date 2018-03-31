@@ -675,6 +675,13 @@ canvas.addEventListener( 'click', function( ev ) {
 					break;
 				case "ui":
 					switch ( element.type2 ) {
+						case "stopButton":
+							for ( var i = 0; i < unitDests.length; i++ ) {
+								if ( unitDests[i].unit == selectedUnit.uIndex ) {
+									unitDests.splice( i, 1 );
+								}
+							}
+							break;
 						case "moveButton":
 							var startX = warringState.players[playerNumber].units[selectedUnit.uIndex].x;
 							var startY = warringState.players[playerNumber].units[selectedUnit.uIndex].y;

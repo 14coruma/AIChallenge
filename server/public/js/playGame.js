@@ -78,7 +78,7 @@ function onMessage( evt )
 		case "playersTurn":
 			document.getElementById( 'makeMoveBtn' ).disabled = false;
 			if ( serverObj.state.game == "warring" ) {
-				setTimeout( function() { makeMove(); moveObjWarring = {updates:[]}; }, 400 );
+				setTimeout( function() { makeMove(); moveObjWarring = {updates:[]}; }, 300 );
 			}
 			if ( !drawing ) {
 				drawGameState( gid );
