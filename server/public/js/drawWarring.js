@@ -68,9 +68,14 @@ function drawWarring( state ) {
 	ctx.fillText( "Turn " + state.turn, 16, 584 );
 
 	// Create all map elements
+	var myKeep, myFarm; // Used for farmer movement direction
 	for ( var y = 0; y < state.map.length; y++ ) {
 		for ( var x = 0; x < state.map[y].length; x++ ) {
 			var type = state.map[y][x].type;
+			if ( type == "keep" && state.map[y][x].style == playerNumber )
+				myKeep = { x: x, y: y };
+			if ( type == "farm" && state.map[y][x].style == playerNumber )
+				myFarm = { x: x, y: y };
 			elements.push( { 
 				type1: "map",
 				type2: type,
@@ -94,9 +99,28 @@ function drawWarring( state ) {
 	}
 
 	// Create all unit and status elements
+	var hasFarmer = false;
 	for ( var i = 0; i < state.players.length; i++ ) {
 		for ( var j = 0; j < state.players[i].units.length; j++ ) {
 			var unit = state.players[i].units[j];
+			if ( unit.class == "farmer" && i == playerNumber ) {
+				for ( var k = 0; k < unitDests.length; k++ ) {
+					if ( state.players[playerNumber].units[unitDests[k].unit].class == "farmer" )
+						unitDests.splice( k, 1 );
+				}
+				hasFarmer = true;
+				if ( unit.hasFood ) {
+					unitDests.push( {
+						unit: j, attack: false,
+						dest: [myKeep.x, myKeep.y],
+					} );
+				} else {
+					unitDests.push( {
+						unit: j, attack: false,
+						dest: [myFarm.x, myFarm.y],
+					} );
+				}
+			}
 			elements.push( {
 				type1: "unit",
 				type2: unit.class,
@@ -129,7 +153,7 @@ function drawWarring( state ) {
 
 	// Create ui elements for unit training (based on food count)
 	var myFood = state.players[playerNumber].food;
-	if ( myFood >= 400 ) {
+	if ( myFood >= 400 && !hasFarmer ) {
 		elements.push( {
 			type1: "ui",
 			type2: "trainFarmerButton",

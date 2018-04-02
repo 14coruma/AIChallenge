@@ -251,6 +251,13 @@ function train( state, move ) {
 	var cost, unit;
 	switch( move.class ) {
 		case "farmer":
+			// Only allow one farmer per player at a time
+			for ( var i = 0; i < state.players[player].units.length; i++ ) {
+				if ( state.players[player].units[i].class == "farmer" ) {
+					state.players[player].errors++;
+					return state;
+				}
+			}
 			cost = 400;
 			unit = {
 				class: "farmer", hp: 40, attack: 0,  range: 0, hasFood: false, canMove: true,
@@ -566,6 +573,7 @@ function checkDead( state, player, unit ) {
 	if ( state.players[player].units[unit].hp <= 0 ) {
 		state.players[player].units[unit].class = "dead";
 		state.players[player].units[unit].attack = 0;
+		state.players[player].units[unit].hasFood = false;
 		state.players[player].units[unit].canMove = false;
 	}
 	return state;
@@ -729,8 +737,8 @@ function generateMap( state ) {
 	state.map = setPathStyles( state.map, pathmap, "path" );
 
 	// Add a farm for each player within FARM_DIST moves away
-	state.map = generateFarm( state.map, KEEP1.x+1, KEEP1.y );
-	state.map = generateFarm( state.map, KEEP2.x-1, KEEP2.y );
+	state.map = generateFarm( state.map, KEEP1.x+1, KEEP1.y, 0 );
+	state.map = generateFarm( state.map, KEEP2.x-1, KEEP2.y, 1 );
 
 	// Create lakes, islands, and beaches
 	state.map = createIslands( state.map );
@@ -949,10 +957,11 @@ function diamond_square( hmap, width, height ) {
  * @param: (2d array) stateMap
  * @param: (int) x
  * @param: (int) y
+ * @param: (int) style (which player the farm unofficially belongs to
  * 
  * @return: (2d array) stateMap (updated)
  */
-function generateFarm( stateMap, x, y ) {
+function generateFarm( stateMap, x, y, style ) {
 	var shiftX = Math.floor( (Math.random() - 0.5)*FARM_DIST );
 	var shiftY = (shiftX < 0 ) ? (FARM_DIST + shiftX) : (FARM_DIST - shiftX);
 	var farmX = x + shiftX;
@@ -975,7 +984,8 @@ function generateFarm( stateMap, x, y ) {
 	// Convert path into tiles on map
 	stateMap = setPathStyles( stateMap, pathmap, "free" );
 	stateMap[farmY][farmX] = {
-		type: "farm", style: Math.floor(Math.random() * 4), solid: false
+		type: "farm", style: Math.floor(Math.random() * 4), solid: false,
+		style: style,
 	};
 
 	return stateMap;
