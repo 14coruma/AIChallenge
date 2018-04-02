@@ -10,6 +10,7 @@
 	<script src="/files/js/drawTestGame.js"></script>
 	<script src="/files/js/drawGame.js"></script>
 	<script src="/files/js/playGame.js"></script>
+	<script src="/files/js/pathfinding-browser.min.js"></script>
 </head>
 <body>
 <!-- Navbar (sit on top) -->
@@ -49,6 +50,7 @@
 			<option value="testGame">Test Game</option>
 			<option value="mancala">Mancala</option>
 			<option value="farkle">Farkle</option>
+			<option value="warring">Warring Kingdoms</option>
 		</select>
 		<button id="startBtn" class="w3-button w3-black w3-section" onclick="startGame()">
 			<i class="fa fa-paper-plane"></i> Start
@@ -58,9 +60,10 @@
 
 	<!-- Canvas -->
 	<div class="w3-container w3-padding-32" id="contact">
-		<canvas id="myCanvas" width="600" height="400" class="w3-border w3-border-light-grey"></canvas>
+		<canvas id="myCanvas" width="720" height="600" class="w3-border w3-border-light-grey center"></canvas>
 		<script src="/files/js/drawMancala.js"></script>
 		<script src="/files/js/drawFarkle.js"></script>
+		<script src="/files/js/drawWarring.js"></script>
 	</div>
 
 	<!-- Player Move Decision -->

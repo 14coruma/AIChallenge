@@ -12,6 +12,7 @@ var username = "";
 var password = "";
 var game = "";
 var state = {};
+var drawing = false;
 var wsUri = "ws://153.106.160.184:8080/"; // Set ip address to local server
 var websocket = new WebSocket( wsUri );
 websocket.onmessage = function( evt ) { onMessage( evt ) };
@@ -73,14 +74,20 @@ function onMessage( evt )
 	var serverObj = JSON.parse( evt.data );
 	gid = serverObj.gid;
 	state = serverObj.state;
-	console.log( "Message: " + evt.data);
 	switch( serverObj.msgType ) {
 		case "playersTurn":
 			document.getElementById( 'makeMoveBtn' ).disabled = false;
-			drawGameState( gid );
+			if ( serverObj.state.game == "warring" ) {
+				setTimeout( function() { makeMove(); moveObjWarring = {updates:[]}; }, 300 );
+			}
+			if ( !drawing ) {
+				drawGameState( gid );
+				drawing = true;
+			}
 			break;
 		case "gameOver":
 			drawGameState( gid );
+			drawing = false;
 			break;
 		default:
 			// TODO: Err: Something went wrong

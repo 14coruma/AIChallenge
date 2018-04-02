@@ -39,10 +39,25 @@ class States {
 	constructor() {
 		this.stateList = {};
 		this.saveState = this.saveState.bind(this);
+		this.timeout;
 	}
 	saveState(gid, state) {
 		this.stateList[gid] = state;
 		gm.saveState(gid, state);
+	}
+	startTime(gid, state) {
+		this.timeout = setTimeout( function() {
+			var message = { msgType: "gameOver", state: state, gid: gid };
+			for (var i = 0; i < state.players.length; i++) {
+				sendMessage( state.players[i].username, message );
+				delete clients.clientList[state.players[i].username];
+			}
+			gm.endLiveGame( gid, state, function(res) { /*TODO ERR?*/ } );
+			delete states.stateList[gid];
+		}, 600 );
+	}
+	endTime(gid){
+		clearTimeout(this.timeout);
 	}
 }
 
@@ -82,7 +97,8 @@ wss.on( 'connection', function connection( ws ) {
 										// Send state to player 1
 										var message = { msgType: "playersTurn", state: state, gid: gameID };
 										sendMessage( userNames[0], message );
-										states.saveState(gameID, state);
+										states.saveState( gameID, state );
+										states.startTime( gameID, state );
 									} );
 								}
 							} );
@@ -94,6 +110,7 @@ wss.on( 'connection', function connection( ws ) {
 				break;
 			case "move":
 				if ( msgObj.gid != clients.clientList[msgObj.username].gid ) { console.log("invalid gameID\n"); break; }
+				states.endTime( msgObj.gid );
 				gm.makeMove( states.stateList[msgObj.gid], msgObj.move, function( state ) {
 					switch( state.gameOver ) {
 						case 0:
@@ -102,6 +119,7 @@ wss.on( 'connection', function connection( ws ) {
 							var nextPlayer = state.players[state.currentPlayer].username;
 							sendMessage( nextPlayer, message );
 							states.saveState(msgObj.gid, state);
+							states.startTime( msgObj.gid, state );
 							break;
 						case 1:
 							var message = { msgType: "gameOver", state: state, gid: msgObj.gid };

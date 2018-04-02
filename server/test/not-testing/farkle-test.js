@@ -20,6 +20,24 @@ describe( "Farkle Testing", function() {
 				done();
 		} );
 	} );
+	
+	// Test first roll bank 200
+	it( "makeMove( dice: [2, 2, 2, 4, 5, 5], bank: [2, 2, 2] )", function( done ) {
+		gm.makeMove( { id: 3, game: "farkle", currentPlayer: 0, temp: 0, gameOver: 0, error: "", players: [
+			{ username: 'test123', pos: 0, fail: 0, score: 0 }, { username: 'test456', pos: 1, fail: 0, score: 0 }],
+			dice: [2, 2, 2, 4, 5, 5], bank: [] },
+			{ bank: [2, 2, 2], done: 1 },
+			function( state ) {
+				expect( state.id ).to.equal( 3 );
+				expect( state.game ).to.equal( "farkle" );
+				expect( state.players ).to.have.lengthOf( 2 );
+				expect( state.currentPlayer ).to.equal( 1 );
+				expect( state.gameOver ).to.equal( 0 );
+				expect( state.players[0].score).to.equal( 200 );
+				expect( state.players[1].score).to.equal( 0 );
+				done();
+		} );
+	} );
 
 	// Test second roll, done, score 300
 	it( "makeMove( dice: [1, 2, 3], bank: [1] )", function( done ) {
