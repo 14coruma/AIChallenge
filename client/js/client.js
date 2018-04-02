@@ -47,7 +47,7 @@ function onMessage( evt )
 {
 	var serverObj = JSON.parse( evt.data );
 	var objString = JSON.stringify( serverObj );
-	var args = [objString.replace( /"/g, "'" )];
+	var args = [objString];
 	gid = serverObj.gid;
 	switch( serverObj.msgType ) {
 		case "playersTurn":
