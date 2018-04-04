@@ -15,7 +15,7 @@ var routes = require( './routes/routes' );
 app.use( express.static( 'public' ));
 routes( app );
 
-app.listen( 3001 );
+app.listen( 80 );
 
 /**
  * WebSocket Server
@@ -54,7 +54,7 @@ class States {
 			}
 			gm.endLiveGame( gid, state, function(res) { /*TODO ERR?*/ } );
 			delete states.stateList[gid];
-		}, 600 );
+		}, 6000 );
 	}
 	endTime(gid){
 		clearTimeout(this.timeout);
