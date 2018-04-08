@@ -13,6 +13,8 @@ var game = "";
 var bot = "";
 var wsUri = "ws://localhost:8080/";
 var websocket = new WebSocket( wsUri );
+const { execFile } = require('child_process');
+
 websocket.onmessage = function( evt ) { onMessage( evt ) };
 websocket.onerror = function( evt ) { onError( evt ) };
 
@@ -51,7 +53,6 @@ function onMessage( evt )
 	gid = serverObj.gid;
 	switch( serverObj.msgType ) {
 		case "playersTurn":
-			const { execFile } = require('child_process');
 			const child = execFile(bot, args, (error, stdout, stderr) => {
 				if ( error ) console.log(error + " stderr: " + stderr + " stdout: " + stdout);
 				var message = {
@@ -67,6 +68,8 @@ function onMessage( evt )
 			break;
 		case "gameOver":
 			// TODO Show div with gameover info
+			execFile(bot, args, (error, stdout, stderr) => {
+				if ( error ) console.log(error + " stderr: " + stderr + " stdout: " + stdout); } );
 			console.log("GameOver");
 //			websocket.close();
 			break;

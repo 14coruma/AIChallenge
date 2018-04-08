@@ -36,7 +36,7 @@ with tf.Session() as sess:
     sess.run( init )
     for i in range( num_episodes ):
         # Reset environment and get first new observation
-        s = env.reset() # This should be a farkle board
+        s = env.reset()
         rAll = 0
         d = False
         j = 0
@@ -45,6 +45,7 @@ with tf.Session() as sess:
             j += 1
             # Choose an action by greedily (with e chance of random ation) from Q-network
             a, allQ = sess.run( [predict, Qout], feed_dict={inputs1:np.identity(16)[s:s+1]})
+            print s
             if np.random.rand(1) < e:
                 a[0] = env.action_space.sample()
             # Get new state and reward by feeding the new state through our network
