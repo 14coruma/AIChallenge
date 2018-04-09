@@ -29,7 +29,7 @@ class MyService(rpyc.Service):
         global newMsg
         msg = message
         newMsg = True
-        print "Got message: " + msg
+        # print "Got message: " + msg
 
 if __name__ == "__main__":
     from rpyc.utils.server import ThreadedServer

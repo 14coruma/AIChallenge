@@ -9,6 +9,7 @@
 var gid = "";
 var username = "";
 var password = "";
+var trainingMode = false;
 var game = "";
 var bot = "";
 var wsUri = "ws://localhost:8080/";
@@ -33,6 +34,7 @@ function onOpen( evt )
 {
 	// TODO: Open 'waiting' div
 	password = document.getElementById( 'formPassword' ).value;
+	trainingMode = document.getElementById( 'trainingMode' ).value;
 	var message = {
 		msgType  : "start",
 		username : username,
@@ -40,6 +42,7 @@ function onOpen( evt )
 		gameName : game,
 		gid      : "",
 		move     : "",
+		training : trainingMode,
 	};
 	websocket.send( JSON.stringify( message ) );
 	console.log("SENT A MESSAGE\n");
@@ -61,7 +64,8 @@ function onMessage( evt )
 					password : password,
 					gameName : game,
 					gid      : gid,
-					move     : stdout
+					move     : stdout,
+					training : trainingMode,
 				}
 				websocket.send( JSON.stringify( message ) );
 			});
@@ -71,6 +75,9 @@ function onMessage( evt )
 			execFile(bot, args, (error, stdout, stderr) => {
 				if ( error ) console.log(error + " stderr: " + stderr + " stdout: " + stdout); } );
 			console.log("GameOver");
+			if ( trainingMode ) {
+				onOpen(null);
+			}
 //			websocket.close();
 			break;
 		default:

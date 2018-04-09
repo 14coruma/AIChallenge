@@ -33,7 +33,7 @@ init = tf.initialize_all_variables()
 # Set learning parameters
 y = 0.99
 e = 0.1
-num_episodes = 3
+num_episodes = 100
 
 # Create lists to contain total rewards and steps per episode
 jList = []
@@ -43,6 +43,7 @@ with tf.Session() as sess:
     sess.run( init )
     for i in range( num_episodes ):
         # Reset environment and get first new observation
+        print "Episode " + str( i )
         state = json.loads( c.root.getMessage() )
         rAll = 0
         done = False
@@ -72,7 +73,7 @@ with tf.Session() as sess:
             # Get new state and reward by feeding the new state
             # through our network
             state = json.loads( c.root.getMessage() )
-            print state
+            # print state
             done = state["gameOver"] == 1
             reward = ( state["board"][myPos*6+7] - state["board"][(myPos*6+13)%14] ) / 48
             board = state["board"]

@@ -60,6 +60,7 @@ function startGame() {
 		gameName : game,
 		gid      : "",
 		move     : "",
+		training : false,
 	};
 	websocket.send( JSON.stringify( message ) );
 	drawWaitingImage();
@@ -106,6 +107,7 @@ function makeMove() {
 		gameName : game,
 		gid      : gid,
 		move     : formMove,
+		training : false,
 	}
 	switch( game ) {
 		case "farkle":
