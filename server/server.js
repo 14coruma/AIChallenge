@@ -5,6 +5,8 @@
  * Created by: Andrew Corum: 2 Oct 2017
  */
 
+"use strict";
+
 /**
  * Express Server
  */
@@ -15,7 +17,7 @@ var routes = require( './routes/routes' );
 app.use( express.static( 'public' ));
 routes( app );
 
-app.listen( 80 );
+app.listen( 3001 );
 
 /**
  * WebSocket Server

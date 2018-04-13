@@ -3,6 +3,9 @@
  *
  * Created by: Andrew Corum, 2/24/2018
  */
+
+"use strict";
+
 var PF = require( 'pathfinding' );
 const MAP_SIZE = 17;
 const KEEP1 = { x: 4, y: 4 };

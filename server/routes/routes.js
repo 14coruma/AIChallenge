@@ -4,6 +4,8 @@
  */
 
 'use strict';
+var session = require( 'express-session' );
+var handlebars = require( 'handlebars' );
 
 module.exports = function( app ) {
 	var fs = require( "fs" );
@@ -12,11 +14,23 @@ module.exports = function( app ) {
 	app.use( bodyParser.urlencoded( { extended: true } ) ); // encoded bodies
 	var signup = require( '../controllers/signup' );
 	var gameManager = require( '../controllers/gameManager' );
+	var login = require( '../controllers/login' );
+
+	app.use( session( {
+		secret: 'work hard',
+		resave: true,
+		saveUninitialized: false,
+	} ) );
 
 	// signup
 	app.route( '/signup' )
 		.get( signup.list_instructions )
 		.post( signup.add_user );
+
+	// login
+	app.route( '/login' )
+		.get( login.show_login_page )
+		.post( login.loginUser );
 
 	// watch
 	app.route( '/watch' ).get( function( req, res ) {
@@ -42,8 +56,17 @@ module.exports = function( app ) {
 
 	// home
 	app.route( '/' ).get( function( req, res ) {
-		let mainPage = fs.readFileSync( "./public/html/index.html", "utf-8" );
-		res.send( mainPage );
+		var html = "";
+		var mainPage = fs.readFileSync( "./public/html/index.html", "utf-8" );
+		var template = handlebars.compile( mainPage );
+		if ( req.session.authenticated == true ) {
+			var context = { user: req.session.username };
+			html = template( context );
+		} else {
+			var context = { user: "Login" };
+			html = template( context );
+		}
+		res.send( html );
 	} );
 
 	// files
