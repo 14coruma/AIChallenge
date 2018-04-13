@@ -59,7 +59,8 @@ exports.loadBlocks = function( req, html, blockTypes  )
 function navbar( req, html, handle, context )
 {
 	// build nav html
-	var loginText = req.session.auth ? req.session.username : "Login";
+	var loginText = req.session.auth ? "Sign out, " + req.session.username : "Log in";
+	var loginUrl  = req.session.auth ? "/logout" : "/login";
 
 	var navContext = {
 		admin: req.session.userID == 1,
@@ -71,9 +72,9 @@ function navbar( req, html, handle, context )
 			{ url: "/#about", title: "About" },
 			{ url: "/starters", title: "Starters" },
 			{ url: "/signup", title: "Signup" },
-			{ url: "/login", title: loginText },
-		]
-	}
+			{ url: loginUrl, title: loginText },
+		],
+	};
 
 	var navHtml   = fs.readFileSync( "./public/html/blocks/navbar.html", "utf-8" );
 	var navHandle = handlebars.compile( navHtml );

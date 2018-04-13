@@ -70,6 +70,21 @@ CREATE TABLE `liveGame` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `siteVar`
+--
+
+DROP TABLE IF EXISTS `siteVar`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `siteVar` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `var` varchar(20) DEFAULT NULL,
+  `data` json DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `user`
 --
 
@@ -87,7 +102,7 @@ CREATE TABLE `user` (
   `signup_date` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -99,4 +114,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-04-09 10:48:21
+-- Dump completed on 2018-04-13 17:12:07
