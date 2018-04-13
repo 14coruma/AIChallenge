@@ -111,7 +111,12 @@ module.exports = function( app ) {
 
 	// URL not found
 	app.use( function( req, res ) {
-		res.status( 404 ).send( { url: '404' + req.originalUrl + ' not found' } )
+		req.route = { path: '' };
+		var html = fs.readFileSync( "./public/html/404.html", "utf-8" );
+		var blockTypes = [ "googleAnalytics" ];
+		blocks.loadBlocks( req, res, html, blockTypes, function( html ) {
+			res.status( 404 ).send( html );
+		} );
 	} );
 };
 
