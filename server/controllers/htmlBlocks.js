@@ -62,6 +62,10 @@ function navbar( req, html, handle, context )
 	var loginText = req.session.auth ? req.session.username : "Login";
 
 	var navContext = {
+		admin: req.session.userID == 1,
+		control: [
+			{ tag: "test" },
+		],
 		nav: [
 			{ url: "/#projects", title: "Games" },
 			{ url: "/#about", title: "About" },

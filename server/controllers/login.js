@@ -28,12 +28,13 @@ var conn        = mysql.createConnection( {
  */
 exports.loginUser = function( req, res )
 {
-	var sql = 'SELECT password FROM user WHERE username = ?';
+	var sql = 'SELECT id, password FROM user WHERE username = ?';
 	var inserts = [ req.body.username ];
 	sql = mysql.format( sql, inserts );
 	db.queryDB( conn, sql, function( dbRes ) { 
 		bcrypt.compare( req.body.password, dbRes[0]["password"], function( err, bcryptRes ) {
 			if ( bcryptRes === true ) {
+				req.session.userID = dbRes[0]["id"];
 				req.session.username = req.body.username;
 				req.session.auth = true;
 				res.redirect( '/' );
