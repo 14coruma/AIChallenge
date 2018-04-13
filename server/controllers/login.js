@@ -32,6 +32,11 @@ exports.loginUser = function( req, res )
 	var inserts = [ req.body.username ];
 	sql = mysql.format( sql, inserts );
 	db.queryDB( conn, sql, function( dbRes ) { 
+		if ( dbRes.length == 0 ) {
+				req.session.auth = false;
+				res.send( "Incorrect login creds!" );
+				return;
+		}
 		bcrypt.compare( req.body.password, dbRes[0]["password"], function( err, bcryptRes ) {
 			if ( bcryptRes === true ) {
 				req.session.userID = dbRes[0]["id"];
