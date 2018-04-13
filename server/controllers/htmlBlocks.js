@@ -6,6 +6,7 @@
 
 'use strict';
 
+var site = require( '../controllers/siteManager' );
 var handlebars = require( 'handlebars' );
 var fs = require( "fs" );
 var userPass  = require( './userPass' );
@@ -21,28 +22,41 @@ var conn        = mysql.createConnection( {
 
 /*
  * loadBlocks loads all requested blocks into the html
+ * also checks if site is in maintenance mode, and responds accordingly
  *
  * @param: req, the site request
+ * @param: res, the site response
  * @param: html, string
  * @param: blockTypes, an array of blocks to build
+ * @param: callback
  *
  * @return: html, updated with blocks
  */
-exports.loadBlocks = function( req, html, blockTypes  )
+exports.loadBlocks = function( req, res, html, blockTypes, callback )
 {
-	var handle = handlebars.compile( html );
-	var context = {};
-	for ( var i = 0; i < blockTypes.length; i++ ) {
-		switch ( blockTypes[i] ) {
-			case "navbar":
-				html = navbar( req, html, handle, context );
-				break;
-			case "googleAnalytics":
-				html = googleAnalytics( html, handle, context );
-				break;
+	site.maintenanceMode( function( maintenanceMode ) {
+		// Allow login however
+		if ( maintenanceMode === "true" && req.route.path != "/login" ) {
+			html = fs.readFileSync( "./public/html/maintenance.html", "utf-8" );
+			blockTypes = [ "navbar", "googleAnalytics" ];
+			res.status( 503 );
 		}
-	}
-	return handle( context );
+
+		var handle = handlebars.compile( html );
+		var context = {};
+		for ( var i = 0; i < blockTypes.length; i++ ) {
+			switch ( blockTypes[i] ) {
+				case "navbar":
+					html = navbar( req, html, handle, context );
+					break;
+				case "googleAnalytics":
+					html = googleAnalytics( html, handle, context );
+					break;
+			}
+		}
+
+		callback( handle( context ) );
+	} );
 }
 
 
@@ -65,7 +79,7 @@ function navbar( req, html, handle, context )
 	var navContext = {
 		admin: req.session.userID == 1,
 		control: [
-			{ tag: "test" },
+			{ url: "/admin/maintenance", title: "Maintenance" },
 		],
 		nav: [
 			{ url: "/#projects", title: "Games" },

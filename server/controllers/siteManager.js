@@ -24,12 +24,31 @@ var conn        = mysql.createConnection( {
  *
  * @return: callback( true/false )
  */
-exports.maintenanceMode = function( callback )
-{
+exports.maintenanceMode = function( callback ) {
 	var sql = 'SELECT data FROM siteVar WHERE var = ?';
 	var inserts = [ "maintenance" ];
 	sql = mysql.format( sql, inserts );
 	db.queryDB( conn, sql, function( dbRes ) { 
 		callback( dbRes[0]["data"] );
+	} );
+}
+
+/*
+ * Toggles maintenanceMode
+ * 
+ * @param: callback
+ */
+exports.toggleMaintenanceMode = function( callback ) {
+	var sql = 'SELECT data FROM siteVar WHERE var = ?';
+	var inserts = [ "maintenance" ];
+	sql = mysql.format( sql, inserts );
+	db.queryDB( conn, sql, function( dbRes ) { 
+		var newData = dbRes[0]["data"] === "true" ? "false" : "true";
+		sql = 'UPDATE siteVar SET data = ? WHERE var = ?';
+		inserts = [ newData, "maintenance" ];
+		sql = mysql.format( sql, inserts );
+		db.queryDB( conn, sql, function( dbRes ) { 
+			callback();
+		} );
 	} );
 }
