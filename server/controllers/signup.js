@@ -20,17 +20,6 @@ var conn        = mysql.createConnection( {
 } );
 
 /*
- * list_instructions returns the signup html page
- */
-exports.list_instructions = function( req, res )
-{
-	var html = fs.readFileSync( "./public/html/signup.html", "utf-8" );
-	var blockTypes = [ "navbar" ];
-	html = blocks.loadBlocks( req, html, blockTypes );
-	res.send( html );
-}
-
-/*
  * add_user adds a new user to the database. Params stored in req.body
  *
  * @param: username

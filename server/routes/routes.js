@@ -19,26 +19,35 @@ module.exports = function( app ) {
 	app.use( session( {
 		secret: 'work hard',
 		resave: true,
-		saveUninitialized: false,
-	} ) );
+		saveUninitialized: false, } ) );
 
 	/*
 	 * HTML Page Routs
 	 */
 	// signup
 	app.route( '/signup' )
-		.get( signup.list_instructions )
+		.get( function( req, res ) {
+			var html = fs.readFileSync( "./public/html/signup.html", "utf-8" );
+			var blockTypes = [ "navbar", "googleAnalytics" ];
+			html = blocks.loadBlocks( req, html, blockTypes );
+			res.send( html );
+		} )
 		.post( signup.add_user );
 
 	// login
 	app.route( '/login' )
-		.get( login.show_login_page )
+		.get( function( req, res ) {
+			var html = fs.readFileSync( "./public/html/login.html", "utf-8" );
+			var blockTypes = [ "navbar", "googleAnalytics" ];
+			html = blocks.loadBlocks( req, html, blockTypes );
+			res.send( html );
+		} )
 		.post( login.loginUser );
 
 	// watch
 	app.route( '/watch' ).get( function( req, res ) {
 		var html = fs.readFileSync( "./public/html/watch.html", "utf-8" );
-		var blockTypes = [ "navbar" ];
+		var blockTypes = [ "navbar", "googleAnalytics" ];
 		html = blocks.loadBlocks( req, html, blockTypes );
 		res.send( html );
 	} );
@@ -46,7 +55,7 @@ module.exports = function( app ) {
 	// play
 	app.route( '/play' ).get( function( req, res ) {
 		var html = fs.readFileSync( "./public/html/play.html", "utf-8" );
-		var blockTypes = [ "navbar" ];
+		var blockTypes = [ "navbar", "googleAnalytics" ];
 		html = blocks.loadBlocks( req, html, blockTypes );
 		res.send( html );
 	} );
@@ -54,7 +63,7 @@ module.exports = function( app ) {
 	// home
 	app.route( '/' ).get( function( req, res ) {
 		var html = fs.readFileSync( "./public/html/index.html", "utf-8" );
-		var blockTypes = [ "navbar" ];
+		var blockTypes = [ "navbar", "googleAnalytics" ];
 		html = blocks.loadBlocks( req, html, blockTypes );
 		res.send( html );
 	} );

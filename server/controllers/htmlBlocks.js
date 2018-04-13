@@ -30,14 +30,19 @@ var conn        = mysql.createConnection( {
  */
 exports.loadBlocks = function( req, html, blockTypes  )
 {
+	var handle = handlebars.compile( html );
+	var context = {};
 	for ( var i = 0; i < blockTypes.length; i++ ) {
 		switch ( blockTypes[i] ) {
 			case "navbar":
-				html = navbar( req, html );
+				html = navbar( req, html, handle, context );
+				break;
+			case "googleAnalytics":
+				html = googleAnalytics( html, handle, context );
 				break;
 		}
 	}
-	return html;
+	return handle( context );
 }
 
 
@@ -45,35 +50,52 @@ exports.loadBlocks = function( req, html, blockTypes  )
  * navbar creates the bar that is seen at the top of every page
  *
  * @param: req, the site request
- * @param: html, string formatted with {{ navbar }}
+ * @param: html, string formatted with {{navbar}}
+ * @param: handle, handler template compiled by handlebarsjs
+ * @param: context, current handlebar context
  *
- * @return: html, updated with navbar 
+ * @return: context, updated with navbar 
  */
-function navbar( req, html )
+function navbar( req, html, handle, context )
 {
-	var context, handle;
 	// build nav html
 	var loginText = req.session.auth ? req.session.username : "Login";
 
-	context = {
+	var navContext = {
 		nav: [
-			{ url: "#projects", title: "Games" },
-			{ url: "#about", title: "About" },
+			{ url: "/#projects", title: "Games" },
+			{ url: "/#about", title: "About" },
 			{ url: "/starters", title: "Starters" },
 			{ url: "/signup", title: "Signup" },
 			{ url: "/login", title: loginText },
 		]
 	}
 
-	var navHtml = fs.readFileSync( "./public/html/navbar.html", "utf-8" );
-	handle      = handlebars.compile( navHtml );
-	navHtml     = handle( context );
+	var navHtml   = fs.readFileSync( "./public/html/blocks/navbar.html", "utf-8" );
+	var navHandle = handlebars.compile( navHtml );
+	navHtml       = navHandle( navContext );
 
 	// insert navbar html into main html
-	context = { navbar: navHtml };
-	handle = handlebars.compile( html );
-	html = handle( context )
+	context["navbar"] = navHtml;
 
-	return html;
+	return context;
 }
 
+/*
+ * googleAnalytics creates the code needed for google analytics to run 
+ *
+ * @param: html, string formatted with {{googleAnalytics}}
+ * @param: handle, the handler template compiled by handlebarsjs
+ * @param: context, current handlebar context
+ *
+ * @return: context, updated with google analyitcs html
+ */
+function googleAnalytics( html, handle, context )
+{
+	var googleHtml = fs.readFileSync( "./public/html/blocks/googleAnalytics.html", "utf-8" );
+
+	// insert google html into main html
+	context["googleAnalytics"] = googleHtml;
+
+	return context;
+}

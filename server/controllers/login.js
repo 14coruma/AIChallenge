@@ -21,17 +21,6 @@ var conn        = mysql.createConnection( {
 } );
 
 /*
- * show_login_page returns the login html page
- */
-exports.show_login_page = function( req, res )
-{
-	var html = fs.readFileSync( "./public/html/login.html", "utf-8" );
-	var blockTypes = [ "navbar" ];
-	html = blocks.loadBlocks( req, html, blockTypes );
-	res.send( html );
-}
-
-/*
  * loginUser attempts to log a user into their session. Parms stored in req.body
  *
  * @param: username
