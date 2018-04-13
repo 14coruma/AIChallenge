@@ -6,6 +6,8 @@
 
 'use strict';
 
+var blocks = require( './htmlBlocks.js' );
+var fs = require( "fs" );
 var bcrypt = require('bcrypt-nodejs');
 var userPass  = require( './userPass' );
 var db = require( './dbModule' );
@@ -23,9 +25,10 @@ var conn        = mysql.createConnection( {
  */
 exports.show_login_page = function( req, res )
 {
-	var fs = require( "fs" );
-	var loginPage = fs.readFileSync( "./public/html/login.html", "utf-8" );
-	res.send( loginPage );
+	var html = fs.readFileSync( "./public/html/login.html", "utf-8" );
+	var blockTypes = [ "navbar" ];
+	html = blocks.loadBlocks( req, html, blockTypes );
+	res.send( html );
 }
 
 /*
@@ -43,10 +46,10 @@ exports.loginUser = function( req, res )
 		bcrypt.compare( req.body.password, dbRes[0]["password"], function( err, bcryptRes ) {
 			if ( bcryptRes === true ) {
 				req.session.username = req.body.username;
-				req.session.authenticated = true;
+				req.session.auth = true;
 				res.redirect( '/' );
 			} else {
-				req.session.authenticated = false;
+				req.session.auth = false;
 				res.send( "Incorrect login creds!" );
 			}
 		} );
