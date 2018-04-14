@@ -90,8 +90,6 @@ function navbar( req, html, handle, context )
 //			{ url: "/admin/users", title: "Users" },
 		],
 		nav: [
-			{ url: "/#projects", title: "Games" },
-			{ url: "/#about", title: "About" },
 			{ url: "/starters", title: "Starters" },
 			{ url: "/signup", title: "Signup" },
 			{ url: loginUrl, title: loginText },
