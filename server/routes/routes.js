@@ -4,6 +4,7 @@
  */ 
 'use strict';
 var session = require( 'express-session' );
+var mysqlStore = require( 'express-mysql-session' )( session );
 var bodyParser = require( "body-parser" );
 var fs = require( "fs" );
 
@@ -13,14 +14,26 @@ var signup = require( '../controllers/signup' );
 var gameManager = require( '../controllers/gameManager' );
 var login = require( '../controllers/login' );
 
-// Create session
 module.exports = function( app ) {
 	app.use( bodyParser.json() ); // support json encoded bodies
 	app.use( bodyParser.urlencoded( { extended: true } ) ); // encoded bodies
+	// Create mysql session store
+	var options = {
+		host: 'localhost',
+		port: 3306,
+		user: 'session',
+		password: 'password',
+		database: 'AIChallenge',
+	};
+	var sessionStore = new mysqlStore( options );
+
+	// Create session
 	app.use( session( {
 		secret: 'work hard',
-		resave: true,
-		saveUninitialized: false, } ) );
+		store: sessionStore,
+		resave: false,
+		saveUninitialized: false,
+	} ) );
 
 	// Admin controls have highest priority
 	app.route( '/admin/maintenance' )
@@ -32,7 +45,20 @@ module.exports = function( app ) {
 			} else {
 				res.redirect( "/" );
 			}
-		});
+		} );
+
+	app.route( '/admin/users' )
+		.get( function( req, res ) {
+			if ( req.session.userID == 1 ) {
+				var html = fs.readFileSync( "./public/html/users.html", "utf-8" );
+				var blockTypes = [ "navbar", "users" ];
+				blocks.loadBlocks( req, res, sessionStore, html, blockTypes, function( html ) {
+					res.send( html );
+				} );
+			} else {
+				res.redirect( "/" );
+			}
+		} );
 
 	/*
 	 * HTML Page Routs
@@ -42,7 +68,7 @@ module.exports = function( app ) {
 		.get( function( req, res ) {
 			var html = fs.readFileSync( "./public/html/signup.html", "utf-8" );
 			var blockTypes = [ "navbar", "googleAnalytics" ];
-			blocks.loadBlocks( req, res, html, blockTypes, function( html ) {
+			blocks.loadBlocks( req, res, sessionStore, html, blockTypes, function( html ) {
 				res.send( html );
 			} );
 		} )
@@ -53,7 +79,7 @@ module.exports = function( app ) {
 		.get( function( req, res ) {
 			var html = fs.readFileSync( "./public/html/login.html", "utf-8" );
 			var blockTypes = [ "navbar", "googleAnalytics" ];
-			blocks.loadBlocks( req, res, html, blockTypes, function( html ) {
+			blocks.loadBlocks( req, res, sessionStore, html, blockTypes, function( html ) {
 				res.send( html );
 			} );
 		} )
@@ -67,7 +93,7 @@ module.exports = function( app ) {
 	app.route( '/watch' ).get( function( req, res ) {
 		var html = fs.readFileSync( "./public/html/watch.html", "utf-8" );
 		var blockTypes = [ "navbar", "googleAnalytics" ];
-		blocks.loadBlocks( req, res, html, blockTypes, function( html ) {
+		blocks.loadBlocks( req, res, sessionStore, html, blockTypes, function( html ) {
 			res.send( html );
 		} );
 	} );
@@ -76,7 +102,7 @@ module.exports = function( app ) {
 	app.route( '/play' ).get( function( req, res ) {
 		var html = fs.readFileSync( "./public/html/play.html", "utf-8" );
 		var blockTypes = [ "navbar", "googleAnalytics", "hiddenCreds" ];
-		blocks.loadBlocks( req, res, html, blockTypes, function( html ) {
+		blocks.loadBlocks( req, res, sessionStore, html, blockTypes, function( html ) {
 			res.send( html );
 		} );
 	} );
@@ -85,7 +111,7 @@ module.exports = function( app ) {
 	app.route( '/' ).get( function( req, res ) {
 		var html = fs.readFileSync( "./public/html/index.html", "utf-8" );
 		var blockTypes = [ "navbar", "googleAnalytics" ];
-		blocks.loadBlocks( req, res, html, blockTypes, function( html ) {
+		blocks.loadBlocks( req, res, sessionStore, html, blockTypes, function( html ) {
 			res.send( html );
 		} );
 	} );
@@ -120,7 +146,7 @@ module.exports = function( app ) {
 		req.route = { path: '' };
 		var html = fs.readFileSync( "./public/html/404.html", "utf-8" );
 		var blockTypes = [ "navbar", "googleAnalytics" ];
-		blocks.loadBlocks( req, res, html, blockTypes, function( html ) {
+		blocks.loadBlocks( req, res, sessionStore, html, blockTypes, function( html ) {
 			res.status( 404 ).send( html );
 		} );
 	} );

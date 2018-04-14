@@ -26,13 +26,14 @@ var conn        = mysql.createConnection( {
  *
  * @param: req, the site request
  * @param: res, the site response
+ * @param: sessionStore, the storage of sessions in mysql
  * @param: html, string
  * @param: blockTypes, an array of blocks to build
  * @param: callback
  *
  * @return: html, updated with blocks
  */
-exports.loadBlocks = function( req, res, html, blockTypes, callback )
+exports.loadBlocks = function( req, res, sessionStore, html, blockTypes, callback )
 {
 	site.maintenanceMode( function( maintenanceMode ) {
 		// Allow login however
@@ -47,13 +48,16 @@ exports.loadBlocks = function( req, res, html, blockTypes, callback )
 		for ( var i = 0; i < blockTypes.length; i++ ) {
 			switch ( blockTypes[i] ) {
 				case "navbar":
-					html = navbar( req, html, handle, context );
+					context = navbar( req, html, handle, context );
 					break;
 				case "googleAnalytics":
-					html = googleAnalytics( html, handle, context );
+					context = googleAnalytics( html, handle, context );
 					break;
 				case "hiddenCreds":
-					html = hiddenCreds( req, html, handle, context );
+					context = hiddenCreds( req, html, handle, context );
+					break;
+				case "users":
+					//context = users( sessionStore, html, handle, context ).then( v => { console.log(v) } ); 
 					break;
 			}
 		}
@@ -83,6 +87,7 @@ function navbar( req, html, handle, context )
 		admin: req.session.userID == 1,
 		control: [
 			{ url: "/admin/maintenance", title: "Maintenance" },
+//			{ url: "/admin/users", title: "Users" },
 		],
 		nav: [
 			{ url: "/#projects", title: "Games" },
@@ -130,7 +135,7 @@ function googleAnalytics( html, handle, context )
  * @param: handle, the handler template compiled by handlebarsjs
  * @param: context, current handlebar context
  *
- * @return: context, updated with google analyitcs html
+ * @return: context, updated with hiddenCreds
  */
 function hiddenCreds ( req, html, handle, context )
 {
@@ -142,8 +147,34 @@ function hiddenCreds ( req, html, handle, context )
 	var hiddenCredsHandle = handlebars.compile( hiddenCredsHtml );
 	hiddenCredsHtml       = hiddenCredsHandle( hiddenCredsContext );
 
-	// insert google html into main html
+	// insert html into main html
 	context["hiddenCreds"] = hiddenCredsHtml;
 
+	return context;
+}
+
+/*
+ * Lists all online userrs in users.html
+ *
+ * @param: sessionStore, the storage of sessions in mysql db
+ * @param: html, string formatted with {{googleAnalytics}}
+ * @param: handle, the handler template compiled by handlebarsjs
+ * @param: context, current handlebar context
+ *
+ * @return: context, updated with online user info
+ */
+async function users( sessionStore, html, handle, context )
+{
+	await sessionStore.all( function( err, sessions ) {
+		// insert html into main html
+		context["user"] = [];
+		for ( var key in sessions ) {
+			context["user"].push( {
+				username: sessions[key].username ? sessions[key].username : "guest",
+				auth: sessions[key].auth,
+			} );
+		}
+		context["hey"] = "hey there";
+	} );
 	return context;
 }
