@@ -90,7 +90,9 @@ function navbar( req, html, handle, context )
 //			{ url: "/admin/users", title: "Users" },
 		],
 		nav: [
-			{ url: "/starters", title: "Starters" },
+			{ url: "/starters/main", title: "Starters" },
+			{ url: "/play", title: "Play" },
+			{ url: "/watch", title: "Watch" },
 			{ url: "/signup", title: "Signup" },
 			{ url: loginUrl, title: loginText },
 		],

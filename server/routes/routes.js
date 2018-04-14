@@ -107,6 +107,16 @@ module.exports = function( app ) {
 		} );
 	} );
  
+	// starters
+	app.route( '/starters/:game' ).get( function( req, res ) {
+		var page = req.params.game == "main" ? "starters.html" : req.params.game + ".html"
+		var html = fs.readFileSync( "./public/html/" + page, "utf-8" );
+		var blockTypes = [ "navbar", "googleAnalytics" ];
+		blocks.loadBlocks( req, res, sessionStore, html, blockTypes, function( html ) {
+			res.send( html );
+		} );
+	} );
+
 	// home
 	app.route( '/' ).get( function( req, res ) {
 		var html = fs.readFileSync( "./public/html/index.html", "utf-8" );
