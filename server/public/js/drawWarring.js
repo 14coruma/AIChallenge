@@ -45,15 +45,15 @@ function drawWarring( state ) {
 	elements = [];
 
 	// Reset move if it's not viewing player's turn
-	var formUsername = document.getElementById( "formUsername" );
-	if ( state.players[1].username == formUsername.value ) {
+	var hiddenUsername = document.getElementById( "hiddenUsername" );
+	if ( state.players[1].username == hiddenUsername.value ) {
 		playerNumber = 1;
 	} else {
 		playerNumber = 0;
 	}
 	if (
-			formUsername &&
-			state.players[state.currentPlayer].username != formUsername.value
+			hiddenUsername &&
+			state.players[state.currentPlayer].username != hiddenUsername.value
 	) {
 	}
 

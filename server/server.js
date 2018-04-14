@@ -13,7 +13,6 @@
 var express = require( 'express' );
 var app     = express(); 
 var routes  = require( './routes/routes' );
-var favicon = require( 'serve-favicon' );
 
 app.use( express.static( 'public' ));
 routes( app );
