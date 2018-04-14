@@ -52,6 +52,9 @@ exports.loadBlocks = function( req, res, html, blockTypes, callback )
 				case "googleAnalytics":
 					html = googleAnalytics( html, handle, context );
 					break;
+				case "hiddenCreds":
+					html = hiddenCreds( req, html, handle, context );
+					break;
 			}
 		}
 
@@ -115,6 +118,32 @@ function googleAnalytics( html, handle, context )
 
 	// insert google html into main html
 	context["googleAnalytics"] = googleHtml;
+
+	return context;
+}
+
+/*
+ * Stores user login creds hidden inside html for future use
+ *
+ * @param: req, the site request
+ * @param: html, string formatted with {{googleAnalytics}}
+ * @param: handle, the handler template compiled by handlebarsjs
+ * @param: context, current handlebar context
+ *
+ * @return: context, updated with google analyitcs html
+ */
+function hiddenCreds ( req, html, handle, context )
+{
+	var hiddenCredsContext = {
+		username: req.session.username,
+		password: req.session.password,
+	};
+	var hiddenCredsHtml   = fs.readFileSync( "./public/html/blocks/hiddenCreds.html", "utf-8" );
+	var hiddenCredsHandle = handlebars.compile( hiddenCredsHtml );
+	hiddenCredsHtml       = hiddenCredsHandle( hiddenCredsContext );
+
+	// insert google html into main html
+	context["hiddenCreds"] = hiddenCredsHtml;
 
 	return context;
 }

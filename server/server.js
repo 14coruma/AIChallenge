@@ -11,8 +11,9 @@
  * Express Server
  */
 var express = require( 'express' );
-var app = express(); 
-var routes = require( './routes/routes' );
+var app     = express(); 
+var routes  = require( './routes/routes' );
+var favicon = require( 'serve-favicon' );
 
 app.use( express.static( 'public' ));
 routes( app );
@@ -56,7 +57,7 @@ class States {
 			}
 			gm.endLiveGame( gid, state, function(res) { /*TODO ERR?*/ } );
 			delete states.stateList[gid];
-		}, 6000 );
+		}, 600000 );
 	}
 	endTime(gid){
 		clearTimeout(this.timeout);

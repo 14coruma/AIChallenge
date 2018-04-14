@@ -41,6 +41,7 @@ exports.loginUser = function( req, res )
 			if ( bcryptRes === true ) {
 				req.session.userID = dbRes[0]["id"];
 				req.session.username = req.body.username;
+				req.session.password = req.body.password;
 				req.session.auth = true;
 				res.redirect( '/' );
 			} else {

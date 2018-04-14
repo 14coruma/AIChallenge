@@ -75,7 +75,7 @@ module.exports = function( app ) {
 	// play
 	app.route( '/play' ).get( function( req, res ) {
 		var html = fs.readFileSync( "./public/html/play.html", "utf-8" );
-		var blockTypes = [ "navbar", "googleAnalytics" ];
+		var blockTypes = [ "navbar", "googleAnalytics", "hiddenCreds" ];
 		blocks.loadBlocks( req, res, html, blockTypes, function( html ) {
 			res.send( html );
 		} );
@@ -106,6 +106,12 @@ module.exports = function( app ) {
 	// files
 	app.route( '/files/:type/:name' ).get( function( req, res ) {
 		let file = fs.readFileSync( "./public/" + req.params.type + "/" + req.params.name, "utf-8" );
+		res.send( file );
+	} );
+
+	// favicon
+	app.route( '/favicon.ico' ).get( function( req, res ) {
+		let file = fs.readFileSync( "./public/images/favicon.ico" );
 		res.send( file );
 	} );
 

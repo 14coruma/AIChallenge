@@ -13,7 +13,7 @@ var password = "";
 var game = "";
 var state = {};
 var drawing = false;
-var wsUri = "ws://153.106.160.184:8080/"; // Set ip address to local server
+var wsUri = "ws://153.106.160.229:8080/"; // Set ip address to local server
 var websocket = new WebSocket( wsUri );
 websocket.onmessage = function( evt ) { onMessage( evt ) };
 websocket.onerror = function( evt ) { onError( evt ) };
@@ -50,8 +50,8 @@ function updateSelectGame() {
  * Send request to server to start a game
  */
 function startGame() {
-	username = document.getElementById( 'formUsername' ).value;
-	password = document.getElementById( 'formPassword' ).value;
+	username = document.getElementById( 'hiddenUsername' ).value;
+	password = document.getElementById( 'hiddenPassword' ).value;
 	game = document.getElementById( 'selectGame' ).value;
 	var message = {
 		msgType  : "start",
