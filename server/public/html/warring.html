@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	{{{googleAnalytics}}}
+
+	<title>AI Tourney</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="/css/index.css">
+	<script src="https://www.w3schools.com/lib/w3codecolor.js"></script>
+</head>
+<body>
+	<!-- Navbar (sit on top) -->
+	{{{navbar}}}
+
+	<!-- Title -->
+	<div class="w3-container w3-padding-32">
+		</br>
+		<h1 class="w3-xxlarge w3-text-white w3-border-bottom"><span class="w3-padding w3-black w3-opacity-min"><b>§</b></span> <span class="w3-text-black">Warring Kingdoms</span></h1>
+	</div>
+
+	<!-- Overview -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >Overview</h3>
+		<p style="margin-left: 24px; width: 66.66%;">
+			You are a ruler of a kingdom during the heart of the middle ages. To your 
+			dismay, a rival kingdom has popped up surprisingly close to yours. You must 
+			prove to the world that your kingdom is the greatest!
+		</p>
+		<p style="margin-left: 24px; width: 66.66%;">
+			There are two ways to win Warring Kingdoms. The kingdom with the most 
+			collected food at the end of 500 turns wins. However, you can also win by 
+			razing the opponent's keep.
+		</p>
+	</div>
+
+	<!-- Units -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >Units</h3>
+		<table style="width:66.66%">
+			<tr><th>Name</th><th>Sprite</th><th>Cost</th><th>Health</th><th>Attack</th><th>Range</th><th>Info</th></tr>
+			<tr>
+				<td>Farmer</td>
+				<td><img src="/images/starters/warringFarmer.jpg" alt="warringFarmer.jpg"></img></td>
+				<td>400</td><td>40</td><td>0</td><td>0</td>
+				<td>
+					The farmer is responsible for harvesting food from the field 
+					and bringing it back to the keep. There is a max of one farmer 
+					allowed per player. Farmers move automatically if you are playing 
+					as a human (not an AI bot).
+				</td>
+			</tr>
+			<tr>
+				<td>Soldier</td>
+				<td><img src="/images/starters/warringSoldier.jpg" alt="warringSoldier.jpg"></img></td>
+				<td>450</td><td>60</td><td>15</td><td>1</td>
+				<td>
+					Soldiers can be used to attack enemy units or structures. 
+					They are only able to attack enemies that are directly adjacent (N, E, S, W).
+				</td>
+			</tr>
+			<tr>
+				<td>Archer</td>
+				<td><img src="/images/starters/warringArcher.jpg" alt="warringArcher.jpg"></img></td>
+				<td>500</td><td>50</td><td>10</td><td>2</td>
+				<td>
+					Archers are slightly weaker than soldiers, but they can attack 
+					enemies from a distance. <i>Note</i>, archers can only shoot 
+					straight (N, E, S, W).
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<!-- Map tiles -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >Map tiles</h3>
+		<table style="width:66.66%">
+			<tr><th>Name</th><th>Sprite</th><th>Health</th><th>Solid</t><th>Info</th></tr>
+			<tr>
+				<td>Keep</td>
+				<td><img src="/images/starters/warringKeep.jpg" alt="warringKeep.jpg"></img></td>
+				<td>500</td><td>true</td>
+				<td>
+					The keep is the heart of a player's kingdom. If destroyed, 
+					the player loses. To store food, farmers must bring their 
+					harvest back to keep. The keep is also where trained units 
+					appear.
+				</td>
+			</tr>
+			<tr>
+				<td>Wall</td>
+				<td><img src="/images/starters/warringWall.jpg" alt="warringWall.jpg"></img></td>
+				<td>200</td><td>true</td>
+				<td>
+					Walls can be built by any unit. They cost 150 food to build. 
+					Once built, they cannot be moved (only destroyed).
+				</td>
+			</tr>
+			<tr>
+				<td>Farm</td>
+				<td><img src="/images/starters/warringFarm.jpg" alt="warringFarm.jpg"></img></td>
+				<td>N/A</td><td>false</td>
+				<td>
+					There is one farm near each keep. Farmers will automatically 
+					pick food from the farm if they are standing on the farm. 
+					A farmer picks up 200 food from the farm each time.
+				</td>
+			</tr>
+			<tr>
+				<td>Path</td>
+				<td><img src="/images/starters/warringPath.jpg" alt="warringPath.jpg"></img></td>
+				<td>N/A</td><td>false</td>
+				<td>
+					There is always a path connecting the two kingdoms. That 
+					way the road to war is never completely blocked off.
+				</td>
+			</tr>
+			<tr>
+				<td>Mountain</td>
+				<td><img src="/images/starters/warringMountain.jpg" alt="warringMountain.jpg"></img></td>
+				<td>N/A</td><td>true</td>
+				<td>
+					Mountains are impassable obstacles. You'll just have to find 
+					a way around them!
+				</td>
+			</tr>
+			<tr>
+				<td>Tree</td>
+				<td><img src="/images/starters/warringTree.jpg" alt="warringTree.jpg"></img></td>
+				<td>N/A</td><td>false</td>
+				<td>
+					There are various forests around the kingdom. The scenery is nice, 
+					isn't it?
+				</td>
+			</tr>
+			<tr>
+				<td>Grass</td>
+				<td><img src="/images/starters/warringGrass.jpg" alt="warringGrass.jpg"></img></td>
+				<td>N/A</td><td>false</td>
+				<td>
+					The majority of the world is often made up of large fields of 
+					grass. There is nothing too special about grass; it's just there.
+				</td>
+			</tr>
+			<tr>
+				<td>Water</td>
+				<td><img src="/images/starters/warringWater.jpg" alt="warringWater.jpg"></img></td>
+				<td>N/A</td><td>true</td>
+				<td>
+					Water is scary and impossible to walk through. Too bad there 
+					are not any boats around!
+				</td>
+			</tr>
+			<tr>
+				<td>Lake</td>
+				<td><img src="/images/starters/warringLake.jpg" alt="warringLake.jpg"></img></td>
+				<td>N/A</td><td>true</td>
+				<td>
+					Yep, lakes are just water surrounded by land. Units still 
+					cannot walk through them, unfortunately.
+				</td>
+			</tr>
+			<tr>
+				<td>Island</td>
+				<td><img src="/images/starters/warringIsland.jpg" alt="warringIsland.jpg"></img></td>
+				<td>N/A</td><td>false</td>
+				<td>
+					Islands are little pieces of land out in the water. Theoretically 
+					units could walk on them, but there is no way to get there!
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<!-- How to play (human) -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >How to play (as a human)</h3>
+		<b style="margin-left: 24px; width: 66.66%;">
+			Movement and attacking:
+		</b>
+		<p style="margin-left: 48px; width: 66.66%;">
+			• Click on the unit you wish to move. The unit should become highlighted 
+			by a red cursor.<br>
+			• Next click on a target.<br>
+			• Then click on the move button located on the control panel at the 
+			right side of the screen.<br>
+			• If you wish to attack the target, click on the attack button instead.<br>
+		</p>
+		<b style="margin-left: 24px; width: 66.66%;">
+			Farming:
+		</b>
+		<p style="margin-left: 48px; width: 66.66%;">
+			• Farming is done by your farmer automatically. <br>
+			• If your farmer dies, hopefully you have enough food to train another! <br>
+		</p>
+		<b style="margin-left: 24px; width: 66.66%;">
+			Training units:
+		</b>
+		<p style="margin-left: 48px; width: 66.66%;">
+			• If you have enough money to train a unit, the unit's icon will 
+			appear on the control panel.<br>
+			• Click this icon to train the unit. It will appear next to your keep.<br>
+		</p>
+		<b style="margin-left: 24px; width: 66.66%;">
+			Building:
+		</b>
+		<p style="margin-left: 48px; width: 66.66%;">
+			• To build a wall, first click on the unit you want to use.<br>
+			• Then click the target location. This must be directly adjecent to your unit.<br>
+			• Finally, click on the build icon on the control panel.<br>
+		</p>
+	</div>
+
+	<!-- The game state -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >The game state</h3>
+		<p style="margin-left: 24px; width: 66.66%;">
+			Like all games at AI Tourney, the game state is stored in JavaScript 
+			Object Notation (JSON). This is what the farkle JSON looks like:
+		</p>
+		<div style="margin-left: 48px;" class="w3-code jsHigh notranslate">
+			{<br>
+			&emsp;"id": (number), // The gameID<br>
+			&emsp;"game": "farkle",<br>
+			&emsp;"players": [<br>
+			&emsp;&emsp;{<br>
+			&emsp;&emsp;&emsp;"username": (string)<br>
+			&emsp;&emsp;&emsp;"score": (number) // The player's total score<br>
+			&emsp;&emsp;&emsp;"fail": (0 or 1) // 1 if a player makes an illegal move<br>
+			&emsp;&emsp;},<br>
+			&emsp;&emsp;{ ... } // Same object for player two<br>
+			&emsp;],<br>
+			&emsp;"dice": [ // The numbers of the dice that were rolled<br>
+			&emsp;&emsp; 3, 1, 6, 4 // Example of what dice could look like<br>
+			&emsp;],<br>
+			&emsp;"bank": [ // The numbers of the dice in the bank<br>
+			&emsp;&emsp; 1, 5 // Example of what a bank could look like<br>
+			&emsp;],<br>
+			&emsp;"temp": (number), // Temp score of dice (if player has score banked up)<br>
+			&emsp;"currentPlayer": (0 or 1), // Whether it is player0's or player1's turn<br>
+			&emsp;"gameOver": (0 or 1), // Whether the game is over (1) or not (0)<br>
+			&emsp;"winner": (-1 or 0 or 1), // The winner player (-1 for no winner yet)<br>
+			&emsp;"error": (string), // If any error occured it should show up here<br>
+			}
+		</div>
+	</div>
+
+	<!-- Your move -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >Your move</h3>
+		<p style="margin-left: 24px; width: 66.66%;">
+			The move in farkle should be a JSON (formatted as a string). Your 
+			bot executable should print a JSON string to the command line to 
+			make a move. Here is what the move JSON should look like:
+		</p>
+		<div style="margin-left: 48px;" class="w3-code jsHigh notranslate">
+			{<br>
+			&emsp;"bank": [ 1, 5 ], // The dice #s that you want to put in the bank,<br>
+			&emsp;"done": (0 or 1), // If you want to keep rolling (1) or not (0)<br>
+			}
+		</div>
+		<script>w3CodeColor();</script>
+	</div>
+
+	</br>
+
+	<!-- Footer -->
+	{{{footer}}}
+
+</body>
+</html>
