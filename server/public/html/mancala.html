@@ -4,7 +4,7 @@
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	{{{googleAnalytics}}}
 
-	<title>Mancala</title>
+	<title>AI Tourney</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="/css/index.css">
@@ -20,7 +20,7 @@
 		<h1 class="w3-xxlarge w3-text-white w3-border-bottom"><span class="w3-padding w3-black w3-opacity-min"><b>§</b></span> <span class="w3-text-black">Mancala</span></h1>
 	</div>
 
-	<!-- Overview -->
+	<!-- How to play -->
 	<div class="w3-container w3-padding-small">
 		</br>
 		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >How to play</h3>
@@ -59,6 +59,8 @@
 			the game yourself! Go ahead and try it out at <a href="/play">/play</a>.
 		</p>
 	</div>
+
+	<!-- The game state -->
 	<div class="w3-container w3-padding-small">
 		</br>
 		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >The game state</h3>
@@ -68,27 +70,29 @@
 		</p>
 		<div style="margin-left: 48px;" class="w3-code jsHigh notranslate">
 			{<br>
-			&emsp;id: (number), // The gameID<br>
-			&emsp;game: "mancala",<br>
-			&emsp;players: [<br>
+			&emsp;"id": (number), // The gameID<br>
+			&emsp;"game": "mancala",<br>
+			&emsp;"players": [<br>
 			&emsp;&emsp;{<br>
-			&emsp;&emsp;&emsp;username: (string)<br>
-			&emsp;&emsp;&emsp;pos: (0 or 1) // The player's position (bottom==0, top==1)<br>
+			&emsp;&emsp;&emsp;"username": (string)<br>
+			&emsp;&emsp;&emsp;"pos": (0 or 1) // The player's position (bottom==0, top==1)<br>
 			&emsp;&emsp;},<br>
 			&emsp;&emsp;{ ... } // Same object for player two<br>
 			&emsp;],<br>
-			&emsp;board: [<br>
+			&emsp;"board": [<br>
 			&emsp;&emsp; 4, 4, 4, 4, 4, 4, 0, // [0-6] are bottom 6 holes and goal<br>
 			&emsp;&emsp; 4, 4, 4, 4, 4, 4, 0, // [7-11] are top 6 holes and goal<br>
 			&emsp;],<br>
-			&emsp;currentPlayer: (0 or 1), // Whether it is player0's or player1's turn<br>
-			&emsp;gameOver: (0 or 1), // Whether the game is over (1) or not (0)<br>
-			&emsp;winner: (-1 or 0 or 1), // The winner player (-1 for no winner yet)<br>
-			&emsp;error: (string), // If any error occured it should show up here<br>
+			&emsp;"currentPlayer": (0 or 1), // Whether it is player0's or player1's turn<br>
+			&emsp;"gameOver": (0 or 1), // Whether the game is over (1) or not (0)<br>
+			&emsp;"winner": (-1 or 0 or 1), // The winner player (-1 for no winner yet)<br>
+			&emsp;"error": (string), // If any error occured it should show up here<br>
 			}
 		</div>
 		<script>w3CodeColor();</script>
 	</div>
+
+	<!-- Your move -->
 	<div class="w3-container w3-padding-small">
 		</br>
 		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >Your move</h3>
@@ -100,6 +104,8 @@
 		</p>
 		<img style="margin-left: auto; margin-right: auto; width: 50%; display: block;" src="/images/starters/mancalaExample.jpg" alt="mancalaExample.jpg"></img>
 	</div>
+
+	</br>
 
 	<!-- Footer -->
 	{{{footer}}}

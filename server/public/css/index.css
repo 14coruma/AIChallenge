@@ -216,3 +216,6 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 /* created by Andrew Corum */
 .center{padding-left: 0; padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
 @font-face{font-family: alagard; src: url(../fonts/alagard.ttf);}
+table{border-collapse: collapse;width:66.66%;}
+td,th{border: 1px solid #dddddd; text-align: left; padding: 6px;}
+tr:nth-child(even){background-color: #dddddd;}

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	{{{googleAnalytics}}}
+
+	<title>AI Tourney</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="/css/index.css">
+	<script src="https://www.w3schools.com/lib/w3codecolor.js"></script>
+</head>
+<body>
+	<!-- Navbar (sit on top) -->
+	{{{navbar}}}
+
+	<!-- Title -->
+	<div class="w3-container w3-padding-32">
+		</br>
+		<h1 class="w3-xxlarge w3-text-white w3-border-bottom"><span class="w3-padding w3-black w3-opacity-min"><b>§</b></span> <span class="w3-text-black">Farkle</span></h1>
+	</div>
+
+	<!-- How to play -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >How to play</h3>
+		<p style="margin-left: 24px; width: 66.66%;">
+			Farkle is a dice rolling game similar to Yahtzee or LCR. The goal is 
+			to be the first person to score 10,000 points. Points are scored by 
+			rolling certain combinations of dice.
+		</p>
+		<p style="margin-left: 24px; width: 66.66%;">
+			On your turn, you first choose which of the 6 dice you want to put 
+			in the "bank". All of the banked dice must score points. You cannot 
+			put a die in the bank if it does not score any points. Then you can 
+			choose whether or not to roll the remaing dice again or not. If you 
+			stop rolling, then the score of the dice in your bank are added to 
+			your score.
+		</p>
+		<p style="margin-left: 24px; width: 66.66%;">
+			If you are not able to score any points with the dice that were rolled, 
+			then this is called "farkle". In this case, you lose your turn and 
+			no points are scored. So be careful when re-rolling dice, because 
+			there is a chance that you could "farkle".
+		</p>
+		<b style="margin-left: 24px; width: 66.66%;">
+			Other notes:
+		</b>
+		<p style="margin-left: 48px; width: 66.66%;">
+			• You must put at least one die in the bank every roll. If you fail 
+			to score any dice, then your turn is over.
+		</p>
+		<p style="margin-left: 48px; width: 66.66%;">
+			• If you manage to score points in the bank with all 6 dice, then you 
+			can re-roll all 6 dice again. The points from the first six dice are 
+			stored up in a "score bank". But be careful. If you farkle, you will 
+			lose all of the points in the score bank too!
+		</p>
+		<p style="margin-left: 24px; width: 66.66%;">
+			Of course, the easiest way to understand these rules is to try playing 
+			the game yourself! Go ahead and try it out at <a href="/play">/play</a>.
+		</p>
+		<img style="margin-left: auto; margin-right: auto; width: 50%; display: block;" src="/images/starters/farkleExample.jpg" alt="farkleExample.jpg"></img>
+	</div>
+
+	<!-- Scoring -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >Scoring</h3>
+		<table style="width:66.66%">
+			<tr><th>Dice</th><th>Score</th></tr>
+			<tr><td>1s</td><td>100 (each)</td></tr>
+			<tr><td>5s</td><td>50 (each)</td></tr>
+			<tr><td>Three 1s </td><td>300</td></tr>
+			<tr><td>Three 2s </td><td>200</td></tr>
+			<tr><td>Three 3s </td><td>300</td></tr>
+			<tr><td>Three 4s </td><td>400</td></tr>
+			<tr><td>Three 5s </td><td>500</td></tr>
+			<tr><td>Three 6s </td><td>600</td></tr>
+			<tr><td>Four of a kind</td><td>1000</td></tr>
+			<tr><td>Straight (1-6)</td><td>1500</td></tr>
+			<tr><td>Three Pairs</td><td>1500</td></tr>
+			<tr><td>Five of a kind</td><td>2000</td></tr>
+			<tr><td>Two triplets</td><td>2500</td></tr>
+			<tr><td>Six of a kind</td><td>3000</td></tr>
+		</table>
+	</div>
+
+	<!-- The game state -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >The game state</h3>
+		<p style="margin-left: 24px; width: 66.66%;">
+			Like all games at AI Tourney, the game state is stored in JavaScript 
+			Object Notation (JSON). This is what the farkle JSON looks like:
+		</p>
+		<div style="margin-left: 48px;" class="w3-code jsHigh notranslate">
+			{<br>
+			&emsp;"id": (number), // The gameID<br>
+			&emsp;"game": "farkle",<br>
+			&emsp;"players": [<br>
+			&emsp;&emsp;{<br>
+			&emsp;&emsp;&emsp;"username": (string)<br>
+			&emsp;&emsp;&emsp;"score": (number) // The player's total score<br>
+			&emsp;&emsp;&emsp;"fail": (0 or 1) // 1 if a player makes an illegal move<br>
+			&emsp;&emsp;},<br>
+			&emsp;&emsp;{ ... } // Same object for player two<br>
+			&emsp;],<br>
+			&emsp;"dice": [ // The numbers of the dice that were rolled<br>
+			&emsp;&emsp; 3, 1, 6, 4 // Example of what dice could look like<br>
+			&emsp;],<br>
+			&emsp;"bank": [ // The numbers of the dice in the bank<br>
+			&emsp;&emsp; 1, 5 // Example of what a bank could look like<br>
+			&emsp;],<br>
+			&emsp;"temp": (number), // Temp score of dice (if player has score banked up)<br>
+			&emsp;"currentPlayer": (0 or 1), // Whether it is player0's or player1's turn<br>
+			&emsp;"gameOver": (0 or 1), // Whether the game is over (1) or not (0)<br>
+			&emsp;"winner": (-1 or 0 or 1), // The winner player (-1 for no winner yet)<br>
+			&emsp;"error": (string), // If any error occured it should show up here<br>
+			}
+		</div>
+	</div>
+
+	<!-- Your move -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >Your move</h3>
+		<p style="margin-left: 24px; width: 66.66%;">
+			The move in farkle should be a JSON (formatted as a string). Your 
+			bot executable should print a JSON string to the command line to 
+			make a move. Here is what the move JSON should look like:
+		</p>
+		<div style="margin-left: 48px;" class="w3-code jsHigh notranslate">
+			{<br>
+			&emsp;"bank": [ 1, 5 ], // The dice #s that you want to put in the bank,<br>
+			&emsp;"done": (0 or 1), // If you want to keep rolling (1) or not (0)<br>
+			}
+		</div>
+		<script>w3CodeColor();</script>
+	</div>
+
+	</br>
+
+	<!-- Footer -->
+	{{{footer}}}
+
+</body>
+</html>
