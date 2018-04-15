@@ -67,7 +67,7 @@ module.exports = function( app ) {
 	app.route( '/signup' )
 		.get( function( req, res ) {
 			var html = fs.readFileSync( "./public/html/signup.html", "utf-8" );
-			var blockTypes = [ "navbar", "googleAnalytics" ];
+			var blockTypes = [ "navbar", "footer", "googleAnalytics" ];
 			blocks.loadBlocks( req, res, sessionStore, html, blockTypes, function( html ) {
 				res.send( html );
 			} );
@@ -78,7 +78,7 @@ module.exports = function( app ) {
 	app.route( '/login' )
 		.get( function( req, res ) {
 			var html = fs.readFileSync( "./public/html/login.html", "utf-8" );
-			var blockTypes = [ "navbar", "googleAnalytics" ];
+			var blockTypes = [ "navbar", "footer", "googleAnalytics" ];
 			blocks.loadBlocks( req, res, sessionStore, html, blockTypes, function( html ) {
 				res.send( html );
 			} );
@@ -92,7 +92,7 @@ module.exports = function( app ) {
 	// watch
 	app.route( '/watch' ).get( function( req, res ) {
 		var html = fs.readFileSync( "./public/html/watch.html", "utf-8" );
-		var blockTypes = [ "navbar", "googleAnalytics" ];
+		var blockTypes = [ "navbar", "footer", "googleAnalytics" ];
 		blocks.loadBlocks( req, res, sessionStore, html, blockTypes, function( html ) {
 			res.send( html );
 		} );
@@ -101,7 +101,7 @@ module.exports = function( app ) {
 	// play
 	app.route( '/play' ).get( function( req, res ) {
 		var html = fs.readFileSync( "./public/html/play.html", "utf-8" );
-		var blockTypes = [ "navbar", "googleAnalytics", "hiddenCreds" ];
+		var blockTypes = [ "navbar", "footer", "googleAnalytics", "hiddenCreds" ];
 		blocks.loadBlocks( req, res, sessionStore, html, blockTypes, function( html ) {
 			res.send( html );
 		} );
@@ -111,7 +111,7 @@ module.exports = function( app ) {
 	app.route( '/starters/:game' ).get( function( req, res ) {
 		var page = req.params.game == "main" ? "starters.html" : req.params.game + ".html"
 		var html = fs.readFileSync( "./public/html/" + page, "utf-8" );
-		var blockTypes = [ "navbar", "googleAnalytics" ];
+		var blockTypes = [ "navbar", "footer", "googleAnalytics" ];
 		blocks.loadBlocks( req, res, sessionStore, html, blockTypes, function( html ) {
 			res.send( html );
 		} );
@@ -120,7 +120,7 @@ module.exports = function( app ) {
 	// home
 	app.route( '/' ).get( function( req, res ) {
 		var html = fs.readFileSync( "./public/html/index.html", "utf-8" );
-		var blockTypes = [ "navbar", "googleAnalytics" ];
+		var blockTypes = [ "navbar", "footer", "googleAnalytics" ];
 		blocks.loadBlocks( req, res, sessionStore, html, blockTypes, function( html ) {
 			res.send( html );
 		} );

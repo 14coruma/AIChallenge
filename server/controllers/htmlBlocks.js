@@ -59,6 +59,9 @@ exports.loadBlocks = function( req, res, sessionStore, html, blockTypes, callbac
 				case "users":
 					//context = users( sessionStore, html, handle, context ).then( v => { console.log(v) } ); 
 					break;
+				case "footer":
+					context = footer( html, handle, context );
+					break;
 			}
 		}
 
@@ -176,5 +179,24 @@ async function users( sessionStore, html, handle, context )
 		}
 		context["hey"] = "hey there";
 	} );
+	return context;
+}
+
+/*
+ * Creates the site footer 
+ *
+ * @param: html, string formatted with {{footer}}
+ * @param: handle, the handler template compiled by handlebarsjs
+ * @param: context, current handlebar context
+ *
+ * @return: context, updated with footer 
+ */
+function footer( html, handle, context )
+{
+	var footerHtml = fs.readFileSync( "./public/html/blocks/footer.html", "utf-8" );
+
+	// insert footer html into main html
+	context["footer"] = footerHtml;
+
 	return context;
 }
