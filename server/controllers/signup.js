@@ -36,5 +36,5 @@ exports.add_user = function( req, res )
 		db.queryDB( conn, sql, function( res ) { return; } );
 	} );
 
-	res.redirect( "/" );
+	res.redirect( "/starters/main" );
 }

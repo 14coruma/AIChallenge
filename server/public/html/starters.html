@@ -2,18 +2,153 @@
 <html>
 <head>
 	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117106938-1"></script>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
-		gtag('config', 'UA-117106938-1');
-	</script>
+	{{{googleAnalytics}}}
 
 	<title>Starters</title>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="/css/index.css">
+	<script src="https://www.w3schools.com/lib/w3codecolor.js"></script>
 </head>
 <body>
-<h1>Starters</h1>
+	<!-- Navbar (sit on top) -->
+	{{{navbar}}}
+
+	<!-- Title -->
+	<div class="w3-container w3-padding-32">
+		</br>
+		<h1 class="w3-xxlarge w3-text-white w3-border-bottom"><span class="w3-padding w3-black w3-opacity-min"><b>§</b></span> <span class="w3-text-black">Starters</span></h1>
+	</div>
+
+	<!-- Overview -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >Overview</h3>
+		<p style="margin-left: 24px; width: 66.66%;">
+			AI Tourney is designed to help programmers learn about artificial 
+			intelligence (AI). There are already many resources available that 
+			document the theory of AI. Instead, AI Tourney acts as a fun place 
+			to practice programming AI and gain practical experience.
+		</p>
+	</div>
+
+	<!-- Games -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >Choose a game</h3>
+		<p style="margin-left: 24px; width: 66.66%;">
+			To get started, choose a game to build an AI bot for. If you are 
+			new to creating AI, try starting with one of the simpler games 
+			(ie. <a href="/starters/mancala">mancala</a> or <a href="/starters/farkle">farkle</a>).
+			Don't worry, just because the game is simple does not mean your AI 
+			must be!
+		</p>
+
+		<!-- list games -->
+		</br>
+		<div class="w3-row-padding">
+			<div class="w3-col l4 m6 w3-margin-bottom">
+				<div class="w3-display-container">
+					<a href="/starters/mancala" class="w3-button">
+						<div class="w3-display-topleft w3-black w3-padding">Mancala</div>
+						<img src="/images/index/mancala.jpg" alt="Mancala" style="width:100%">
+					</a>
+				</div>
+			</div>
+			<div class="w3-col l4 m6 w3-margin-bottom">
+				<div class="w3-display-container">
+					<a href="/starters/farkle" class="w3-button">
+						<div class="w3-display-topleft w3-black w3-padding">Farkle</div>
+						<img src="/images/index/farkle.png" alt="Farkle" style="width:75%">
+					</a>
+				</div>
+			</div>
+			<div class="w3-col l4 m6 w3-margin-bottom">
+				<div class="w3-display-container">
+					<a href="/starters/warring" class="w3-button">
+						<div class="w3-display-topleft w3-black w3-padding">Warring Kingdoms</div>
+						<img src="/images/index/warring.jpg" alt="Warring Kingdoms<" style="width:100%">
+					</a>
+				</div>
+			</div>
+		</div>
+		</br>
+
+		<p style="margin-left: 24px; width: 66.66%;">
+			Once you have chosen a game, take some time to learn about it. 
+			You can try playing the game as a human (<a href="/play">here</a>). 
+			You'll want to read up on the game's documentation and rules as well. 
+			The AI program will need to be able to understand the messages sent 
+			by the game. These messages represent the game's state, which is 
+			encoded in JSON.
+		</p>
+	</div>
+
+	<!-- Client -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >Download client</h3>
+		<p style="margin-left: 24px; width: 66.66%;">
+			Before you can build a bot, make sure to download the AI Tourney 
+			client application. This program runs on your computer and connects 
+			to the AI Tourney server.
+		</p>
+		<p style="margin-left: 24px; width: 66.66%;">
+			The client application is available for Windows, Linux, and Mac:
+		</p>
+	</div>
+
+	<!-- Bot -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >Create a bot</h3>
+		<p style="margin-left: 24px; width: 66.66%">
+			It's time to start programming! You can program in whatever language 
+			you want. The only requirements are that you must be able to 
+			compile an executable and parse JSON.
+		</p>
+		<p style="margin-left: 24px; width: 66.66%">
+			Here is some pseudocode of what basic bot code could look like:
+		</p>
+		<div style="margin-left: 48px;" class="w3-code jsHigh notranslate">
+			var data = JSON.parse( system.args[1] ); &emsp; // Parse game state (from command line args)<br>
+			&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;// into a variable<br>
+			var move = getMove( data ); &nbsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; // Create the next move<br>
+			&nbsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; // getMove() contains most of the AI code<br>
+			print( move ); &nbsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; // Client sends printed move<br>
+		</div>
+		<script>w3CodeColor();</script>
+		<p style="margin-left: 24px; width: 66.66%">
+			In short, the bot code needs to parse the game state (JSON arguments), 
+			create a move, and print that move. Once your bot can do this, 
+			compile an executable.
+		</p>
+	</div>
+
+	<!-- Compete -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >Compete</h3>
+		<p style="margin-left: 24px; width: 66.66%">
+		<p style="margin-left: 24px; width: 66.66%">
+			Now start up the client application. Enter your login credentials, 
+			select the game you are playing, and select your bot executable. 
+			When you are ready, press start.
+		</p>
+		<img style="margin-left: auto; margin-right: auto; width: 25%; display: block;" src="/images/starters/clientExample.jpg" alt="clientExample.jpg"></img>
+		<p style="margin-left: 24px; width: 66.66%">
+			The client will wait until AI Tourney finds you an opponent. Once a 
+			game is started, you and your opponent will take turns making moves. 
+			When it is your turn, the client app will run your executable with 
+			the current game state as the command line argument. Once the 
+			executable prints your move, the client will then send the move to 
+			AI Tourney.
+		</p>
+		<p style="margin-left: 24px; width: 66.66%">
+			If you wish to watch the game, go to <a href="/watch">/watch</a>. 
+			Select your gameID from the dropdown to see the game in progress.
+		</p>
+	</div>
+
 </body>
 </html>
