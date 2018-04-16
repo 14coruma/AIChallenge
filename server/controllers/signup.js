@@ -5,6 +5,8 @@
 
 'use strict';
 
+var blocks = require( './htmlBlocks.js' );
+var fs = require( "fs" );
 var bcrypt = require('bcrypt-nodejs');
 var userPass  = require( './userPass' );
 var db = require( './dbModule' );
@@ -16,16 +18,6 @@ var conn        = mysql.createConnection( {
 	password : signupPass,
 	database : 'AIChallenge',
 } );
-
-/*
- * list_instructions returns the signup html page
- */
-exports.list_instructions = function( req, res )
-{
-	var fs = require( "fs" );
-	var signupPage = fs.readFileSync( "./public/html/signup.html", "utf-8" );
-	res.send( signupPage );
-}
 
 /*
  * add_user adds a new user to the database. Params stored in req.body
@@ -43,7 +35,6 @@ exports.add_user = function( req, res )
 		sql = mysql.format( sql, inserts );
 		db.queryDB( conn, sql, function( res ) { return; } );
 	} );
-	var fs = require( "fs" );
-	var startersPage = fs.readFileSync( "./public/html/starters.html", "utf-8" ); 
-	res.send( startersPage );
+
+	res.redirect( "/starters/main" );
 }

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>AI Tourney</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="/css/index.css">
+</head>
+<body>
+
+<!-- Navbar (sit on top) -->
+{{{navbar}}}
+
+<!-- Header -->
+<header class="w3-display-container w3-content w3-wide" style="max-width:1500px;" id="home">
+	<img class="w3-image" src="/images/wallpaper.jpg" alt="AI Wallpaper" width="1500" height="800">
+	<div class="w3-display-middle w3-margin-top w3-center">
+		<h1 class="w3-xxlarge w3-text-white"><span class="w3-padding w3-black w3-opacity-min"><b>AI</b></br></span> <span class="w3-hide-small w3-text-light-grey">Tourney</span></h1>
+	</div>
+</header>
+
+<!-- List Online Users -->
+	<div class="w3-container w3-padding-32" id="users">
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Online users:</h3>
+		<table style="width:100%">
+			<tr>
+				<th>Username</th><th>Authorized</th>
+			</tr>
+			{{#each user ~}}
+			<tr>
+				<th>{{username}}</th><th>{{auth}}</th>
+			</tr>
+			{{~/each}}
+		</table>
+		<p>{{{hey}}}</p>
+	</div>
+
+</body>
+</html>

@@ -27,10 +27,10 @@ function drawMancala( state ) {
 	elements = [];
 
 	// indicate if it's not viewing player's turn
-	var formUsername = document.getElementById( "formUsername" );
+	var hiddenUsername = document.getElementById( "hiddenUsername" );
 	if (
-			formUsername &&
-			state.players[state.currentPlayer].username != formUsername.value
+			hiddenUsername &&
+			state.players[state.currentPlayer].username != hiddenUsername.value
 	) {
 		ctx.globalAlpha = 0.5;
 		ctx.fillRect( 0, 0, canvas.width, canvas.height );

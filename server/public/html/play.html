@@ -3,61 +3,34 @@
 <html>
 <head>
 	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117106938-1"></script>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
+	{{{googleAnalytics}}}
 
-		gtag('config', 'UA-117106938-1');
-	</script>
-
-	<title>Play</title>
+	<title>AI Tourney</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="css/index.css">
+	<link rel="stylesheet" type="text/css" href="/css/index.css">
 	<script src="/files/js/drawGameEnded.js"></script>
-	<script src="/files/js/drawTestGame.js"></script>
 	<script src="/files/js/drawGame.js"></script>
 	<script src="/files/js/playGame.js"></script>
 	<script src="/files/js/pathfinding-browser.min.js"></script>
 </head>
 <body>
-<!-- Navbar (sit on top) -->
-<div class="w3-top">
-	<div class="w3-bar w3-white w3-wide w3-padding w3-card-2">
-		<a href="/#home" class="w3-bar-item w3-button"><b>AI</b> Challenge</a>
-		<!-- Float links to the right. Hide them on small screens -->
-		<div class="w3-right w3-hide-small">
-			<a href="/#projects" class="w3-bar-item w3-button">Games</a>
-			<a href="/#about" class="w3-bar-item w3-button">About</a>
-			<a href="/starters" class="w3-bar-item w3-button">Starters</a>
-			<a href="/signup" class="w3-bar-item w3-button">Signup</a>
-		</div>
-	</div>
-</div>
-	
-	<div class="w3-container w3-padding-32" id="contact">
-		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-32" >Play</h3>
+	<!-- Navbar (sit on top) -->
+	{{{navbar}}}
+
+	<!-- Title -->
+	<div class="w3-container w3-padding-32">
+		</br>
+		<h1 class="w3-xxlarge w3-text-white w3-border-bottom"><span class="w3-padding w3-black w3-opacity-min"><b>§</b></span> <span class="w3-text-black">Play</span></h1>
 	</div>
 
 <!-- Sign-in Section -->
  <form id="startForm" onsubmit="return false;">
- 
-	<!-- Credentials -->
-	<div class="w3-container w3-padding-small" id="contact">
-		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small">Credentials </h3>
-			<input id="formUsername" class="w3-input" type="text" placeholder="Username" required name="username">
-			<input id="formPassword" class="w3-input w3-section" type="password" placeholder="Password" required name="password">
-	</div>
- 
 	<!-- Game Selector -->
 	<div class="w3-container w3-padding-small" id="game">
 		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small">Game</h3>
 		<select id="selectGame" class="w3-input">
 			<option value="">--select game--</option>
-		<!-- this is temporary for now -->
-			<option value="testGame">Test Game</option>
 			<option value="mancala">Mancala</option>
 			<option value="farkle">Farkle</option>
 			<option value="warring">Warring Kingdoms</option>
@@ -86,5 +59,9 @@
 		</button>
 	</div>
 
+	<!-- Footer -->
+	{{{footer}}}
+
+	{{{hiddenCreds}}}
 </body>
 </html>

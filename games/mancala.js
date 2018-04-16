@@ -4,6 +4,8 @@
  * Created by: Andrew Corum, 11/2017
  */
 
+"use strict";
+
 /**
  * start creates then returns initial game state
  *

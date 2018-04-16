@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	{{{googleAnalytics}}}
+
+	<title>AI Tourney</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="/css/index.css">
+	<script src="https://www.w3schools.com/lib/w3codecolor.js"></script>
+</head>
+<body>
+	<!-- Navbar (sit on top) -->
+	{{{navbar}}}
+
+	<!-- Title -->
+	<div class="w3-container w3-padding-32">
+		</br>
+		<h1 class="w3-xxlarge w3-text-white w3-border-bottom"><span class="w3-padding w3-black w3-opacity-min"><b>§</b></span> <span class="w3-text-black">Mancala</span></h1>
+	</div>
+
+	<!-- How to play -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >How to play</h3>
+		<p style="margin-left: 24px; width: 66.66%;">
+			The goal of mancala is to move stones from your side of the board 
+			into your goal. The bottom player moves stones from the bottom six 
+			holes to the right goal, and the top player moves stones from the 
+			top six holes to the left goal. The player with the most stones in 
+			their goal at the end of the game wins.
+		</p>
+		<p style="margin-left: 24px; width: 66.66%;">
+			To move, choose one of the six holes on your side of the board. The 
+			stones in that hole are then picked up, and dropped off one at a time 
+			in the next holes (moving clockwise). The game ends when one of the 
+			players no longer has any stones on their side of the board.
+		</p>
+		<b style="margin-left: 24px; width: 66.66%;">
+			Special cases:
+		</b>
+		<p style="margin-left: 48px; width: 66.66%;">
+			• If on your move the last stone dropped is in your goal, then you 
+			can take another turn.
+		</p>
+		<p style="margin-left: 48px; width: 66.66%;">
+			• If the last stone dropped is in an empty hole on your side, and 
+			there are stones in your opponents hole opposite you, then the stones 
+			are "captured". Your last stone and your opponent's captured stones 
+			are all placed in your goal.
+		</p>
+		<p style="margin-left: 48px; width: 66.66%;">
+			• When the game ends, one player will likely still have stones on their 
+			side of the board. These remaining stones count towards their score.
+		</p>
+		<p style="margin-left: 24px; width: 66.66%;">
+			Of course, the easiest way to understand these rules is to try playing 
+			the game yourself! Go ahead and try it out at <a href="/play">/play</a>.
+		</p>
+	</div>
+
+	<!-- The game state -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >The game state</h3>
+		<p style="margin-left: 24px; width: 66.66%;">
+			Like all games at AI Tourney, the game state is stored in JavaScript 
+			Object Notation (JSON). This is what the mancala JSON looks like:
+		</p>
+		<div style="margin-left: 48px;" class="w3-code jsHigh notranslate">
+			{<br>
+			&emsp;"id": (number), // The gameID<br>
+			&emsp;"game": "mancala",<br>
+			&emsp;"players": [<br>
+			&emsp;&emsp;{<br>
+			&emsp;&emsp;&emsp;"username": (string)<br>
+			&emsp;&emsp;&emsp;"pos": (0 or 1) // The player's position (bottom==0, top==1)<br>
+			&emsp;&emsp;},<br>
+			&emsp;&emsp;{ ... } // Same object for player two<br>
+			&emsp;],<br>
+			&emsp;"board": [<br>
+			&emsp;&emsp; 4, 4, 4, 4, 4, 4, 0, // [0-6] are bottom 6 holes and goal<br>
+			&emsp;&emsp; 4, 4, 4, 4, 4, 4, 0, // [7-11] are top 6 holes and goal<br>
+			&emsp;],<br>
+			&emsp;"currentPlayer": (0 or 1), // Whether it is player0's or player1's turn<br>
+			&emsp;"gameOver": (0 or 1), // Whether the game is over (1) or not (0)<br>
+			&emsp;"winner": (-1 or 0 or 1), // The winner player (-1 for no winner yet)<br>
+			&emsp;"error": (string), // If any error occured it should show up here<br>
+			}
+		</div>
+		<script>w3CodeColor();</script>
+	</div>
+
+	<!-- Your move -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >Your move</h3>
+		<p style="margin-left: 24px; width: 66.66%;">
+			Making your move is fairly simple in mancala. Just print the index 
+			number of the hole of the stones that you want to move. For the bottom 
+			player, that would be indices 0 - 5. For the top player, that would 
+			be indices 7 - 12.
+		</p>
+		<img style="margin-left: auto; margin-right: auto; width: 50%; display: block;" src="/images/starters/mancalaExample.jpg" alt="mancalaExample.jpg"></img>
+	</div>
+
+	<!-- Credits -->
+	<div class="w3-container w3-padding-small">
+		</br>
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-small" >Credits</h3>
+		<p style="margin-left: 24px; width: 66.66%;">
+			Thanks to Dim for the background texture.<br>
+			<b>LINKS:</b><br>
+			&emsp;https://opengameart.org/content/dims-enviromental-and-architectural-textures<br>
+			&emsp;License - http://creativecommons.org/licenses/by/3.0/<br><br>
+		</p>
+	</div>
+
+	</br>
+
+	<!-- Footer -->
+	{{{footer}}}
+
+</body>
+</html>

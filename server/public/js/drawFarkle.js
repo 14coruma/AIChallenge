@@ -28,10 +28,10 @@ function drawFarkle( state ) {
 	elements = [];
 
 	// Reset move if it's not viewing player's turn
-	var formUsername = document.getElementById( "formUsername" );
+	var hiddenUsername = document.getElementById( "hiddenUsername" );
 	if (
-			formUsername &&
-			state.players[state.currentPlayer].username != formUsername.value
+			hiddenUsername &&
+			state.players[state.currentPlayer].username != hiddenUsername.value
 	) {
 		moveObjFarkle = { bank: [], done: 0 };
 		ctx.globalAlpha = 0.5;

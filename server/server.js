@@ -5,17 +5,19 @@
  * Created by: Andrew Corum: 2 Oct 2017
  */
 
+"use strict";
+
 /**
  * Express Server
  */
 var express = require( 'express' );
-var app = express(); 
-var routes = require( './routes/routes' );
+var app     = express(); 
+var routes  = require( './routes/routes' );
 
 app.use( express.static( 'public' ));
 routes( app );
 
-app.listen( 80 );
+app.listen( 3001 );
 
 /**
  * WebSocket Server
@@ -54,7 +56,7 @@ class States {
 			}
 			gm.endLiveGame( gid, state, function(res) { /*TODO ERR?*/ } );
 			delete states.stateList[gid];
-		}, 6000 );
+		}, 600000 );
 	}
 	endTime(gid){
 		clearTimeout(this.timeout);
