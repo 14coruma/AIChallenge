@@ -155,11 +155,14 @@ wss.on( 'connection', function connection( ws ) {
 function makeBotMove( msgObj, state ) {
 	var message = { msgType: "playersTurn", state: state, gid: msgObj.gid };
 	var msgString = JSON.stringify( message );
-	var args = [msgString.replace( /"/g, "'" )];
+	var args = [msgString];
 	var botFile = "";
 	switch ( state.game ) {
 		case "mancala":
 			botFile = "../bots/mancala/Mancala.exe";
+			break;
+		case "farkle":
+			botFile = "../bots/farkle/lowerLimit";
 			break;
 	}
 	const { execFile } = require('child_process');

@@ -13,7 +13,7 @@ var password = "";
 var game = "";
 var state = {};
 var drawing = false;
-var wsUri = "ws://aitourney.com:8080/"; // Set ip address to local server
+var wsUri = "ws://localhost:8080/"; // Set ip address to local server
 var websocket = new WebSocket( wsUri );
 websocket.onmessage = function( evt ) { onMessage( evt ) };
 websocket.onerror = function( evt ) { onError( evt ) };
@@ -69,7 +69,7 @@ function startGame() {
 		move     : "",
 	};
 	websocket.send( JSON.stringify( message ) );
-	drawWaitingImage();
+	//drawWaitingImage();
 }
 
 /**
