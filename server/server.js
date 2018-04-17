@@ -164,6 +164,9 @@ function makeBotMove( msgObj, state ) {
 		case "farkle":
 			botFile = "../bots/farkle/lowerLimit";
 			break;
+		case "warring":
+			botFile = "../bots/warring/farmer-linux";
+			break;
 	}
 	const { execFile } = require('child_process');
 	const child = execFile( botFile, args, (error, stdout, stderr ) => {

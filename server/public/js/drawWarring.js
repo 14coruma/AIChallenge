@@ -31,7 +31,10 @@ ctx.imageSmoothingEnabled = false;
 
 function drawWarring( state ) {
 	warringState = state;
-	document.getElementById( "formMove" ).value = JSON.stringify( moveObjWarring );
+	var formMove = document.getElementById( "formMove" );
+	if ( formMove ) {
+		formMove.value = JSON.stringify( moveObjWarring );
+	}
 	// Draw background
 	var pattern = ctx.createPattern( background, "repeat" );
 	ctx.fillStyle = pattern;
@@ -46,15 +49,19 @@ function drawWarring( state ) {
 
 	// Reset move if it's not viewing player's turn
 	var hiddenUsername = document.getElementById( "hiddenUsername" );
-	if ( state.players[1].username == hiddenUsername.value ) {
-		playerNumber = 1;
+	if ( hiddenUsername ) {
+		if ( state.players[1].username == hiddenUsername.value ) {
+			playerNumber = 1;
+		} else {
+			playerNumber = 0;
+		}
+		if (
+				hiddenUsername &&
+				state.players[state.currentPlayer].username != hiddenUsername.value
+		) {
+		}
 	} else {
 		playerNumber = 0;
-	}
-	if (
-			hiddenUsername &&
-			state.players[state.currentPlayer].username != hiddenUsername.value
-	) {
 	}
 
 	// Draw player names and scores
@@ -310,11 +317,13 @@ function drawWarring( state ) {
 
 	// Draw Game Over
 	if (state.gameOver == 1) {
-		ctx.font = "30px Arial";
+		ctx.font = "48px Alagard";
 		ctx.textAlign = "center";
 		ctx.fillText( "Game Over", canvas.width / 2, canvas.height / 4 );
 		ctx.fillText( state.players[state.winner].username + " Wins!", canvas.width / 2, 3 * canvas.height / 4);
 		elements = [];
+		unitDests = [];
+		selectedUnit = { eIndex: 0, uIndex: 0 };
 	}
 }
 

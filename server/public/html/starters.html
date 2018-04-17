@@ -113,7 +113,7 @@
 		<div style="margin-left: 48px;" class="w3-code jsHigh notranslate">
 			var data = JSON.parse( system.args[1] ); &emsp; // Parse game state (from command line args)<br>
 			&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;// into a variable<br>
-			var move = getMove( data ); &nbsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; // Create the next move<br>
+			var move = getMove( data.state ); &nbsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; // Create the next move<br>
 			&nbsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; // getMove() contains most of the AI code<br>
 			print( move ); &nbsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; // Client sends printed move<br>
 		</div>

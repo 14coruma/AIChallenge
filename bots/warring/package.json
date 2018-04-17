@@ -1,0 +1,15 @@
+{
+  "name": "warring",
+  "version": "1.0.0",
+  "description": "",
+  "main": "farmer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pathfinding": "^0.4.18",
+    "pkg": "^4.3.1"
+  }
+}
