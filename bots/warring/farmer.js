@@ -12,7 +12,17 @@ var data = JSON.parse( process.argv[2] );
 
 var move = getMove( data.state );
 
-console.log( JSON.stringify( move ) );
+// Sleep to give appearance of thinking ;)
+sleep( 400 ).then( () => {
+	console.log( JSON.stringify( move ) );
+} )
+
+/*
+ * Simple sleep function using promise
+ */
+function sleep( time ) {
+	return new Promise( ( resolve ) => setTimeout( resolve, time ) );
+}
 
 /**
  * getMove calculates the move required for the farmer
@@ -30,10 +40,11 @@ function getMove( state ) {
 	}
 
 	// Locate farm
-	var myFarm = { x: -1, y: -1 };
+	var myFarm = { x: 999, y: 999 };
 	for ( var row = 0; row < MAP_SIZE; row++ ) {
 		for ( var col = 0; col < MAP_SIZE; col++ ){
-			if ( state.map[row][col].type == "farm" )
+			if ( state.map[row][col].type == "farm" && 
+				( distance( myKeep.x, myKeep.y, col, row ) < distance( myKeep.x, myKeep.y, myFarm.x, myFarm.y ) ) )
 				myFarm = { x: col, y: row };
 		}
 	}
@@ -73,6 +84,7 @@ function getMove( state ) {
 	// Create move object
 	var move = { updates: [] };
 	move.updates.push( { type: "move", unit: 0, direction: dir } );
+
 	return move;
 }
 
@@ -105,3 +117,14 @@ function dirTowards( startX, startY, endX, endY, map ) {
 	return false;
 }
 
+/**
+ * Finds the distance between two points (no diagonals)
+ * 
+ * @param: (ints) x1, y1
+ * @param: (ints) x2, y2
+ *
+ * @return: (int) distance
+ */
+function distance( x1, y1, x2, y2 ) {
+	return Math.abs( ( x2 - x1 ) + ( y2 - y1 ) );
+}

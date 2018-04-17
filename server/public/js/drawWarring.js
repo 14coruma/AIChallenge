@@ -65,7 +65,7 @@ function drawWarring( state ) {
 	}
 
 	// Draw player names and scores
-	ctx.font = "26px Alagard";
+	ctx.font = "20px Alagard";
 	ctx.textAlign = "left";
 	ctx.fillStyle = "red";
 	for ( var i = 1; i <= state.players.length; i++ ) {
