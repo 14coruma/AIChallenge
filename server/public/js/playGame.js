@@ -28,23 +28,23 @@ window.onbeforeunload = function() {
 	websocket.close();
 };
 
-// TODO: Change to update based on game options (rather than live games)
-function updateSelectGame() {
-	var xmlHttp = new XMLHttpRequest();
-	xmlHttp.open( "GET", "/api/liveGames/list", false );
-	xmlHttp.send( null );
-	let res = JSON.parse( xmlHttp.responseText );
-	var selector = document.getElementById( 'selectGame' );
-	while ( selector.length > 0 ) {
-		selector.remove( 0 );
-	}
-	for ( var i = 0; i < res.length; i++ ) {
-		var option = document.createElement( "option" );
-		option.text = "GameID: " + res[i].id;
-		option.value = res[i].id;
-		selector.appendChild( option );
-	}
-}
+// // TODO: Change to update based on game options (rather than live games)
+// function updateSelectGame() {
+// 	var xmlHttp = new XMLHttpRequest();
+// 	xmlHttp.open( "GET", "/api/liveGames/list", false );
+// 	xmlHttp.send( null );
+// 	let res = JSON.parse( xmlHttp.responseText );
+// 	var selector = document.getElementById( 'selectGame' );
+// 	while ( selector.length > 0 ) {
+// 		selector.remove( 0 );
+// 	}
+// 	for ( var i = 0; i < res.length; i++ ) {
+// 		var option = document.createElement( "option" );
+// 		option.text = "GameID: " + res[i].id;
+// 		option.value = res[i].id;
+// 		selector.appendChild( option );
+// 	}
+// }
 
 /**
  * Send request to server to start a game
@@ -53,6 +53,13 @@ function startGame() {
 	username = document.getElementById( 'hiddenUsername' ).value;
 	password = document.getElementById( 'hiddenPassword' ).value;
 	game = document.getElementById( 'selectGame' ).value;
+	var warning = document.getElementById( 'selectGameWarning' );
+	if ( game === "" ) {
+		warning.style.display = '';
+		return;
+	} else {
+		warning.style.display = 'none'
+	}
 	var message = {
 		msgType  : "start",
 		username : username,

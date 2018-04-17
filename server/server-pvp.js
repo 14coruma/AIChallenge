@@ -89,20 +89,20 @@ wss.on( 'connection', function connection( ws ) {
 							//clients.splice( clientIndex, 1 );
 							delete clients.clientList[msgObj.username];
 						} else {
-							// Automatically add "defaultBot" to queue as well
-							gm.addToQueue( msgObj.gameName, "defaultBot", function( validGame ) {
-								gm.gameReady( msgObj.gameName, function( ready, gameID, userNames ) { 
-									if ( ready ) { // This should always be true...hopefully
-										clients.clientList[msgObj.username].gid = gameID;
-										gm.startGame( gameID, userNames, function( state ) {
-											// Send state to player 1
-											var message = { msgType: "playersTurn", state: state, gid: gameID };
-											sendMessage( msgObj.username, message );
-											states.saveState( gameID, state );
-											states.startTime( gameID, state );
-										} );
+							// Otherwise check to see if game is ready to play
+							gm.gameReady( msgObj.gameName, function( ready, gameID, userNames ) { 
+								if ( ready ) {
+									for ( var i = 0; i < userNames.length; i++ ) {
+										clients.clientList[userNames[i]].gid = gameID;
 									}
-								} );
+									gm.startGame( gameID, userNames, function( state ) {
+										// Send state to player 1
+										var message = { msgType: "playersTurn", state: state, gid: gameID };
+										sendMessage( userNames[0], message );
+										states.saveState( gameID, state );
+										states.startTime( gameID, state );
+									} );
+								}
 							} );
 						}
 					} );
@@ -117,20 +117,18 @@ wss.on( 'connection', function connection( ws ) {
 					switch( state.gameOver ) {
 						case 0:
 							// Send the current state to the next player
-							if ( state.players[state.currentPlayer].username == "defaultBot" ) {
-								states.saveState(msgObj.gid, state);
-								makeBotMove( msgObj, state );
-							} else {
-								var message = { msgType: "playersTurn", state: state, gid: msgObj.gid };
-								sendMessage( msgObj.username, message );
-								states.saveState(msgObj.gid, state);
-								states.startTime( msgObj.gid, state );
-							}
+							var message = { msgType: "playersTurn", state: state, gid: msgObj.gid };
+							var nextPlayer = state.players[state.currentPlayer].username;
+							sendMessage( nextPlayer, message );
+							states.saveState(msgObj.gid, state);
+							states.startTime( msgObj.gid, state );
 							break;
 						case 1:
 							var message = { msgType: "gameOver", state: state, gid: msgObj.gid };
-							sendMessage( msgObj.username, message );
-							delete clients.clientList[msgObj.username];
+							for (var i = 0; i < state.players.length; i++) {
+								sendMessage( state.players[i].username, message );
+								delete clients.clientList[state.players[i].username];
+							}
 							gm.endLiveGame( msgObj.gid, state, function(res) { /*TODO ERR?*/ } );
 							delete states.stateList[msgObj.gid];
 							break;
@@ -148,35 +146,6 @@ wss.on( 'connection', function connection( ws ) {
 		console.log( err );
 	} );
 } );
-
-/*
- * Makes a bot move (or multiple moves) for a given game
- */
-function makeBotMove( msgObj, state ) {
-	var message = { msgType: "playersTurn", state: state, gid: msgObj.gid };
-	var msgString = JSON.stringify( message );
-	var args = [msgString.replace( /"/g, "'" )];
-	var botFile = "";
-	switch ( state.game ) {
-		case "mancala":
-			botFile = "../bots/mancala/Mancala.exe";
-			break;
-	}
-	const { execFile } = require('child_process');
-	const child = execFile( botFile, args, (error, stdout, stderr ) => {
-		if ( error ) console.log( error + " stderr: " + stderr + " stdout: " + stdout );
-		gm.makeMove( states.stateList[msgObj.gid], stdout, function( state ) {
-			if ( state.players[state.currentPlayer].username == "defaultBot" ) {
-				states.saveState(msgObj.gid, state);
-				makeBotMove( msgObj, state );
-			} else {
-				sendMessage( msgObj.username, message );
-				states.saveState( msgObj.gid, state );
-				states.startTime( msgObj.gid, state );
-			}
-		} );
-	} );
-}
 
 /**
  * Returns the state for a given gameID
