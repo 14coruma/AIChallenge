@@ -53,6 +53,13 @@ function startGame() {
 	username = document.getElementById( 'hiddenUsername' ).value;
 	password = document.getElementById( 'hiddenPassword' ).value;
 	game = document.getElementById( 'selectGame' ).value;
+	var warning = document.getElementById( 'selectGameWarning' );
+	if ( game === "" ) {
+		warning.style.display = '';
+		return;
+	} else {
+		warning.style.display = 'none'
+	}
 	var message = {
 		msgType  : "start",
 		username : username,
