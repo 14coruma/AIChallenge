@@ -17,7 +17,7 @@ var routes  = require( './routes/routes' );
 app.use( express.static( 'public' ));
 routes( app );
 
-app.listen( 3001 );
+app.listen( 80 );
 
 /**
  * WebSocket Server
@@ -159,6 +159,7 @@ function makeBotMove( msgObj, state ) {
 	var botFile = "";
 	switch ( state.game ) {
 		case "mancala":
+			args = [msgString.replace( /"/g, "'" )];
 			botFile = "../bots/mancala/Mancala.exe";
 			break;
 		case "farkle":
