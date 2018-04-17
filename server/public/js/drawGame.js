@@ -9,31 +9,31 @@ var stopDrawing = false;
 
 window.onload = async function() {
 	// First update the list of viewable games in the select form
-	updateSelectGame();
+	// updateSelectGame();
 }
 
-function updateSelectGame() {
-	var xmlHttp = new XMLHttpRequest();
-	xmlHttp.open( "GET", "/api/liveGames/list", false );
-	xmlHttp.send( null );
-	let res = JSON.parse( xmlHttp.responseText );
-	var selector = document.getElementById( 'selectGame' );
-	while ( selector.length > 0 ) {
-		selector.remove( 0 );
-	}
-	for ( var i = 0; i < res.length; i++ ) {
-		var option = document.createElement( "option" );
-		option.text = "GameID: " + res[i].id;
-		option.value = res[i].id;
-		selector.appendChild( option );
-	}
-}
+// function updateSelectGame() {
+// 	var xmlHttp = new XMLHttpRequest();
+// 	xmlHttp.open( "GET", "/api/liveGames/list", false );
+// 	xmlHttp.send( null );
+// 	let res = JSON.parse( xmlHttp.responseText );
+// 	var selector = document.getElementById( 'selectGame' );
+// 	while ( selector.length > 0 ) {
+// 		selector.remove( 0 );
+// 	}
+// 	for ( var i = 0; i < res.length; i++ ) {
+// 		var option = document.createElement( "option" );
+// 		option.text = "GameID: " + res[i].id;
+// 		option.value = res[i].id;
+// 		selector.appendChild( option );
+// 	}
+// }
 
 /**
  * draw the game state
  */
 async function drawGameState(gameID) {
-	if ( gameID == -1 ) gameID = document.getElementById( 'selectGame' ).value;
+	if ( gameID == -1 ) gameID = document.getElementById( 'selectGameID' ).value;
 	var xmlHttp = new XMLHttpRequest();
 	xmlHttp.open( "GET", "/api/liveGames/type?gameID=" + gameID, false );
 	xmlHttp.send( null );

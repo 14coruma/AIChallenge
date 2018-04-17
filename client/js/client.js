@@ -49,6 +49,7 @@ function onMessage( evt )
 	var objString = JSON.stringify( serverObj );
 	var args = [objString.replace( /"/g, "'" )];
 	gid = serverObj.gid;
+	document.getElementById( "gameID" ).innerHTML = " " + gid;
 	switch( serverObj.msgType ) {
 		case "playersTurn":
 			const { execFile } = require('child_process');
