@@ -53,12 +53,17 @@ function startGame() {
 	username = document.getElementById( 'hiddenUsername' ).value;
 	password = document.getElementById( 'hiddenPassword' ).value;
 	game = document.getElementById( 'selectGame' ).value;
-	var warning = document.getElementById( 'selectGameWarning' );
+	var gameWarning = document.getElementById( 'selectGameWarning' );
+	var loginWarning = document.getElementById( 'loginWarning' );
 	if ( game === "" ) {
-		warning.style.display = '';
+		gameWarning.style.display = '';
+		return;
+	} else if ( username === "" ) {
+		loginWarning.style.display = '';
 		return;
 	} else {
-		warning.style.display = 'none'
+		gameWarning.style.display = 'none';
+		loginWarning.style.display = 'none';
 	}
 	var message = {
 		msgType  : "start",
