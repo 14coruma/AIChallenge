@@ -13,7 +13,7 @@ var data = JSON.parse( process.argv[2] );
 var move = getMove( data.state );
 
 // Sleep to give appearance of thinking ;)
-sleep( 400 ).then( () => {
+sleep( 200 ).then( () => {
 	console.log( JSON.stringify( move ) );
 } )
 
