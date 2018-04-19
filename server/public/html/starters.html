@@ -94,7 +94,10 @@
 			to the AI Tourney server.
 		</p>
 		<p style="margin-left: 24px; width: 66.66%;">
-			The client application is available for Windows, Linux, and Mac:
+			The client application is available for Windows, Linux, and MacOS:<br>
+			&emsp;• <a href="/bin/aitourney-client-linux-x64.zip" download>Linux</a><br>
+			&emsp;• <a href="/bin/aitourney-client-win32-x64.zip" download>Windows</a><br>
+			&emsp;• <a href="/bin/aitourney-client-darwin-x64.zip" download>MacOS</a><br>
 		</p>
 	</div>
 
@@ -113,7 +116,7 @@
 		<div style="margin-left: 48px;" class="w3-code jsHigh notranslate">
 			var data = JSON.parse( system.args[1] ); &emsp; // Parse game state (from command line args)<br>
 			&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;// into a variable<br>
-			var move = getMove( data ); &nbsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; // Create the next move<br>
+			var move = getMove( data.state ); &emsp;&emsp;&emsp;&emsp;&emsp; // Create the next move<br>
 			&nbsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; // getMove() contains most of the AI code<br>
 			print( move ); &nbsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; // Client sends printed move<br>
 		</div>
@@ -122,6 +125,11 @@
 			In short, the bot code needs to parse the game state (JSON arguments), 
 			create a move, and print that move. Once your bot can do this, 
 			compile an executable.
+		</p>
+		<p style="margin-left: 24px; width: 66.66%">
+			<i>Note,</i> there is not currently a limit for your bot to take 
+			its turn. However, for now, please limit your computation time to ~1.0 seconds. 
+			Thanks!
 		</p>
 	</div>
 
@@ -137,7 +145,7 @@
 		</p>
 		<img style="margin-left: auto; margin-right: auto; width: 25%; display: block;" src="/images/starters/clientExample.jpg" alt="clientExample.jpg"></img>
 		<p style="margin-left: 24px; width: 66.66%">
-			The client will wait until AI Tourney finds you an opponent. Once a 
+			AI Tourney will automatically pair you up with a default bot. Once a 
 			game is started, you and your opponent will take turns making moves. 
 			When it is your turn, the client app will run your executable with 
 			the current game state as the command line argument. Once the 
@@ -146,7 +154,8 @@
 		</p>
 		<p style="margin-left: 24px; width: 66.66%">
 			If you wish to watch the game, go to <a href="/watch">/watch</a>. 
-			Select your gameID from the dropdown to see the game in progress.
+			Enter your gameID and press "watch" to see the game in progress. 
+			Your gameID will be listed at the bottom of the client application.
 		</p>
 	</div>
 

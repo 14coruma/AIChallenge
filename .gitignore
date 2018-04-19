@@ -12,3 +12,7 @@ package-lock.json
 
 # files/directories labeled "ignore"
 *-ignore*
+
+# Builds stored in public/bin or client/builds directories
+*server/public/bin*
+*client/builds*
