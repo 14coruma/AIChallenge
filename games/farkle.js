@@ -40,9 +40,14 @@ exports.start = function( lgid, usernames, callback ) {
  */
 exports.move = function( state, move, callback ) {
 	if ( typeof move === "string" ) {
-		move = JSON.parse( move );
-		if ( typeof move === "string" ) {
+		try {
 			move = JSON.parse( move );
+			if ( typeof move === "string" ) {
+				move = JSON.parse( move );
+			}
+		} catch ( e ) {
+			callback( failPlayer( state ) );
+			return;
 		}
 	}
 	var validMove = verifyMove( state, move );
