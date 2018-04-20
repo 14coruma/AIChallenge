@@ -20,8 +20,9 @@ websocket.onerror = function( evt ) { onError( evt ) };
 websocket.onclose = function( evt ) { onClose( evt ) };
 
 window.onload = async function() {
-	// First update the list of viewable games in the select form
-	// updateSelectGame();
+	gid = "";
+	game = "";
+	document.getElementById( 'formMove' ).value = "";
 }
 
 window.onbeforeunload = function() {

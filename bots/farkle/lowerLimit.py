@@ -1,6 +1,7 @@
 import sys
 import json
 import itertools
+import time
 from collections import deque
 
 def diceLeft( nums ):
@@ -153,6 +154,9 @@ def move( data ):
     moveObj = json.loads( moveStr )
     return json.dumps( moveObj );
 
+# Main code
 data = json.loads( sys.argv[1] )
+
+time.sleep( 1.5 )
 
 print move( data["state"] )
