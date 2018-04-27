@@ -17,3 +17,6 @@ package-lock.json
 # Builds stored in public/bin or client/builds directories
 *server/public/bin*
 *client/builds*
+
+# Large data files
+*.dat
