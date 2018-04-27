@@ -10,8 +10,9 @@ node_modules
 # huge package file
 package-lock.json
 
-# files/directories labeled "ignore"
+# files/directories labeled "ignore" or "debug"
 *-ignore*
+*-debug.log
 
 # Builds stored in public/bin or client/builds directories
 *server/public/bin*
