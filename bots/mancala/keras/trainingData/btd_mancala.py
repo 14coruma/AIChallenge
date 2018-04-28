@@ -14,12 +14,14 @@ class Mancala:
     gameOver = False
     winner = -1
     player = 0
+    length = 0
 
     def __init__(self):
         self.board = np.array([4,4,4,4,4,4,0,4,4,4,4,4,4,0])
         self.gameOver = False
         self.winner = -1
         self.player = 0 # Bottom player first
+        self.length = 0
 
     def checkGameOver(self):
         bottomDone = True
@@ -94,36 +96,77 @@ class Mancala:
             if self.board[move] > 0:
                 legalMove = True
                 self.updateState(move)
+                self.length += 1
 
-# Build the training data
-boards = np.zeros(shape=(0,14))
-results = np.zeros(shape=0)
+class Node:
+    def __init__(self, value=None, next=None):
+        self.value = value
+        self.next = next
 
-lastRow = 0
-for i in range(0, int(sys.argv[1])):
-    game = Mancala() 
-    while not game.gameOver:
-        game.randMove()
-        boards = np.append(boards, np.array(game.board).reshape(1,14), 0)
+class LinkedList:
+    def __init__(self):
+        self.head = None
+        self.size = 0
+    def push(self, value):
+        new_node = Node(value)
+        new_node.next = self.head
+        self.head = new_node
+        self.size += 1
+    def pop(self):
+        new_head = self.head.next
+        del self.head
+        self.head = new_head
+        self.size -= 1
+    def toNumpy(self):
+        array = None
+        if type(self.head.value) is int:
+            array = [None] * self.size 
+        else:
+            array = [ [None] * len(self.head.value) ] * self.size
+        current_node = self.head
+        for i in range(0, self.size):
+            array[i] = current_node.value
+            current_node = current_node.next
+        return np.array(array)
 
-    # Ignore tie games for now
-    if game.winner == 2:
-        continue;
+if __name__ == '__main__':
+    # Build the training data
+    # boards = np.zeros(shape=(0,14))
+    # results = np.zeros(shape=0)
+    boards = LinkedList()
+    results = LinkedList()
 
-    # Update results
-    results = np.append(results, np.array([game.winner] * (boards.shape[0] - lastRow)))
-    lastRow = boards.shape[0]
+    lastRow = 0
+    for i in range(0, int(sys.argv[1])):
+        game = Mancala() 
+        while not game.gameOver:
+            game.randMove()
+            boards.push(np.array(game.board))
 
-    # Update progress bar
-    sys.stdout.write("Game {}/{}".format(i+1, sys.argv[1]))
-    sys.stdout.flush()
-    sys.stdout.write("\b" * 80)
-sys.stdout.write("\n")
+        # Ignore tie games for now
+        if game.winner == 2:
+            for j in range(0, game.length):
+                boards.pop()
+            continue;
 
-# Save data
-fh = open("boards.dat", "w")
-np.save(fh, boards)
-fh.close()
-fh = open("results.dat", "w")
-np.save(fh, results)
-fh.close()
+        # Update results
+        for j in range(0, game.length):
+            results.push(game.winner)
+
+        # Update progress bar
+        sys.stdout.write("Game {}/{}".format(i+1, sys.argv[1]))
+        sys.stdout.flush()
+        sys.stdout.write("\b" * 80)
+    sys.stdout.write("\n")
+    
+    np_boards = boards.toNumpy()
+    np_results = results.toNumpy()
+    print("{} states evaluated.".format(boards.size))
+
+    # Save data
+    fh = open("boards.dat", "w")
+    np.save(fh, np_boards)
+    fh.close()
+    fh = open("results.dat", "w")
+    np.save(fh, np_results)
+    fh.close()

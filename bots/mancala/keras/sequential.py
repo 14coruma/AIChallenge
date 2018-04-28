@@ -38,8 +38,8 @@ model.save_weights("model.h5");
 print("Saved model to disk")
 
 # Predict new data
-pred = model.predict(np.array([[0,0,0,0,2,1,0,0,0,0,1,0,0,44]]))
-print pred 
+# pred = model.predict(np.array([[0,0,0,0,2,1,0,0,0,0,1,0,0,44]]))
+# print pred 
 
 # Output weights
 # layer0 = model.get_layer(index=3)
