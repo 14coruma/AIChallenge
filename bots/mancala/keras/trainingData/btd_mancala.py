@@ -7,6 +7,7 @@
 import sys
 import numpy as np
 import random
+import math
 
 class Mancala:
     board = np.array([4,4,4,4,4,4,0,4,4,4,4,4,4,0])
@@ -109,9 +110,15 @@ for i in range(0, int(sys.argv[1])):
     if game.winner == 2:
         continue;
 
-    for j in range(lastRow, boards.shape[0]):
-        results = np.append(results, np.array([game.winner]))
+    # Update results
+    results = np.append(results, np.array([game.winner] * (boards.shape[0] - lastRow)))
     lastRow = boards.shape[0]
+
+    # Update progress bar
+    sys.stdout.write("Game {}/{}".format(i+1, sys.argv[1]))
+    sys.stdout.flush()
+    sys.stdout.write("\b" * 80)
+sys.stdout.write("\n")
 
 # Save data
 fh = open("boards.dat", "w")

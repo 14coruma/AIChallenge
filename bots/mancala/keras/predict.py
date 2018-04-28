@@ -14,7 +14,7 @@ model.load_weights("model.h5")
 print("Loaded model from disk")
 
 # Predict with model
-board = np.array([[4,0,0,0,0,4,0,4,4,0,4,4,4,20]])
+board = np.array([[4,0,0,0,0,1,0,4,4,0,4,4,4,23]])
 pred = model.predict(board)
 print board
 print pred

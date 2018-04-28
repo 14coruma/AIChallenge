@@ -1,4 +1,3 @@
-#!/bin/python
 from keras.models import Sequential
 from keras.layers import Dense
 import numpy as np
@@ -20,8 +19,8 @@ model.compile(
 )
 
 # Load data from file
-boards = np.load("boards.dat")
-results = np.load("results.dat")
+boards = np.load("trainingData/boards.dat")
+results = np.load("trainingData/results.dat")
 
 # Train
 model.fit(boards, results, verbose=1, epochs=100, batch_size=32)
