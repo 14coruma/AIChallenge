@@ -36,7 +36,6 @@ exports.start = function( lgid, usernames, callback ) {
  * @return: (JSON) state
  */
 exports.move = function( state, move, callback ) {
-	//console.log( "move: " + move + ", state: " + JSON.stringify( state ) );
 	var validMove = verifyMove( state, move );
 	if ( validMove ) {
 		callback( updateState( state, parseInt(move) ) );
@@ -75,9 +74,8 @@ function updateState( state, move ) {
 	if ( playerPos == 1 && pos > 6 && pos < 13 && state.board[pos] == 1
 		&& state.board[12 - pos] > 0 ) {
 		capture = state.board[12 - pos] + 1;
-		state.board[13] += state.board[12 - pos];
+		state.board[13] += capture
 		state.board[12 - pos] = 0;
-		state.board[13]++;
 		state.board[pos] = 0;
 	}
 
@@ -85,9 +83,8 @@ function updateState( state, move ) {
 	if ( playerPos == 0 && pos >= 0 && pos < 6 && state.board[pos] == 1
 		&& state.board[12 - pos] > 0 ) {
 		capture = state.board[12 - pos] + 1;
-		state.board[6] += state.board[12 - pos];
+		state.board[6] += capture
 		state.board[12 - pos] = 0;
-		state.board[6]++;
 		state.board[pos] = 0;
 	}
 
