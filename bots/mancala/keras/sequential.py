@@ -1,6 +1,9 @@
 from keras.models import Sequential
 from keras.layers import Dense
+from tensorflow.python.client import device_lib
 import numpy as np
+
+print(device_lib.list_local_devices())
 
 # Define model and shape
 model = Sequential()
@@ -23,7 +26,7 @@ boards = np.load("trainingData/boards.dat")
 results = np.load("trainingData/results.dat")
 
 # Train
-model.fit(boards, results, verbose=1, epochs=100, batch_size=32)
+model.fit(boards, results, verbose=1, epochs=6, batch_size=32)
 
 # Evaluate model fit
 score = model.evaluate(boards, results, batch_size=128)
