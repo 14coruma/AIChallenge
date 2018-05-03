@@ -81,6 +81,7 @@ exports.move = function( state, move, callback ) {
 		} catch ( e ) {
 			state.currentPlayer = (state.currentPlayer + 1) % state.players.length;
 			callback( state );
+			return;
 		}
 	}
 	state = updateState( state, move );
