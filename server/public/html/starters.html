@@ -126,7 +126,7 @@
 			&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;// into a variable<br>
 			var move = getMove( data.state ); &emsp;&emsp;&emsp;&emsp;&emsp; // Create the next move<br>
 			&nbsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; // getMove() contains most of the AI code<br>
-			print( move ); &nbsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; // Client sends printed move<br>
+			print( JSON.stringify( move ) ); &nbsp;&emsp;&emsp;&emsp;&emsp;&emsp; // Client sends printed move<br>
 		</div>
 		<script>w3CodeColor();</script>
 		<p style="margin-left: 24px; width: 66.66%">
