@@ -1,3 +1,4 @@
+#!/usr/bin/nodejs
 /**
  * farmer.js contains a bot for Warring Kingdoms that just farms
  *
