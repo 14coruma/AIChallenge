@@ -17,7 +17,7 @@ var routes  = require( './routes/routes' );
 app.use( express.static( 'public' ));
 routes( app );
 
-app.listen( 3001 );
+app.listen( 80 );
 
 /**
  * WebSocket Server
@@ -118,12 +118,12 @@ wss.on( 'connection', function connection( ws ) {
 						case 0:
 							// Send the current state to the next player
 							if ( state.players[state.currentPlayer].username == "defaultBot" ) {
-								states.saveState(msgObj.gid, state);
+								states.saveState(msgObj.gid, state );
 								makeBotMove( msgObj, state );
 							} else {
 								var message = { msgType: "playersTurn", state: state, gid: msgObj.gid };
-								sendMessage( msgObj.username, message );
 								states.saveState(msgObj.gid, state);
+								sendMessage( msgObj.username, message );
 								states.startTime( msgObj.gid, state );
 							}
 							break;
@@ -173,7 +173,7 @@ function makeBotMove( msgObj, state ) {
 	const child = execFile( botFile, args, (error, stdout, stderr ) => {
 		if ( error ) console.log( error + " stderr: " + stderr + " stdout: " + stdout );
 		gm.makeMove( states.stateList[msgObj.gid], stdout, function( state ) {
-			if ( state.players[state.currentPlayer].username == "defaultBot" ) {
+			if ( state.players[state.currentPlayer].username == "defaultBot" && state.game != "warring" ) {
 				states.saveState(msgObj.gid, state);
 				makeBotMove( msgObj, state );
 			} else {
@@ -213,3 +213,11 @@ function sendMessage( index, message ) {
 		delete states.stateList[message.gid];
 	}
 }
+
+/*
+ * Simple sleep function using promise
+ */
+function sleep( time ) {
+	return new Promise( ( resolve ) => setTimeout( resolve, time ) );
+}
+
