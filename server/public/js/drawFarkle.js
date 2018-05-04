@@ -126,12 +126,12 @@ function drawFarkle( state ) {
 	ctx.fillStyle = "white";
 	ctx.fillText( "Score Bank: " + state.temp, 32, 276 );
 
-	// Draw "Done?" button
+	// Draw "Done" button
 	ctx.drawImage(
-		greenButtons, 0, 143*moveObjFarkle.done, 190, 49,
+		greenButtons, 0, moveObjFarkle.done*143, 190, 49,
 		48, 320, 190, 49
 	);
-	var text = moveObjFarkle.done ? "Done!" : "Continue...";
+	var text = "Done!";
 	ctx.strokeStyle = "black";
 	ctx.lineWidth = 4;
 	ctx.strokeText( text, 68, 348 );
@@ -144,6 +144,26 @@ function drawFarkle( state ) {
 		height: 49,
 		top: 320,
 		left: 48,
+	} );
+
+	// Draw "Continue" button
+	ctx.drawImage(
+		greenButtons, 0, (1-moveObjFarkle.done)*143, 190, 49,
+		256, 320, 190, 49
+	);
+	var text = "Continue...";
+	ctx.strokeStyle = "black";
+	ctx.lineWidth = 4;
+	ctx.strokeText( text, 276, 348 );
+	ctx.fillStyle = "white";
+	ctx.fillText( text, 276, 348 );
+
+	elements.push( {
+		type: "continue",
+		width: 190,
+		height: 49,
+		top: 320,
+		left: 256,
 	} );
 
 	// Draw Game Over
@@ -185,7 +205,10 @@ canvas.addEventListener( 'click', function( ev ) {
 					moveObjFarkle.bank.splice( index, 1 );
 					break;
 				case "done":
-					moveObjFarkle.done = moveObjFarkle.done ? 0 : 1;
+					moveObjFarkle.done = 1;
+					break;
+				case "continue":
+					moveObjFarkle.done = 0;
 					break;
 				default:
 					return;
