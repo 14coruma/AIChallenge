@@ -117,7 +117,7 @@ function updateState( state, move ) {
 				state = build( state, update );
 				break;
 			default:
-				state.players[move.player].errors++;
+				state.players[state.currentPlayer].errors++;
 		}
 	} );
 
