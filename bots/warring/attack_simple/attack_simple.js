@@ -11,11 +11,10 @@ var PF = require( 'pathfinding' );
 const MAP_SIZE = 17;
 
 var data = JSON.parse( process.argv[2] );
-
 var move = getMove( data.state );
 
 // Sleep to give appearance of thinking ;)
-sleep( 200 ).then( () => {
+sleep( 100 ).then( () => {
 	console.log( JSON.stringify( move ) );
 } );
 
@@ -81,7 +80,7 @@ function getMove( state ) {
 				move.updates.push( moveFarmer( i, unit, myFarm, myKeep, mapMask ) );
 				break;
 			case "soldier":
-				move.updates.push( moveSoldier( i, unit, state, enemyKeep, mapMask ) );
+				move.updates.push( moveSoldier( i, unit, state, enemyKeep, myKeep, mapMask ) );
 				break;
 			default:
 				break;
@@ -103,27 +102,31 @@ function getMove( state ) {
  * @param: soldier, the unit object in units array
  * @param: state, the game state
  * @param: enemyKeep, the (x,y) coords
+ * @param: myKeep, the (x,y) coords
  * @param: mapMask, the solid mask of the game map
  *
  * @return: update, the soldier update object
  */
-function moveSoldier( index, soldier, state, enemyKeep, mapMask ) {
+function moveSoldier( index, soldier, state, enemyKeep, myKeep, mapMask ) {
 	// Set default target
 	var target = { x: enemyKeep.x, y: enemyKeep.y }; 
 
 	// Figure out if soldier should target an enemy unit
-	var enemyIndex = (state.currentPlayer + 1) % 2
+	var enemyIndex = (state.currentPlayer + 1) % 2;
 	for ( var j = 0; j < state.players[enemyIndex].units.length; j++ ) {
 		var enemy = state.players[enemyIndex].units[j];
 		if ( enemy.class != "dead" ) {
 			target.x = enemy.x; target.y = enemy.y;
-			enemy.targeted = true
 			j = 99999999;
 		}
 	}
 
 	mapMask[target.y][target.x] = 0;
 	var dir = dirTowards( soldier.x, soldier.y, target.x, target.y, mapMask );
+	if ( !dir ) {
+		var moveSpace = ["N", "E", "W", "S"];
+		dir = moveSpace[Math.floor(Math.random() * 4)];
+	}
 	mapMask[target.y][target.x] = 1;
 
 	var type = "move";

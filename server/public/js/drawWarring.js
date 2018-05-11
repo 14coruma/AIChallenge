@@ -443,6 +443,10 @@ function drawElement( element ) {
 			sy = 16 + element.player; sx = 0;
 			sImg = img1;
 			break;
+		case "dead":
+			sy = 43; sx = 0;
+			sImg = img1;
+			break;
 		case "farm":
 			drawElement( {
 				type2: "grass", style: 2,

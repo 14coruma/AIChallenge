@@ -101,25 +101,29 @@ function updateState( state, move ) {
 	if ( typeof move.updates == "undefined" )
 		return state;
 
-	move.updates.forEach( function( update ) {
-		var player = move.player;
-		switch ( update.type ) {
-			case "move":
-				state = makeMove( state, update );
-				break;
-			case "attack":
-				state = attack( state, update );
-				break;
-			case "train":
-				state = train( state, update );
-				break;
-			case "build":
-				state = build( state, update );
-				break;
-			default:
-				state.players[state.currentPlayer].errors++;
-		}
-	} );
+	try {
+		move.updates.forEach( function( update ) {
+			var player = move.player;
+			switch ( update.type ) {
+				case "move":
+					state = makeMove( state, update );
+					break;
+				case "attack":
+					state = attack( state, update );
+					break;
+				case "train":
+					state = train( state, update );
+					break;
+				case "build":
+					state = build( state, update );
+					break;
+				default:
+					state.players[state.currentPlayer].errors++;
+			}
+		} );
+	} catch ( e ) {
+		return state;
+	}
 
 	// Check for game over
 	state = gameOver( state );
