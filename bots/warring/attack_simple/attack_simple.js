@@ -14,7 +14,7 @@ var data = JSON.parse( process.argv[2] );
 var move = getMove( data.state );
 
 // Sleep to give appearance of thinking ;)
-sleep( 100 ).then( () => {
+sleep( 200 ).then( () => {
 	console.log( JSON.stringify( move ) );
 } );
 
@@ -113,11 +113,14 @@ function moveSoldier( index, soldier, state, enemyKeep, myKeep, mapMask ) {
 
 	// Figure out if soldier should target an enemy unit
 	var enemyIndex = (state.currentPlayer + 1) % 2;
+	var minDist = 9999999;
 	for ( var j = 0; j < state.players[enemyIndex].units.length; j++ ) {
 		var enemy = state.players[enemyIndex].units[j];
-		if ( enemy.class != "dead" ) {
+		var tempDist = distance( myKeep.x, myKeep.y, enemy.x, enemy.y );
+		if ( enemy.class != "dead" && tempDist < minDist ) {
 			target.x = enemy.x; target.y = enemy.y;
-			j = 99999999;
+			minDist = tempDist;
+			// j = 99999999;
 		}
 	}
 
@@ -204,5 +207,5 @@ function dirTowards( startX, startY, endX, endY, map ) {
  * @return: (int) distance
  */
 function distance( x1, y1, x2, y2 ) {
-	return Math.abs( ( x2 - x1 ) + ( y2 - y1 ) );
+	return Math.abs( x2 - x1 ) + Math.abs( y2 - y1 );
 }

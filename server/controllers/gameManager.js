@@ -32,30 +32,34 @@ var warring = require( '../../games/warring' );
  * @return: (JSON) game state
  */
 exports.makeMove = function( state, move, callback ) {
-	switch( state.game ) {
-		case "testGame":
-			testGame.move( state, move, function( res ) {
-				callback( res );
-			} );
-			break;
-		case "mancala":
-			mancala.move( state, move, function( res ) {
-				callback( res );
-			} );
-			break;
-		case "farkle":
-			farkle.move( state, move, function( res ) {
-				callback( res );
-			} );
-			break;
-		case "warring":
-			warring.move( state, move, function( res ) {
-				callback( res );
-			} );
-			break;
-		default:
-			state.error = "INVALID GAME";
-			callback( state );
+	try {
+		switch( state.game ) {
+			case "testGame":
+				testGame.move( state, move, function( res ) {
+					callback( res );
+				} );
+				break;
+			case "mancala":
+				mancala.move( state, move, function( res ) {
+					callback( res );
+				} );
+				break;
+			case "farkle":
+				farkle.move( state, move, function( res ) {
+					callback( res );
+				} );
+				break;
+			case "warring":
+				warring.move( state, move, function( res ) {
+					callback( res );
+				} );
+				break;
+			default:
+				state.error = "INVALID GAME";
+				callback( state );
+		}
+	} catch( e ) {
+		callback( null );
 	}
 }
 
