@@ -22,7 +22,5 @@ Senior project in computing.
   
 ./client/
 
-  electron (note, it is easier if you just
-  
-            install electron on your system)
+  electron (note, it is easier if you just install electron on your system)
             
